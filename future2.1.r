@@ -4973,7 +4973,9 @@ HS <- function(x,a,b,gamma1=0.001,HStype="HS") if (HStype=="Mesnil") a*(x+sqrt(b
 
 ##
 
-est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.6,ban=0.1,mY=5,long.term=20,Fmsy.max=3,Fmsy.step=0.1,thin=1,inc=1,SRtype="L2",fm=5,tol=NULL,
+est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.6,ban=0.1,mY=5,long.term=20,
+                     Fmsy.max=3, # current FがFmsyに比べて小さすぎる場合、うまく収束しない場合があります。そのときはこのオプションでFmsy.max=10とかしてください。
+                     Fmsy.step=0.1,thin=1,inc=1,SRtype="L2",fm=5,tol=NULL,
                      AutoCor=FALSE,# 関数内部で自己相関係数を推定するか "future.vpa"を使う場合はどちらでも良い
                      AutoCorOut=FALSE, # フィットさせたあと残差の自己相関を計算する場合
                      current.resid=0, # 最近年何年分の自己相関を平均するか
@@ -5285,7 +5287,8 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     
         PRT.lim[j] <- min(which(LIMtoLOW.ssb >= ssb.low))
     }
-    
+
+    ## PRT.lim <= mYを満たすものが一個もなくwarningを返すことがある
     nlim.est <- min(which(PRT.lim <= mY))
     if(is.na(nlim.est) | nlim.est == Inf) nlim.est <- length(lim)
     
