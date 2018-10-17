@@ -5198,19 +5198,24 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     ssb.high <- mean(apply(PGYhigh.res$ssb,c(2,3),sum,na.rm=T))
     
 ##  Bhs„’è
+
+    if(res1$input$SR=="HS"){
+        det.Bhs <- res1$pars[2]
     
-    det.Bhs <- res1$pars[2]
+        if (!is.null(SSB0)) SSB0.HS <- as.matrix(rowMeans(SSB0)) else SSB0.HS <- NULL
     
-    if (!is.null(SSB0)) SSB0.HS <- as.matrix(rowMeans(SSB0)) else SSB0.HS <- NULL
-    
-    obj.HS <- function(x) sum(syfunc(x,farg,N=2,nyear=nyear,eyear=eyear,naa0=as.matrix(rowMeans(N0)),eaa0=NULL,ssb0=SSB0.HS,sd=0)$ssb[,eyear,1])-det.Bhs
+        obj.HS <- function(x) sum(syfunc(x,farg,N=2,nyear=nyear,eyear=eyear,naa0=as.matrix(rowMeans(N0)),eaa0=NULL,ssb0=SSB0.HS,sd=0)$ssb[,eyear,1])-det.Bhs
     res.HS <- uniroot(obj.HS, c(0,2*max(F.multi)),tol=tol)
     
-    FHS.multi <- res.HS$root
+        FHS.multi <- res.HS$root
 
-    HSres <- syfunc(FHS.multi,farg,N=N,nyear=nyear,eyear=eyear,naa0=N0,eaa0=e0,ssb0=SSB0)
-    HScat <- mean(HSres$catch)
-    ssb.hs <- mean(apply(HSres$ssb,c(2,3),sum,na.rm=T))          
+        HSres <- syfunc(FHS.multi,farg,N=N,nyear=nyear,eyear=eyear,naa0=N0,eaa0=e0,ssb0=SSB0)
+        HScat <- mean(HSres$catch)
+        ssb.hs <- mean(apply(HSres$ssb,c(2,3),sum,na.rm=T))
+    }
+    else{
+        det.Bhs <- SSB0.HS <- obj.HS <- res.HS <- FHS.multi <- HSres <- HScat <- ssb.hs <- NULL
+    }
 
 ##  target function
 
