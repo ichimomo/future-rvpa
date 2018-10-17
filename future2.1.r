@@ -5288,7 +5288,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
         PRT.lim[j] <- min(which(LIMtoLOW.ssb >= ssb.low))
     }
 
-    ## PRT.lim <= mYを満たすものが一個もなくwarningを返すことがある
+    ## PRT.lim <= mYを満たすものが一個もなくwarningを返すことがあるが、放置しています（使っていない計算結果なので）
     nlim.est <- min(which(PRT.lim <= mY))
     if(is.na(nlim.est) | nlim.est == Inf) nlim.est <- length(lim)
     
