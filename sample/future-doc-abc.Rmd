@@ -63,8 +63,7 @@ par(mar=c(4,4,3,1))
 ## 1. 事前準備
 - データの読み込み，RVPA関数の読み込みなど
 - ここで使う関数とデータへのリンク
-<!---    - <a href="rvpa1.9.2.r" download="rvpa1.9.2.r">rvpa1.9.2.r</a>  --->
-<!---    - <a href="future1.11.r" download="future1.11.r">future1.11.r</a>     --->
+
     - <a href="http://cse.fra.affrc.go.jp/ichimomo/fish/rvpa1.9.2.r">rvpa1.9.2.r</a>   
     - <a href="https://www.dropbox.com/s/rjpqks8zpuzeqwy/future2.1.r?dl=0">future2.1.r</a>   
     - [例データ](http://cse.fra.affrc.go.jp/ichimomo/fish/data.zip) (展開して作業フォルダにデータを置く)
