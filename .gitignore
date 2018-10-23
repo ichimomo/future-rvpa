@@ -38,3 +38,6 @@ rsconnect/
 # temporary file for emacs
 #*#
 *~
+
+# The folder to save stuff memo
+memo/*
