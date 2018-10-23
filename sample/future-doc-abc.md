@@ -1,6 +1,6 @@
 ---
 title: "RVPA‚ğ—p‚¢‚½ŠÇ—Šî€’lEABCŒvZƒ`ƒ…[ƒgƒŠƒAƒ‹"
-date: "2018-10-11"
+date: "2018-10-23"
 output: 
   html_document:
    highlight: pygments
@@ -10,10 +10,38 @@ output:
    toc_float: yes
 ---
 
+<style>
+
+/* body {background-color: #F7EBEF; margin: 30px; font-family: "MS ƒSƒVƒbƒN",sans-serif;
+     line-height: 120%; } */
+ body {background-color: #e0ffff; margin: 30px; font-family: "MS ƒSƒVƒbƒN",sans-serif;
+     line-height: 120%; } 
+pre {background-color: #FFFFFF; padding: 5px 20px 5px; }
+mytitle {color: #006666; font-weight: bold;}
+
+ul {margin: 10px 30px 10px;padding: 0}
+/*ul.upper li{margin: 10px 30px 10px;padding: 0; list-style-image: url(dots6/ico_dots6_1.gif);}
+ul ul li{margin: 10px 30px 10px;padding: 0; list-style-type: circle;} */
+
+ul li{ 
+  list-style-image: url(dots6/ico_dots6_22.gif);  
+} 
+    
+ul ul li{ 
+  list-style:circle;     
+} 
+
+
+</style>
 
 
 
 ## 0. XVî•ñFHPŒöŠJ”Å‚Æ‚Ì‚¿‚ª‚¢
+
+2018/10/12
+
+- ‰Á“ü‚ÌŒë·‚ğƒŠƒTƒ“ƒvƒŠƒ“ƒO‚Å—^‚¦‚é‰Á“üŠÖ”‚ª‚¢‚Ü‚Ü‚Åg‚¦‚Ä‚¢‚Ü‚¹‚ñ‚Å‚µ‚½‚ªA•œŠˆ‚µ‚Ü‚µ‚½B
+- HS.rec, BH.rec, RI.rec ‚ªAƒzƒbƒP[EƒXƒeƒBƒbƒNA‚×ƒo[ƒgƒ“Eƒzƒ‹ƒgAƒŠƒbƒJ[‚ğ‚»‚ê‚¼‚ê‚ğ‰¼’è‚µ‚½‚Æ‚«‚ÉA‰Á“üŒë·‚ğc·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚ÅÀ{‚·‚éŠÖ”‚Å‚·BÚ‚µ‚­‚Í@5.«—ˆ—\‘ª¨i5-2) Ä¶YŠÖŒW‚ÖB
 
 2018/10/11
 
@@ -32,8 +60,7 @@ output:
 ## 1. –‘O€”õ
 - ƒf[ƒ^‚Ì“Ç‚İ‚İCRVPAŠÖ”‚Ì“Ç‚İ‚İ‚È‚Ç
 - ‚±‚±‚Åg‚¤ŠÖ”‚Æƒf[ƒ^‚Ö‚ÌƒŠƒ“ƒN
-<!---    - <a href="rvpa1.9.2.r" download="rvpa1.9.2.r">rvpa1.9.2.r</a>  --->
-<!---    - <a href="future1.11.r" download="future1.11.r">future1.11.r</a>     --->
+
     - <a href="http://cse.fra.affrc.go.jp/ichimomo/fish/rvpa1.9.2.r">rvpa1.9.2.r</a>   
     - <a href="https://www.dropbox.com/s/rjpqks8zpuzeqwy/future2.1.r?dl=0">future2.1.r</a>   
     - [—áƒf[ƒ^](http://cse.fra.affrc.go.jp/ichimomo/fish/data.zip) (“WŠJ‚µ‚Äì‹ÆƒtƒHƒ‹ƒ_‚Éƒf[ƒ^‚ğ’u‚­)
@@ -42,8 +69,8 @@ output:
 
 ```r
 # ŠÖ”‚Ì“Ç‚İ‚İ ¨  warning‚Ü‚½‚ÍuŒxv‚ªo‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñ‚ªC‚»‚ÌŒã“®‚¢‚Ä‚¢‚ê‚Î–â‘è‚ ‚è‚Ü‚¹‚ñ
-source("../program/rvpa1.9.2.r")
-source("../program/future2.1.r")
+source("../rvpa1.9.2.r")
+source("../future2.1.r")
 
 # ƒf[ƒ^‚Ì“Ç‚İ‚İ
 caa <- read.csv("caa_pma.csv",row.names=1)
@@ -94,6 +121,15 @@ plot(res.pma$Fc.at.age,type="b",xlab="Age",ylab="F",ylim=c(0,max(res.pma$Fc.at.a
 
 ```r
  res.pma2 <- read.vpa("out.csv")
+```
+
+```
+## Warning in file(file, "rt"): ƒtƒ@ƒCƒ‹ 'out.csv' ‚ğŠJ‚­‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ: ‚»
+## ‚Ì‚æ‚¤‚Èƒtƒ@ƒCƒ‹‚âƒfƒBƒŒƒNƒgƒŠ‚Í‚ ‚è‚Ü‚¹‚ñ
+```
+
+```
+## Error in file(file, "rt"):  ƒRƒlƒNƒVƒ‡ƒ“‚ğŠJ‚­‚±‚Æ‚ª‚Å‚«‚Ü‚¹‚ñ
 ```
 
 
@@ -234,7 +270,7 @@ HS.par11 <- fit.SR(SRdata,SR="HS",method="L2",AR=1,TMB=TRUE) #marginal likelihoo
 ```
 
 ### ƒ‚ƒfƒ‹f’f
-Ä¶YŠÖŒW‚Ì‚ ‚Ä‚Í‚ß‚Ì‚ ‚Æ‚ÍA„’è‚³‚ê‚½ƒpƒ‰ƒ[ƒ^‚ÌM—Š‹æŠÔ‚âŠæŒ’«‚È‚Ç‚ğƒ`ƒFƒbƒN‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B‚»‚Ì‚½‚ß‚ÌŠÖ”ŒQ‚È‚Ç‚à—pˆÓ‚µ‚Ä‚¢‚Ü‚·BÚ‚µ‚­‚Í<a href=SRR-guidline0.html> SRRƒKƒCƒhƒ‰ƒCƒ“ </a> ‚Ö
+Ä¶YŠÖŒW‚Ì‚ ‚Ä‚Í‚ß‚Ì‚ ‚Æ‚ÍA„’è‚³‚ê‚½ƒpƒ‰ƒ[ƒ^‚ÌM—Š‹æŠÔ‚âŠæŒ’«‚È‚Ç‚ğƒ`ƒFƒbƒN‚·‚é•K—v‚ª‚ ‚è‚Ü‚·B‚»‚Ì‚½‚ß‚ÌŠÖ”ŒQ‚È‚Ç‚à—pˆÓ‚µ‚Ä‚¢‚Ü‚·BÚ‚µ‚­‚Í<a href=http://cse.fra.affrc.go.jp/ichimomo/fish/SRR-guidline0.html> SRRƒKƒCƒhƒ‰ƒCƒ“ </a> ‚Ö
 
 
 ## 5. «—ˆ—\‘ª
@@ -242,10 +278,10 @@ HS.par11 <- fit.SR(SRdata,SR="HS",method="L2",AR=1,TMB=TRUE) #marginal likelihoo
 future.vpaŠÖ”‚ğg‚¢‚Ü‚·
 
 - recfunc‚Ìˆø”‚ÉÄ¶YŠÖŒW‚ÌŠÖ”‚ğCrec.arg‚Érecfunc‚É‘Î‚·‚éˆø”iÄ¶YŠÖŒW‚Ìƒpƒ‰ƒ[ƒ^j‚ğ“ü‚ê‚é
-- ƒo[ƒWƒ‡ƒ“ƒAƒbƒv‚É‚Æ‚à‚È‚¢A—˜—p‚Å‚«‚éÄ¶YŠÖŒW‚ÌŠÖ”‚ª­‚È‚­‚È‚è‚Ü‚µ‚½
-     - *** HS.rec: ƒzƒbƒP[EƒXƒeƒBƒbƒN{‰Á“ü‚ÌƒŠƒTƒ“ƒvƒŠƒ“ƒOi©ŒÈ‘ŠŠÖ‚ ‚è‚Ìê‡‚Í‘Î‰‚¹‚¸j[‚±‚ÌŠÖ”Aˆê“I‚Ég‚¦‚È‚­‚È‚Á‚Ä‚¢‚Ü‚·Ig‚¤•K—v‚ ‚é‚©‚½‚²˜A—‚­‚¾‚³‚¢] ***
+- —˜—p‰Â”\‚ÈÄ¶YŠÖ”
      - HS.recAR: ƒzƒbƒP[EƒXƒeƒBƒbƒN{‰Á“ü‚Í‘Î”³‹K•ª•z{©ŒÈ‘ŠŠÖ‚ ‚è‚Ìê‡‚à‘Î‰
      - RI.recAREBH.recARFHS.recAR‚ÌƒŠƒbƒJ[E‚×ƒo[ƒgƒ“ƒzƒ‹ƒgƒo[ƒWƒ‡ƒ“
+     - HS.rec, BH.rec, RI.rec : c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO—p
 
 
 ```r
@@ -381,7 +417,10 @@ fres.currentSSB <- future.vpa(res.pma,
 
 ### (5-2) Ä¶YŠÖŒW
 
-- c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚Å«—ˆ—\‘ª‚ğ‚·‚éê‡¨refunc‚Æ‚µ‚ÄHS.rec‚ğg‚¤i***!ˆê“I‚Ég‚¦‚Ü‚¹‚ñ!***j
+- c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚Å«—ˆ—\‘ª‚ğ‚·‚éê‡¨refunc‚Æ‚µ‚ÄHS.reciƒzƒbƒP[EƒXƒeƒBƒbƒNjABH.reci‚×ƒo[ƒgƒ“Eƒzƒ‹ƒgjARI.reciƒŠƒbƒJ[j‚ğg‚¤
+- rec.arg‚Ìˆø”‚ÅA**•K‚¸** resample=TRUE‚Æ‚µ‚Ä‚­‚¾‚³‚¢B
+- rho>0‚Ìê‡‚É‚Í‘Î‰‚µ‚Ä‚¨‚è‚Ü‚¹‚ñ
+
 
 ```r
 # c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚É‚æ‚é«—ˆ—\‘ª
@@ -417,8 +456,6 @@ plot(fres.HS$vssb[,-1],fres.HS$naa[1,,-1],xlab="SSB",ylab="Recruits")
 plot(fres.HS4$vssb[,-1],fres.HS4$naa[1,,-1],xlab="SSB",ylab="Recruits") 
 plot.futures(list(fres.HS,fres.HS4)) # —¼Ò‚Ì”äŠr
 ```
-
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png)
 
 ### (5-3) ”N—î•Ê‘Ìd‚ª‘Œ¹”ö”‚É‰e‹¿‚³‚ê‚éê‡‚Ì«—ˆ—\‘ªi2018/06/12VƒIƒvƒVƒ‡ƒ“‚Æ‚µ‚Ä’Ç‰Áj
 - ***future.vpa‚ÅCwaa.fun = TRUE‚Æ‚·‚ê‚ÎA”N—î•Ê‘Œ¹d—Ê‚ª‘Œ¹”ö”ilog(‘Ìd)~log(‘Œ¹”ö”)‚Ì‰ñ‹A‚ğŠÖ”“à•”‚ÅÀsj‚ÌŠÖ”‚©‚ç—\‘ª‚³‚ê‚Ü‚·***
@@ -459,12 +496,13 @@ fres.HS6 <- do.call(future.vpa, fres.HS6$input)
 
 ## 6. MSYŠÇ—Šî€’l‚ÌŒvZ
 - MSYŠÇ—Šî€’lŒvZ‚Å‚ÍCã‹L‚Ì«—ˆ—\‘ª‚É‚¨‚¢‚ÄCF‚Ì’l‚ğ—lX‚É•Ï‚¦‚½‚Æ‚«‚Ì•½tó‘Ôi¢‘ãŠÔ~20”N‚ğ```nyear```‚Åw’è‚µ‚Ü‚·j‚É‚¨‚¯‚é‘Œ¹—Ê‚â‚»‚ê‚É‘Î‰‚·‚éF“™‚ğŠÇ—Šî€’l‚Æ‚µ‚ÄZo‚µ‚Ü‚·
-- *** ‚È‚Ì‚ÅA‚±‚±‚Ü‚Å‚ÌƒvƒƒZƒX‚ÅAABCŒvZ‚Ì‚½‚ß‚É‚«‚¿‚ñ‚Æ‚µ‚½ƒIƒvƒVƒ‡ƒ“‚ğİ’è‚µ‚½future.vpa‚ğÀs‚µ‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢B‚»‚Ì•Ô‚è’l```fres.HS```‚ğMSYŒvZ‚Å‚Íg‚Á‚Ä‚¢‚«‚Ü‚· ***
-<--- [* ```is.plot=TRUE```‚Æ‚·‚é‚ÆF‚ğ—lX‚É•Ï‚¦‚½‚Æ‚«‚Ì•½‹Ïe‹›‘Œ¹—Ê‚Æ•½‹Ï‹™Šl—ÊC‘Î‰‚·‚éF‚ÌŠÇ—Šî€’l‚ğo—Í‚µ‚Ü‚·] --->
-- est.MSY(‚¿‚å‚Á‚ÆŒÃ‚¢ƒo[ƒWƒ‡ƒ“AB0Šî€‚ÌMSY‚àZo‚³‚ê‚Ü‚·)‚Æest.MSY2iV‚µ‚¢ƒo[ƒWƒ‡ƒ“AAR‚ ‚è‚Ìê‡‚É‘Î‰‚µ‚Ü‚·j‚Ì‚Q‚Â‚ª‚ ‚è‚Ü‚·BABC‚ÌZ‚É‚Íest.MSY2‚ğg‚Á‚Ä‰º‚³‚¢
+- ‚È‚Ì‚ÅA‚±‚±‚Ü‚Å‚ÌƒvƒƒZƒX‚ÅAABCŒvZ‚Ì‚½‚ß‚É‚«‚¿‚ñ‚Æ‚µ‚½ƒIƒvƒVƒ‡ƒ“‚ğİ’è‚µ‚½future.vpa‚ğÀs‚µ‚Ä‚¨‚¢‚Ä‚­‚¾‚³‚¢B‚»‚Ì•Ô‚è’l```fres.HS```‚ğMSYŒvZ‚Å‚Íg‚Á‚Ä‚¢‚«‚Ü‚· 
+- est.MSY(‚¿‚å‚Á‚ÆŒÃ‚¢ƒo[ƒWƒ‡ƒ“AB0Šî€‚ÌMSY‚àZo‚³‚ê‚Ü‚·)‚Æest.MSY2iV‚µ‚¢ƒo[ƒWƒ‡ƒ“AAR‚ ‚è‚Ìê‡‚É‘Î‰‚µ‚Ü‚·j‚Ì‚Q‚Â‚ª‚ ‚è‚Ü‚µ‚½‚ªA‚Q‚Â‚ÌŠÖ”‚ğest.MSY‚É“‡‚µ‚Ü‚µ‚½B
 
-### est.MSY(AR‚ğl—¶‚µ‚Ä‚¢‚È‚¢ƒo[ƒWƒ‡ƒ“)‚Ìà–¾
+### est.MSY‚Ìà–¾
 - ‚±‚ÌŠÖ”‚ÅŒvZ‚Å‚«‚éŠÇ—Šî€’l‚ÍˆÈ‰º‚Ì‚æ‚¤‚È‚à‚Ì‚É‚È‚è‚Ü‚·
+- ‚Ç‚ÌŠÇ—Šî€’l‚ªtarget, limit, ban‚É‚È‚é‚©‚ÍŠÖ”“à‚Å‚Í•]‰¿‚³‚ê‚Ü‚¹‚ñ
+
 
 | ŠÇ—Šî€’l |à–¾ | 
 |:----------------------|:---------------------------------|
@@ -472,18 +510,27 @@ fres.HS6 <- do.call(future.vpa, fres.HS6$input)
 | SSB_0 (XX%) | F=0‚Å«—ˆ—\‘ª‚µ‚½‚Æ‚«‚Ì•½tó‘Ô‚É‚¨‚¯‚ée‹›—Ê($B_0$)‚É‘Î‚·‚éŠ„‡iˆø”```B0percent```‚Åc(0.4, 0.5)‚Ì‚æ‚¤‚Éw’è‚µ‚Ü‚·j |
 | SSB_PGY (LXX%) (HXX%)| SS_MSY‚Å’B¬‚³‚ê‚é‹™Šl—Ê‚ÌXX%‚ğ’B¬‚·‚é‚Æ‚«‚Ìe‹›—Ê‚Ì‰ºŒÀ‚Ü‚½‚ÍãŒÀiˆø”```PGY```‚Åc(0.9, 0.95)‚Ì‚æ‚¤‚Éw’è‚µ‚Ü‚·j |
 
+| ŠÖ”‚Ì•Ô‚è’l | à–¾ | 
+|:----------------------|:---------------------------------|
+| summay | •½tó‘Ô‚É‚¨‚¯‚é‘ã•\“I‚ÈŠeí“Œv—ÊiSSBE‘‘Œ¹—ÊE‹™Šl—Ê“™‚Ì•½‹Ï’l‚âF‚Ì’lj\*1 |
+| summayAR | ’¼‹ß‚Ì‰Á“ü‚Ìc·‚ğl—¶‚µ‚½ê‡‚ÉA•½tó‘Ô‚ÌmY”NŒã‚É‚¨‚¯‚éŠeí“Œv—ÊiSSBE‘‘Œ¹—ÊE‹™Šl—Ê“™‚Ì•½‹Ï’l‚âF‚Ì’lj\*1 |
+| all.stat | •½tó‘Ô‚É‚¨‚¯‚éŠeí“Œv—Êisummary‚æ‚è‚àÚ‚µ‚¢) |
+| all.statAR | ’¼‹ß‚Ì‰Á“ü‚Ìc·‚ğl—¶‚µ‚½ê‡‚ÌŠeí“Œv—Ê |
+| trace | Fcurrent‚É‘Î‚·‚émultiplier‚ğ—lX‚É•Ï‚¦‚½ê‡‚Ì•½tó‘ÔiGT*20”NŒãj‚É‚¨‚¯‚éŠeí“Œv—Ê |
+| input.list | ŠeíŠÇ—Šî€’l‚ğŒvZ‚·‚é‚Æ‚«‚Ég—p‚µ‚½future.vpa‚Ö‚Ìˆø”Bdo.call(future.vpa,ˆø”)‚ÅŒvZ‚ÌÄŒ»‚ª‰Â”\ |
+
+\*1: summary‚Ü‚½‚ÍsummaryAR‚ÌFref/Fcurrent‚ªŒ»s‚ÌF‚©‚ç‚ÌF‚ÌíŒ¸—¦‚É‚È‚è‚Ü‚·iiFref/Fcurrent-1)~100‚ª‘Œ¹•]‰¿•[‚Ì—v–ñ•\‚ÌuŒ»ó‚ÌF’l‚©‚ç‚Ì‘Œ¸“v‚É‘Š“–‚µ‚Ü‚·jB‚±‚Ì’l‚É‚³‚ç‚ÉƒÀiBtarget‚ğã‰ñ‚éŠm—¦‚ª‚T‚O“‚©‚ÂBlimit‚ğã‰ñ‚éŠm—¦‚ª‚X‚O“ˆÈã‚É‚È‚é‚æ‚¤‚É’²®‚·‚éŒW”j‚Æ(B-Bban)/(Blim-Bban)‚ğæ‚¶‚½F‚ğ‚à‚Æ‚ÉABC‚ªZ’è‚³‚ê‚Ü‚·
 
 
 ```r
 # MSYŠÇ—Šî€’l‚ÌŒvZ
-
-# ¢‘ãŠÔ‚ÌŒvZ¨‚±‚Ì20”{‚ªMSYŒvZ‚Ì‚³‚¢‚Ì«—ˆ—\‘ªŠúŠÔ‚É‚È‚è‚Ü‚·
-GT <- Generation.Time(res.pma,maa.year=2009:2011, M.year=2009:2011,Plus = 100)
-
 MSY.HS <- est.MSY(res.pma, # VPA‚ÌŒvZŒ‹‰Ê
                  fres.HS$input, # «—ˆ—\‘ª‚Åg—p‚µ‚½ˆø”
-                 nyear=20*GT,N=100, # «—ˆ—\‘ª‚Ì”N”CŒJ‚è•Ô‚µ‰ñ”
-                 PGY=c(0.9,0.6,0.1),B0percent=c(0.3,0.4)) # PGY‚ÆB0%ƒŒƒxƒ‹
+#                 nyear=NULL, # ‰½”NŒvZ‚·‚é‚©‚ÍAw’è‚µ‚È‚¯‚ê‚ÎŠÖ”“à•”‚Å¢‘ãŠÔ‚Ì20”{‚Ì”N”‚ğŒvZ‚µA‚»‚ê‚ğ•½tó‘Ô‚Æ‚·‚é
+                 N=100, # «—ˆ—\‘ª‚Ì”N”CŒJ‚è•Ô‚µ‰ñ”
+                 PGY=c(0.9,0.6,0.1), # ŒvZ‚µ‚½‚¢PGYƒŒƒxƒ‹BãŒÀ‚Æ‰ºŒÀ‚Ì—¼•û‚ªŒvZ‚³‚ê‚é
+                 onlylower.pgy=FALSE, # TRUE‚É‚·‚é‚ÆPGYƒŒƒxƒ‹‚ÌãŒÀ‚ÍŒvZ‚µ‚È‚¢iŒvZŠÔ‚Ìß–ñ‚É‚È‚éj
+                 B0percent=c(0.3,0.4)) # ŒvZ‚µ‚½‚¢B0%ƒŒƒxƒ‹
 ```
 
 ```
@@ -506,11 +553,9 @@ MSY.HS <- est.MSY(res.pma, # VPA‚ÌŒvZŒ‹‰Ê
 
 ![**}Fest.MSY‚Ìis.plot=TRUE‚ÅŒvZŠ®—¹‚É•\¦‚³‚ê‚é}DF‚Ì‹­‚³‚É‘Î‚·‚é•½tó‘Ô‚Ìe‹›‘Œ¹—Êi¶j‚Æ‹™Šl—Êi‰EjD„’è‚³‚ê‚½ŠÇ—Šî€’l‚à•\¦D**](figure/msy-1.png)
 
-Œ‹‰Ê‚Ì—v–ñ‚Í```MSY.HS$summary```‚É‚È‚è‚Ü‚·D
-
 
 ```r
-# Œ‹‰Ê‚Ì•\¦
+# Œ‹‰Ê‚Ì•\¦i•½tó‘Ôj
 MSY.HS$summary
 ```
 
@@ -539,69 +584,49 @@ MSY.HS$summary
 ## B0-40%            0.3064784   0.1666111   0.360628  0.4002461   0.400246
 ```
 
-- MSY.HS‚É‚ÍCF=0, F=Fmsy, F=ˆø”‚Åw’è‚³‚ê‚½PGY‚âSPR‚É‘Î‰‚·‚éF‚Å«—ˆ—\‘ª‚µ‚½Œ‹‰Ê‚àŠi”[‚³‚ê‚Ä‚¢‚Ü‚·i¨ƒtƒ@ƒCƒ‹ƒTƒCƒY‘å‚«‚­‚È‚è‚Ü‚·‚Ì‚Å’ˆÓIj
-    - fout0: F=0‚ÌŒ‹‰Ê
-    - fout.msy: F=Fmsy‚ÌŒ‹‰Ê
-    - fout.B0percent: F=F0Šî€‚É‚æ‚éFi•¡”‚ÌŒ‹‰Ê‚ªƒŠƒXƒgŒ`®‚Å“ü‚Á‚Ä‚¢‚Ü‚·j
-    - fout.PGY: PGYŠî€‚É‚æ‚éFi•¡”‚ÌŒ‹‰Ê‚ªƒŠƒXƒgŒ`®‚Å“ü‚Á‚Ä‚¢‚Ü‚·j
-
 ```r
-names(MSY.HS)
+# Œ‹‰Ê‚Ì•\¦i’¼‹ß‚Ì©ŒÈ‘ŠŠÖ‚ğl—¶j
+MSY.HS$summaryAR
 ```
 
 ```
-## [1] "all.stat"       "summary"        "trace"          "fout0"         
-## [5] "fout.msy"       "fout.B0percent" "fout.PGY"
-```
-### est.MSY2iAR‚ğl—¶‚Å‚«‚éƒo[ƒWƒ‡ƒ“GABC‚ÌZ‚É‚Í‚±‚¿‚ç‚ğg‚Á‚Ä‰º‚³‚¢j‚Ìà–¾
-
-```r
-par(mfrow=c(1,1))
-# est.MSY2‚Å‚Í¢‘ãŠÔ‚ÌŒvZ~‚Q‚O”N•ª‚ğ©“®“I‚É«—ˆ—\‘ª‚·‚é‚æ‚¤‚É‚È‚Á‚Ä‚¢‚Ü‚·
-MSY.HS2 <- est.MSY2(res.pma, # VPA‚ÌŒ‹‰Ê
-                    sim0=fres.HS, # «—ˆ—\‘ª‚ÌŒ‹‰Ê
-                    future.function.name="future.vpa", # «—ˆ—\‘ª‚Åg‚¤ŠÖ”‚Ì–¼‘Oifuture.vpa‚ğg‚Á‚Ä‰º‚³‚¢j
-                    res1=HS.par0, # Ä¶YŠÖŒW‚Ìƒpƒ‰ƒ[ƒ^(sim0‚Åfres.HS‚ğ—^‚¦‚Ä‚¢‚éê‡A‚±‚±‚Íg—p‚³‚ê‚È‚¢)
-                    N=100, # ÀÛ‚ÉŒvZ‚·‚éê‡‚ÍA­‚È‚­‚Æ‚à‚P–œˆÈã‚Ì’l‚ğg‚Á‚Ä‰º‚³‚¢
-                    current.resid=5) # AR‚ ‚èƒ‚ƒfƒ‹‚ğg‚¤ê‡A«—ˆ—\‘ª‚É‚¨‚¢‚Ä‰½”N•ª‚Ìc·‚ğl—¶‚·‚é‚©
-# Œ‹‰Ê‚Ì—v–ñ
-MSY.HS2$summary
-```
-
-```
-##                       Equiribrium with AR Fref/Fcurrent
-## Bmsy                       127730  129244          0.52
-## B_pgy_90%_L                 58417   59466          0.96
-## B_limit (B_pgy_60%_L)       35362   35428          1.05
-## B_ban (B_pgy_10%_L)          5582    5529          1.12
-## Recent residual                NA      NA            NA
+##                    SSB        B          U    Catch  Fref/Fcur
+## MSY           126880.6 222578.4  0.3253222 72409.68  0.5252164
+## B0            510537.5 617846.6          0        0          0
+## PGY_0.9_upper 227407.4 328473.5  0.1995048 65532.06  0.2636767
+## PGY_0.9_lower 58628.22 143011.4   0.451572 64579.95  0.9704383
+## PGY_0.6_upper 346976.6 451495.5 0.09697897 43785.57  0.1132016
+## PGY_0.6_lower 36730.95 94542.79  0.4658226 44040.17   1.043157
+## PGY_0.1_upper 486053.8 593028.4  0.0123251 7309.134 0.01321078
+## PGY_0.1_lower 5700.529 15568.56  0.4765128 7418.619   1.108316
+## B0-30%        153239.1 250742.4  0.2870992 71987.93  0.4330439
+## B0-40%        204420.8 304555.4   0.224088  68247.2  0.3064784
+##               Fref2Fcurrent          F0         F1         F2         F3
+## MSY               0.5252164   0.2855239  0.6180134  0.6859075  0.6859074
+## B0                        0           0          0          0          0
+## PGY_0.9_upper     0.2636767   0.1433428   0.310264  0.3443492  0.3443491
+## PGY_0.9_lower     0.9704383   0.5275602   1.141898   1.267346   1.267346
+## PGY_0.6_upper     0.1132016   0.0615399  0.1332025  0.1478359  0.1478359
+## PGY_0.6_lower      1.043157   0.5670922   1.227465   1.362313   1.362312
+## PGY_0.1_upper    0.01321078 0.007181791 0.01554491 0.01725265 0.01725265
+## PGY_0.1_lower      1.108316   0.6025147   1.304136   1.447407   1.447407
+## B0-30%            0.4330439   0.2354161  0.5095555  0.5655346  0.5655345
+## B0-40%            0.3064784   0.1666111   0.360628  0.4002461   0.400246
 ```
 
 ```r
-## BH‚ğ‰¼’è‚·‚éê‡
-MSY.BH2 <- est.MSY2(res.pma, # VPA‚ÌŒ‹‰Ê
-                    sim0=fres.BH, # «—ˆ—\‘ª‚ÌŒ‹‰Ê
-                    future.function.name="future.vpa", # «—ˆ—\‘ª‚Åg‚¤ŠÖ”‚Ì–¼‘Oifuture.vpa‚ğg‚Á‚Ä‰º‚³‚¢j
-                    res1=BH.par0, # Ä¶YŠÖŒW‚Ìƒpƒ‰ƒ[ƒ^(sim0‚Åfres.HS‚ğ—^‚¦‚Ä‚¢‚éê‡A‚±‚±‚Íg—p‚³‚ê‚È‚¢)
-                    N=100, # ÀÛ‚ÉŒvZ‚·‚éê‡‚ÍA­‚È‚­‚Æ‚à‚P–œˆÈã‚Ì’l‚ğg‚Á‚Ä‰º‚³‚¢
-                    current.resid=5) # AR‚ ‚èƒ‚ƒfƒ‹‚ğg‚¤ê‡A«—ˆ—\‘ª‚É‚¨‚¢‚Ä‰½”N•ª‚Ìc·‚ğl—¶‚·‚é‚©
+# ‚Ì‚¿‚Ìg—p‚Ì‚½‚ß‚ÉABmsy, Blimit, Bban, Fmsy‚ğ’è‹`‚µ‚Ä‚¨‚­
+refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
+             BlimAR=as.numeric(MSY.HS$summaryAR$SSB[6]),
+             BbanAR=as.numeric(MSY.HS$summaryAR$SSB[8]),
+             Bmsy=as.numeric(MSY.HS$summary$SSB[1]),
+             Blim=as.numeric(MSY.HS$summary$SSB[6]),
+             Bban=as.numeric(MSY.HS$summary$SSB[8]),
+             Fmsy=as.numeric(MSY.HS$summary$"Fref/Fcur"[1]))
 ```
-
-- Œ‹‰Ê‚Ì•\‚Ìà–¾
-
-|     ŠÇ—Šî€’l | •½tó‘Ô‚É‚¨‚¯‚é’l| ‹ß”N‚Ìc·‚ğl—¶‚µ‚Ä‚T”NŠÔ«—ˆ—\‘ª‚µ‚½‚Æ‚«‚Ì’lŠÇ—Šî€’l‚Æ‚µ‚Äg‚¤|Fcurrent‚É‘Î‚·‚éæ”| |
-|:----------------------|:--------------------|:--------------------|:--------------------|:--------------------|
-|                     | Equiribrium |with AR| Fref/Fcurrent|   |
-|Bmsy                 |      128212|  128903  |        0.51| Bmsy=Btarget |
-|Bpgy90%L           |      58664 |  58753  |        0.96| PGY90%‚ªtarget‚Ì”ÍˆÍ‚Ì‰ºŒÀ‚Æ‚µ‚Äl‚¦‚ç‚ê‚éH|
-|Blimit(Bpgy60%L) |      35326  | 35435    |      1.05| PGY60%‚ÍBlimit‚ÌŒó•â‚Ìˆê‚Â | 
-|Bban(Bpgy10%L)   |       5558  |  5210    |      1.13| PGY10%‚ÍBban‚ÌŒó•â‚Æ‚È‚é|
-|Recent residual       |         NA   |   NA      |      NA| ‹ß”N‚Ìc·‚ğl—¶‚·‚éê‡A‹ß”N‚Ìc·‚Ì’l‚ª“ü‚é |
-
-Bmsy‚Ìs‚ÌFref/Fcurrent‚ªŒ»s‚ÌF‚©‚ç‚ÌF‚ÌíŒ¸—¦‚É‚È‚è‚Ü‚·iiFref/Fcurrent-1)~100‚ª‘Œ¹•]‰¿•[‚Ì—v–ñ•\‚ÌuŒ»ó‚ÌF’l‚©‚ç‚Ì‘Œ¸“v‚É‘Š“–‚µ‚Ü‚·jB‚±‚Ì’l‚É‚³‚ç‚ÉƒÀiBtarget‚ğã‰ñ‚éŠm—¦‚ª‚T‚O“‚©‚ÂBlimit‚ğã‰ñ‚éŠm—¦‚ª‚X‚O“ˆÈã‚É‚È‚é‚æ‚¤‚É’²®‚·‚éŒW”j‚Æ(B-Bban)/(Blim-Bban)‚ğæ‚¶‚½F‚ğ‚à‚Æ‚ÉABC‚ªZ’è‚³‚ê‚Ü‚·
 
 ## 8. HCR‚ÌŒvZ‚ÆABC‚ÌZo
-### beta‚ÌŒvZ
+### beta‚ÌŒvZ@*calc.beta‚ÉƒoƒO‚ª‚ ‚è‚Ü‚µ‚½*@*d—l‚àŒŸ“¢’†‚Å‚·* 
 - HCR‚É‚¨‚¯‚éƒÀ‚Ícalc.betaŠÖ”‚©‚çŒvZ‚µ‚Ü‚·B
 - ˆø”‚Æ‚µ‚ÄBtarget, Blimit, Bban‚ğ—^‚¦‚é•K—v‚ª‚ ‚è‚Ü‚·
 
@@ -609,22 +634,54 @@ Bmsy‚Ìs‚ÌFref/Fcurrent‚ªŒ»s‚ÌF‚©‚ç‚ÌF‚ÌíŒ¸—¦‚É‚È‚è‚Ü‚·iiFref/Fcurrent-1)~1
 ```r
 beta <- calc.beta(res=MSY.HS2,# MSY‚ÌŒvZŒ‹‰Ê
                   prob.beta=c(0.5,0.9), # Btarget, Blimit‚ğ‰½ƒp[ƒZƒ“ƒg‚ÌŠm—¦‚Åã‰ñ‚é‚©
-                  Btar=MSY.HS2$Btar, # Btarget‚Ì’l
-                  Blim=MSY.HS2$Blim, # Blimit‚Ì’l
-                  Bban=MSY.HS2$Bban, # Bban‚Ì’l
-                  Fmsy=MSY.HS2$Fmsy) # Fmsy‚Ì’l
-```
-
-```
-## beta= 0.99
-```
-
-```r
+                  Btar=refs$Bmsy, # Btarget‚Ì’l
+                  Blim=refs$Blim, # Blimit‚Ì’l
+                  Bban=refs$Bban, # Bban‚Ì’l
+                  Fmsy=refs$Fmsy) # Fmsy‚Ì’l
 beta[[1]]$beta # •½tó‘Ô‚É‚¨‚¯‚éSSB‚Ì•ª•z‚ª³‹K•ª•z‚©‚çŠO‚ê‚é(•½‹Ï’l‚Æ’†‰›’l‚ª‚¸‚ê‚é‚½‚ß)‚Ù‚ÇE•ªU‚ª‘å‚«‚¢‚Ù‚ÇiBlimit‚ğ90%‚ÌŠm—¦‚Åã‰ñ‚éğŒ‚ªŒø‚¢‚Ä‚­‚é‚½‚ßjbeta‚Ì’l‚Í¬‚³‚­‚È‚é
 ```
 
+### beta‚ÌŒvZFb’è”Å
+- *­‚È‚­‚Æ‚à*•½tó‘Ô‚É‚¨‚¢‚ÄProb(Btarget>B)>50%, Prob(Blimt>B)>10%‚É‚µ‚½‚¢‚Ì‚ÅA‚»‚ÌğŒ‚ğ–‚½‚·‚æ‚¤‚Èbeta‚ğ’Tõ‚µ‚Ü‚·B
+- future.vpa‚ÌFrecƒIƒvƒVƒ‡ƒ“‚ğg‚Á‚Ä‰º‚³‚¢
+
+
+```r
+input.beta <- MSY.HS$input$msy # MSYŒvZ‚Åg‚Á‚½ˆø”‚ğg‚¤
+input.beta$N <- 1000 # ÀÛ‚ÉŒvZ‚·‚é‚Æ‚«‚Í10000ˆÈã‚ğg‚Á‚Ä‚­‚¾‚³‚¢
+input.beta$HCR <- list(Blim=refs$Blim,
+                      Bban=refs$Bban,
+                      beta=1) # ‚Æ‚è‚ ‚¦‚¸‚P‚Æ‚µ‚Ä‚¨‚­
+input.beta$is.plot <- TRUE
+input.beta$Frec <- list(stochastic=TRUE,
+                        future.year=NULL, # NULL‚É‚µ‚Ä‚¨‚­‚Æ«—ˆ—\‘ª‚ÌÅI”N‚Æ”»’f‚·‚é
+                        Blimit=refs$Blim,
+                        scenario="blimit",target.probs=10)
+fres.beta1 <- do.call(future.vpa,input.beta)
 ```
-## [1] 0.9928483
+
+```
+## F multiplier= 1.031327
+```
+
+![plot of chunk beta-tmp](figure/beta-tmp-1.png)
+
+```r
+input.beta$Frec <- list(stochastic=TRUE,
+                        future.year=NULL, # NULL‚É‚µ‚Ä‚¨‚­‚Æ«—ˆ—\‘ª‚ÌÅI”N‚Æ”»’f‚·‚é
+                        Blimit=refs$Bmsy,
+                        scenario="blimit",target.probs=50)
+fres.beta2 <- do.call(future.vpa,input.beta)
+```
+
+```
+## F multiplier= 0.5212207
+```
+
+![plot of chunk beta-tmp](figure/beta-tmp-2.png)
+
+```r
+beta <- min(fres.beta1$multi/refs$Fmsy, fres.beta2$multi/refs$Fmsy)
 ```
 
 ### HCR‚ğ‚à‚Æ‚É«—ˆ—\‘ª¨ABCŒvZ
@@ -634,11 +691,12 @@ beta[[1]]$beta # •½tó‘Ô‚É‚¨‚¯‚éSSB‚Ì•ª•z‚ª³‹K•ª•z‚©‚çŠO‚ê‚é(•½‹Ï’l‚Æ’†‰›’l‚ª‚
 
 
 ```r
-input.abc <- fres.HS$input # «—ˆ—\‘ª‚Ìˆø”‚ÍˆÈ‘O‚Ì‚à‚Ì‚ğg‚¤
-input.abc$multi <- MSY.HS2$Fmsy # Šî–{‚Æ‚·‚éF‚ÍFmsy
-input.abc$N <- 100 # ÀÛ‚ÉŒvZ‚·‚é‚Æ‚«‚Í10000ˆÈã‚ğg‚Á‚Ä‚­‚¾‚³‚¢
-input.abc$HCR <- list(Blim=MSY.HS2$Blim, Bban=MSY.HS2$Bban,beta=beta[[1]]$beta) # HCR‚Ìƒpƒ‰ƒ[ƒ^‚ğw’è‚·‚é
-input.abc$nyear <- 20
+input.abc <- MSY.HS$input$msy # MSYŒvZ‚Åg‚Á‚½ˆø”‚ğg‚¤
+input.abc$N <- 1000 # ÀÛ‚ÉŒvZ‚·‚é‚Æ‚«‚Í10000ˆÈã‚ğg‚Á‚Ä‚­‚¾‚³‚¢
+input.abc$HCR <- list(Blim=refs$Blim,
+                      Bban=refs$Bban,
+                      beta=beta)
+input.abc$nyear <- 100 # ABCŒvZ‚É‚Í’·ŠúŠÔŒvZ‚·‚é•K—v‚Í‚È‚¢
 input.abc$is.plot <- TRUE
 fres.abc1 <- do.call(future.vpa,input.abc)
 ```
@@ -658,7 +716,7 @@ par(mfrow=c(1,1))
 ```r
 plot.future(fres.abc1,what=c(FALSE,TRUE,FALSE),is.legend=TRUE,lwd=2,
             col="darkblue",N=5,label=rep(NA,3))
-draw.refline(MSY.HS2$summary,horiz=TRUE,lwd=1,scale=1)
+draw.refline(cbind(unlist(refs[c(1,1,2,3)+3]),unlist(refs[c(1,1,2,3)])),horiz=TRUE,lwd=1,scale=1)
 ```
 
 ![plot of chunk abc](figure/abc-3.png)
@@ -685,18 +743,23 @@ boxplot(t(fres.abc1$faa[1,,]/fres.abc1$faa[1,1,]),ylab="multiplier to current F"
 ```r
 # ‚Ç‚ñ‚ÈHCR‚È‚Ì‚©‘‚¢‚Ä‚İ‚é
 ssb.abc <- mean(fres.abc1$vssb[2,]) # ABCŒvZ”N‚Ìssb‚ğ‚Æ‚é
-plot.HCR(alpha=beta[[1]]$beta,bban=MSY.HS2$Bban,blimit=MSY.HS2$Blim,btarget=MSY.HS2$Btar,lwd=2,
+plot.HCR(alpha=beta,bban=MSY.HS2$Bban,blimit=MSY.HS2$Blim,btarget=MSY.HS2$Btar,lwd=2,
          xlim=c(0,MSY.HS2$Btar*2),ssb.cur=ssb.abc,Fmsy=MSY.HS2$Fmsy,yscale=0.7,scale=1000)
+```
+
+```
+## Warning in plot.xy(xy.coords(x, y), type = type, ...): "alpha" ‚ÍƒOƒ‰ƒtƒBƒb
+## ƒNƒXƒpƒ‰ƒ[ƒ^‚Å‚Í‚ ‚è‚Ü‚¹‚ñ
 ```
 
 ![plot of chunk HCR](figure/HCR-1.png)
 
 
 ```r
-plot(apply(fres.abc1$vssb>MSY.HS2$summary[1,1],1,mean)*100,type="b",ylab="Probability",ylim=c(0,100))
-points(apply(fres.abc1$vssb>MSY.HS2$summary[1,2],1,mean)*100,pch=2,type="b")
-points(apply(fres.abc1$vssb>MSY.HS2$summary[3,1],1,mean)*100,pch=1,col=2,type="b")
-points(apply(fres.abc1$vssb>MSY.HS2$summary[3,2],1,mean)*100,pch=2,col=2,type="b")
+plot(apply(fres.abc1$vssb>refs$Bmsy,1,mean)*100,type="b",ylab="Probability",ylim=c(0,100))
+points(apply(fres.abc1$vssb>refs$BmsyAR,1,mean)*100,pch=2,type="b")
+points(apply(fres.abc1$vssb>refs$Blim,1,mean)*100,pch=1,col=2,type="b")
+points(apply(fres.abc1$vssb>refs$BlimAR,1,mean)*100,pch=2,col=2,type="b")
 abline(h=c(50,90),col=c(1,2))
 legend("bottomright",col=c(1,1,2,2),title="Probs",pch=c(1,2,1,2),legend=c(">Btarget_Eq",">Btarget_AR",">Blimit_Eq",">Blimit_AR"))
 ```
@@ -711,8 +774,8 @@ MSYŠÇ—Šî€’l‚ğŒvZ‚ÍˆÈ‰º‚Ìè‡‚Å‚¨‚±‚È‚¢‚Ü‚·D
 
 ```r
 # ŠÖ”‚Ì“Ç‚İ‚İ ¨  warning‚Ü‚½‚ÍuŒxv‚ªo‚é‚©‚à‚µ‚ê‚Ü‚¹‚ñ‚ªC‚»‚ÌŒã“®‚¢‚Ä‚¢‚ê‚Î–â‘è‚ ‚è‚Ü‚¹‚ñ
-source("../program/rvpa1.9.2.r")
-source("../program/future2.1.r")
+source("../rvpa1.9.2.r")
+source("../future2.1.r")
 
 # ƒf[ƒ^‚Ì“Ç‚İ‚İ
 caa <- read.csv("caa_pma.csv",row.names=1)
@@ -772,36 +835,16 @@ fres.HS <- future.vpa(res.pma,
 5. res.pma‚Æfres.HS‚ğg‚Á‚ÄMSYŠÇ—Šî€’l‚ğŒvZ‚·‚é (est.MSY2) ¨ MSY.HS2 (ŠÇ—Šî€’l‚Ì„’èŒ‹‰Ê)‚ğ“¾‚é
    - ÅV‚Ìest.MSY2ŠÖ”‚ğg‚Á‚Ä‰º‚³‚¢
 
-```r
-par(mfrow=c(1,1))
-# est.MSY2‚Å‚Í¢‘ãŠÔ‚ÌŒvZ~‚Q‚O”N•ª‚ğ©“®“I‚É«—ˆ—\‘ª‚·‚é‚æ‚¤‚É‚È‚Á‚Ä‚¢‚Ü‚·
-MSY.HS2 <- est.MSY2(res.pma, # VPA‚ÌŒ‹‰Ê
-                    sim0=fres.HS, # «—ˆ—\‘ª‚ÌŒ‹‰Ê
-                    future.function.name="future.vpa", # «—ˆ—\‘ª‚Åg‚¤ŠÖ”‚Ì–¼‘Oifuture.vpa‚ğg‚Á‚Ä‰º‚³‚¢j
-                    res1=HS.par0, # Ä¶YŠÖŒW‚Ìƒpƒ‰ƒ[ƒ^(sim0‚Åfres.HS‚ğ—^‚¦‚Ä‚¢‚éê‡A‚±‚±‚Íg—p‚³‚ê‚È‚¢)
-                    N=100, # ÀÛ‚ÉŒvZ‚·‚éê‡‚ÍA­‚È‚­‚Æ‚à‚P–œˆÈã‚Ì’l‚ğg‚Á‚Ä‰º‚³‚¢
-                    current.resid=5) # AR‚ ‚èƒ‚ƒfƒ‹‚ğg‚¤ê‡A«—ˆ—\‘ª‚É‚¨‚¢‚Ä‰½”N•ª‚Ìc·‚ğl—¶‚·‚é‚©
-# Œ‹‰Ê‚Ì—v–ñ
-MSY.HS2$summary
-
-## BH‚ğ‰¼’è‚·‚éê‡
-MSY.BH2 <- est.MSY2(res.pma, # VPA‚ÌŒ‹‰Ê
-                    sim0=fres.BH, # «—ˆ—\‘ª‚ÌŒ‹‰Ê
-                    future.function.name="future.vpa", # «—ˆ—\‘ª‚Åg‚¤ŠÖ”‚Ì–¼‘Oifuture.vpa‚ğg‚Á‚Ä‰º‚³‚¢j
-                    res1=BH.par0, # Ä¶YŠÖŒW‚Ìƒpƒ‰ƒ[ƒ^(sim0‚Åfres.HS‚ğ—^‚¦‚Ä‚¢‚éê‡A‚±‚±‚Íg—p‚³‚ê‚È‚¢)
-                    N=100, # ÀÛ‚ÉŒvZ‚·‚éê‡‚ÍA­‚È‚­‚Æ‚à‚P–œˆÈã‚Ì’l‚ğg‚Á‚Ä‰º‚³‚¢
-                    current.resid=5) # AR‚ ‚èƒ‚ƒfƒ‹‚ğg‚¤ê‡A«—ˆ—\‘ª‚É‚¨‚¢‚Ä‰½”N•ª‚Ìc·‚ğl—¶‚·‚é‚©
-```
 
 6. ŠÇ—Šî€’l‚©‚çƒÀ‚ğŒvZ‚·‚éicalc.betaj
 
 ```r
 beta <- calc.beta(res=MSY.HS2,# MSY‚ÌŒvZŒ‹‰Ê
                   prob.beta=c(0.5,0.9), # Btarget, Blimit‚ğ‰½ƒp[ƒZƒ“ƒg‚ÌŠm—¦‚Åã‰ñ‚é‚©
-                  Btar=MSY.HS2$Btar, # Btarget‚Ì’l
-                  Blim=MSY.HS2$Blim, # Blimit‚Ì’l
-                  Bban=MSY.HS2$Bban, # Bban‚Ì’l
-                  Fmsy=MSY.HS2$Fmsy) # Fmsy‚Ì’l
+                  Btar=refs$Bmsy, # Btarget‚Ì’l
+                  Blim=refs$Blim, # Blimit‚Ì’l
+                  Bban=refs$Bban, # Bban‚Ì’l
+                  Fmsy=refs$Fmsy) # Fmsy‚Ì’l
 beta[[1]]$beta # •½tó‘Ô‚É‚¨‚¯‚éSSB‚Ì•ª•z‚ª³‹K•ª•z‚©‚çŠO‚ê‚é(•½‹Ï’l‚Æ’†‰›’l‚ª‚¸‚ê‚é‚½‚ß)‚Ù‚ÇE•ªU‚ª‘å‚«‚¢‚Ù‚ÇiBlimit‚ğ90%‚ÌŠm—¦‚Åã‰ñ‚éğŒ‚ªŒø‚¢‚Ä‚­‚é‚½‚ßjbeta‚Ì’l‚Í¬‚³‚­‚È‚é
 ```
 
@@ -809,11 +852,12 @@ beta[[1]]$beta # •½tó‘Ô‚É‚¨‚¯‚éSSB‚Ì•ª•z‚ª³‹K•ª•z‚©‚çŠO‚ê‚é(•½‹Ï’l‚Æ’†‰›’l‚ª‚
    - 10”NŒã‚ÉBtarget‚ğã‰ñ‚éŠm—¦‚È‚Ç‚àŒvZ
 
 ```r
-input.abc <- fres.HS$input # «—ˆ—\‘ª‚Ìˆø”‚ÍˆÈ‘O‚Ì‚à‚Ì‚ğg‚¤
-input.abc$multi <- MSY.HS2$Fmsy # Šî–{‚Æ‚·‚éF‚ÍFmsy
-input.abc$N <- 100 # ÀÛ‚ÉŒvZ‚·‚é‚Æ‚«‚Í10000ˆÈã‚ğg‚Á‚Ä‚­‚¾‚³‚¢
-input.abc$HCR <- list(Blim=MSY.HS2$Blim, Bban=MSY.HS2$Bban,beta=beta[[1]]$beta) # HCR‚Ìƒpƒ‰ƒ[ƒ^‚ğw’è‚·‚é
-input.abc$nyear <- 20
+input.abc <- MSY.HS$input$msy # MSYŒvZ‚Åg‚Á‚½ˆø”‚ğg‚¤
+input.abc$N <- 1000 # ÀÛ‚ÉŒvZ‚·‚é‚Æ‚«‚Í10000ˆÈã‚ğg‚Á‚Ä‚­‚¾‚³‚¢
+input.abc$HCR <- list(Blim=refs$Blim,
+                      Bban=refs$Bban,
+                      beta=beta)
+input.abc$nyear <- 100 # ABCŒvZ‚É‚Í’·ŠúŠÔŒvZ‚·‚é•K—v‚Í‚È‚¢
 input.abc$is.plot <- TRUE
 fres.abc1 <- do.call(future.vpa,input.abc)
 hist(fres.abc1$ABC) # ABC‚Ì•ª•z
@@ -823,8 +867,7 @@ ABC <- mean(fres.abc1$ABC) # •½‹Ï’l‚ğABC‚Æ‚·‚é
 par(mfrow=c(1,1))
 plot.future(fres.abc1,what=c(FALSE,TRUE,FALSE),is.legend=TRUE,lwd=2,
             col="darkblue",N=5,label=rep(NA,3))
-draw.refline(MSY.HS2$summary,horiz=TRUE,lwd=1,scale=1)
-
+draw.refline(cbind(unlist(refs[c(1,1,2,3)+3]),unlist(refs[c(1,1,2,3)])),horiz=TRUE,lwd=1,scale=1)
 ## ‹™Šl—Ê‚Ì«—ˆ—\‘ªŒ‹‰Ê
 par(mfrow=c(1,1))
 plot.future(fres.abc1,what=c(FALSE,FALSE,TRUE),is.legend=TRUE,lwd=2,
@@ -839,15 +882,15 @@ boxplot(t(fres.abc1$faa[1,,]/fres.abc1$faa[1,1,]),ylab="multiplier to current F"
 ```r
 # ‚Ç‚ñ‚ÈHCR‚È‚Ì‚©‘‚¢‚Ä‚İ‚é
 ssb.abc <- mean(fres.abc1$vssb[2,]) # ABCŒvZ”N‚Ìssb‚ğ‚Æ‚é
-plot.HCR(alpha=beta[[1]]$beta,bban=MSY.HS2$Bban,blimit=MSY.HS2$Blim,btarget=MSY.HS2$Btar,lwd=2,
+plot.HCR(alpha=beta,bban=MSY.HS2$Bban,blimit=MSY.HS2$Blim,btarget=MSY.HS2$Btar,lwd=2,
          xlim=c(0,MSY.HS2$Btar*2),ssb.cur=ssb.abc,Fmsy=MSY.HS2$Fmsy,yscale=0.7,scale=1000)
 ```
 
 ```r
-plot(apply(fres.abc1$vssb>MSY.HS2$summary[1,1],1,mean)*100,type="b",ylab="Probability",ylim=c(0,100))
-points(apply(fres.abc1$vssb>MSY.HS2$summary[1,2],1,mean)*100,pch=2,type="b")
-points(apply(fres.abc1$vssb>MSY.HS2$summary[3,1],1,mean)*100,pch=1,col=2,type="b")
-points(apply(fres.abc1$vssb>MSY.HS2$summary[3,2],1,mean)*100,pch=2,col=2,type="b")
+plot(apply(fres.abc1$vssb>refs$Bmsy,1,mean)*100,type="b",ylab="Probability",ylim=c(0,100))
+points(apply(fres.abc1$vssb>refs$BmsyAR,1,mean)*100,pch=2,type="b")
+points(apply(fres.abc1$vssb>refs$Blim,1,mean)*100,pch=1,col=2,type="b")
+points(apply(fres.abc1$vssb>refs$BlimAR,1,mean)*100,pch=2,col=2,type="b")
 abline(h=c(50,90),col=c(1,2))
 legend("bottomright",col=c(1,1,2,2),title="Probs",pch=c(1,2,1,2),legend=c(">Btarget_Eq",">Btarget_AR",">Blimit_Eq",">Blimit_AR"))
 ```

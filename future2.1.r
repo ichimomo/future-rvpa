@@ -28,6 +28,7 @@
 ##                岡村さん作成のest.MSY2（ARの考慮あり）、calc.abc関数を追加
 ## 
 ## 2018.10.17; github上にアップ
+## 2018.10.22; est.MSYとest.MSY2を統合しest.MSYとする
 
 if(0){
     # 再生産関係のフィットに使うデータセットを作る
@@ -176,7 +177,7 @@ if(0){
     ### 岡村さん関数を使った管理基準値の計算
     # 岡村さん関数では内部でGTが計算されているのでGTを与える必要はない
     MSY.HS2 <- est.MSY2(res.pma,sim0=fres.HS,future.function.name="future.vpa",res1=HS.par,
-                        nyear=NULL,N=1000,current.resid=5)
+                        nyear=NULL,N=1000,current.resid=0)
     
     ## ABC計算 => ここで出てくるABCはまだ確かめていないので使わない。アルファだけ使う
     abc1 <- calc.abc(MSY.HS2,delta.est=FALSE,delta=1)    
@@ -662,6 +663,7 @@ future.vpa <-
       if(is.null(Frec$target.probs)) Frec$target.probs <- 50
       if(is.null(Frec$scenario)) Frec$scenario <- "blimit" # 2017/12/25追記 
       if(is.null(Frec$Frange)) Frec$Frange <- c(0.01,multi.org*2)   # 2017/12/25追記(探索するFの範囲の指定)
+      if(is.null(Frec$future.year)) Frec$future.year <- fyears[length(fyears)]-1
       #      arglist$Frec <- Frec
       
       getFrec <- function(x,arglist){
@@ -802,7 +804,14 @@ future.vpa <-
                                      M.lastyear,
                                      plus.group=plus.group)
             naa[1:nage,1,] <- tmp
-#            if(is.na(naa[1,1,])){
+
+            # naa0がgivenの場合、ここで上書き
+            if(!is.null(naa0)){
+                naa[,1,] <- naa0
+                if(is.null(faa0)) faa0 <- res0$Fc.at.age
+                faa[] <- faa0*multi
+            }
+            
             if(fyears[1]-min.age < start.year){
                 thisyear.ssb <- sum(res0$ssb[,as.character(fyears[1]-min.age)],na.rm=T)
             }
@@ -834,13 +843,14 @@ future.vpa <-
           naa[,1,] <- res0$naa[,start.year==years]
       }
 
+      ### ARを考える場合ここにあると変？もっと前に移動
       ### 任意の年齢組成からスタートさせたい場合###
-      if(!is.null(naa0)){
-          naa[,1,] <- naa0
-          if(is.null(faa0)) faa0 <- res0$Fc.at.age
-          faa[] <- faa0*multi
-      }
-      
+###      if(!is.null(naa0)){
+###          naa[,1,] <- naa0
+###          if(is.null(faa0)) faa0 <- res0$Fc.at.age
+###          faa[] <- faa0*multi
+###      }
+     
       if(!is.null(rec.new)){
         if(!is.list(rec.new)){
           naa[1,1,] <- rec.new
@@ -3753,70 +3763,34 @@ plot.SRdata <- function(SRdata){
 
 est.MSY <- function(vpares,farg,
                    seed=1,n.imputation=1,
-                   nyear=50,
+                   nyear=NULL,
                    eyear=0, # 将来予測の最後のeyear+1年分を平衡状態とする
 #                   FUN=median, # 漁獲量の何を最大化するか？
                    FUN=mean, # 漁獲量の何を最大化するか？                   
                    N=1000, # stochastic計算するときの繰り返し回数
                    onlylower.pgy=FALSE,# PGY計算するとき下限のみ計算する（計算時間省略のため）
-                   is.small=FALSE, # 将来予測の結果を返さない。
-                   is.Kobe=FALSE, # Kobeの計算をするかどうか。順番に、HS, BH, RIの順
-                   is.5perlower=FALSE, # HSの折れ点を5%の確率で下回るときの親魚資源量
                    optim.method="optimize",
                    max.target="catch.mean", # method="optimize"以外を使うとき、どの指標を最大化するか。他のオプションとしては"catch.median" (漁獲量のmedianの最大化)
                    calc.yieldcurve=TRUE, # yield curveを正確に計算するかどうか。TRUEだと計算時間が余計にかかる。FALSEだと、yield curveは正確ではない
-                   Blimit=0,
+                   Blimit=0, 
                    trace.multi=c(seq(from=0,to=0.9,by=0.1),1,seq(from=1.1,to=2,by=0.1),3:5,7,20,100), # Fmsyを探索したり、Yield curveを書くときにグリッドサーチをするときのFの刻み。Fcurrentに対する乗数。Fが異常に大きい場合、親魚=0になって加入＝NA
                    is.plot=TRUE,
                    PGY=NULL, # PGY管理基準値を計算するかどうか。計算しない場合はNULLを、計算する場合はc(0.8,0.9,0.95)のように割合を入れる
-                   B0percent=NULL # B0_XX%の管理基準値を計算するかどうか
+                   B0percent=NULL, # B0_XX%の管理基準値を計算するかどうか
+                   long.term=20, # 世代時間の何倍年後の状態を平衡状態と仮定するか
+                   GT=NULL, # 世代時間を外から与える場合(世代時間の計算は将来予測で使われる年齢別成熟率・自然死亡係数を使っているが、別のパラメータを与えたい場合など、外で計算してここに入れる)
+                   mY=5, # 自己相関を考慮して管理基準値を計算する場合、平衡状態から何年進めるか                   
+                   resid.year=0, # ARありの場合、最近年何年分の残差を平均するか
+                   current.resid=NULL # 残差の値を直接入れる場合。上の年数が設定されていてもこちらが設定されたらこの値を使う
                    ){
 
-
-    #-------------------- B0 & MSY for HS --------------------
-    # 最小化のための関数
-    # シミュレーション回数ぶんの漁獲量のFUN（mean, geomean, median）を最大化するFを選ぶ
-    tmpfunc <- function(x,f.arg,FUN=FUN,eyear=eyear){
+### 内部で使うための関数定義
+    ## 最小化のための関数
+    ## シミュレーション回数ぶんの漁獲量のFUN（mean, geomean, median）を最大化するFを選ぶ
+    msy.objfun <- function(x,f.arg,FUN=FUN,eyear=eyear){
       f.arg$multi <- x
       fout <- do.call(future.vpa,f.arg)
       return(-FUN(fout$vwcaa[(nrow(fout$vwcaa)-eyear):nrow(fout$vwcaa),-1]))
-    }
-
-    tmpfunc2 <- function(x,f.arg,FUN=FUN,eyear=eyear,hsp=0){
-      f.arg$multi <- x
-      fout <- do.call(future.vpa2,f.arg)
-      tmp <- as.numeric(fout$vssb[(nrow(fout$vssb)-eyear):nrow(fout$vssb),-1])
-      lhs <- sum(tmp<hsp)/length(tmp)
-      return( (lhs-0.05)^2 + as.numeric(lhs==0) + as.numeric(lhs==1)  )
-    }
-
-    # 
-    get.Fhist <- function(farg,vpares,eyear,trace,hsp=0){
-        Fhist <- NULL
-        original.sel <- farg$res0$Fc.at.age # original F
-        for(j in 1:ncol(vpares$faa)){
-            farg$res0$Fc.at.age <- vpares$faa[,j] # change the selectivity
-            farg$multi <- 1            
-            tmp <- do.call(future.vpa2,farg)
-            tmp2 <- get.stat(tmp,eyear=eyear,hsp=hsp)
-#            browser()
-            xx <- which.min(abs(trace$ssb.median-tmp2$ssb.median))+c(-1,1)
-            range.tmp <- trace$fmulti[xx]
-            if(is.na(range.tmp[2])) range.tmp[2] <- max(trace$fmulti)*2
-            if(xx[1]==0) range.tmp <- c(0,range.tmp[1])
-            tmpfunc <- function(x,farg,ssb.target,eyear){
-                farg$multi <- x
-                return((get.stat(do.call(future.vpa2,farg),eyear=eyear,hsp=hsp)$ssb.mean-ssb.target)^2)                
-            }
-            farg$res0$Fc.at.age <- original.sel # current Fをもとにもどす
-            # originalな選択率のもとで、それを何倍にすればi年目のFで漁獲した時の親魚資源量と同じになるか
-            ores <- optimize(tmpfunc,range.tmp,farg=farg,ssb.target=tmp2$ssb.mean,eyear=eyear)            
-#            farg$multi <- ores$minimum
-#            tmp3 <- do.call(future.vpa2,farg)
-            tmp2$fmulti <- ores$minimum
-            Fhist <- rbind(Fhist,tmp2)            
-        }
-        return(as.data.frame(Fhist))
     }
 
     trace.func <- function(farg,eyear,hsp=0,trace.N=farg$N,
@@ -3840,9 +3814,60 @@ est.MSY <- function(vpares,farg,
         trace.res <- as.data.frame(trace.res)
         trace.res$fmulti <- fmulti
         return(list(table=trace.res))
+    }
+
+    which.min2 <- function(x){
+        max(which(min(x)==x))
+    }
+
+    target.func <- function(fout,faa0=NULL,mY=5,N=2,seed=1,eyear=4,p=1,beta=1,delta=0,Blim=0,Bban=0,sd0=NULL,current.resid=NULL){
+        
+        farg <- fout$input
+        last.year <- dim(fout$naa)[[2]]
+
+        lag <- as.numeric(dimnames(fout$naa)[[1]])[1]        
+        if(lag==0) SSB.m <- NULL else SSB.m <- fout$ssb[,last.year-lag,]
+###        if(lag==0) SSB.m <- NULL else SSB.m <- fout$ssb[,last.year-(lag-1),]                     
+        ssb0 <- SSB.m
+        
+        farg$seed <- seed
+        farg$N <- N
+        farg$nyear <- mY+1
+        farg$naa0 <- p*fout$naa[,last.year,]
+        farg$eaa0 <- fout$eaa[last.year,]+current.resid
+        farg$ssb0 <- p*ssb0
+        farg$faa0 <- faa0
+        farg$beta <- beta
+        farg$delta <- delta
+        farg$Blim <- Blim
+        farg$Bban <- Bban
+        if(!is.null(farg$ABC.year)) farg$ABC.year <- farg$start.year
+        if(!is.null(sd0)) farg$rec.arg$sd <- sd0
+        farg$Frec <- NULL
+        fout <- do.call(future.vpa,farg)
+#        nY <- mY+1
+      
+                                        #        out <- list(catch=fout$vwcaa[(mY-(eyear-1)):mY,,drop=FALSE],ssb=fout$ssb[,(mY-(eyear-1)):mY,,drop=FALSE],naa=fout$naa[,(mY-(eyear-1)):mY,,drop=FALSE],baa=fout$baa[,(mY-(eyear-1)):mY,,drop=FALSE],eaa=fout$eaa[(mY-(eyear-1)):mY,,drop=FALSE])
+
+        out <- get.stat(fout,eyear=0,hsp=Blimit)
+        out <- cbind(out,get.stat2(fout,eyear=0,hsp=Blimit))
+        return(out)
     }    
 
-    ######## 関数定義おわり
+### 関数定義おわり
+    ## 世代時間を計算
+    if(is.null(GT)){
+        GT <- Generation.Time(vpares,maa.year=fres.HS$input$maa.year,
+                              M.year=fres.HS$input$M.year)  # Generation Time
+    }
+    if(is.null(nyear)){
+        nyear <- round(GT*long.term)
+    }
+    trace.N <- N        
+    years <- sort(as.numeric(rev(names(vpares$naa))[1:5]))
+    nY <- nyear+1    # これ必要？？
+
+    ## 引数の調整
     b0 <- numeric() # B0
     fout <- fout0 <- trace <- Fhist <- fout.HS.5par <- list()
 
@@ -3850,22 +3875,28 @@ est.MSY <- function(vpares,farg,
     farg.tmp$outtype <- "FULL"
     farg.tmp$nyear <- nyear
     farg.tmp$N <- N
-#    trace.N <- ifelse(isTRUE(calc.yieldcurve),N,3)
-    trace.N <- N
     farg.tmp$silent <- TRUE
     farg.tmp$is.plot <- FALSE
+    farg$ABC.year <- max(years)+1
+    farg$add.year <- 1
+    farg$det.run <- FALSE    
     
+    if(!is.null(farg$pre.catch)){
+        farg$pre.catch <- NULL # pre.catchオプションがあるとうまくいかないのでなかったことにする
+        cat("notice: option \"pre.catch\" is turned off in estimating MSY.\n")
+    }
+    if(!is.null(farg$new.rec)){
+        farg$rec.new <- NULL # rec.newプションがあるとうまくいかないのでなかったことにする
+        cat("notice: option \"rec.new\" is turned off in estimating MSY.\n")            
+    }
+
     # B0の計算
     farg.tmp$multi <- 0
     fout0 <- do.call(future.vpa,farg.tmp)
     B0 <- get.stat(fout0,eyear=eyear,hsp=Blimit)
     B0 <- cbind(B0,get.stat2(fout0,eyear=eyear,hsp=Blimit))
-    rownames(B0) <- "B0"
+    rownames(B0) <- "B0"    
     
-    which.min2 <- function(x){
-        max(which(min(x)==x))
-    }
-
     trace <- trace.func(farg.tmp,eyear,hsp=Blimit,fmulti=trace.multi,trace.N=trace.N)
 
     xx <- which.max(trace$table$catch.mean)+c(-1,1)
@@ -3876,19 +3907,20 @@ est.MSY <- function(vpares,farg,
     farg.tmp$multi <- 1
     cat("Estimating MSY\n")
     if(optim.method=="optimize"){
-        tmp <- optimize(tmpfunc,range.tmp,f.arg=farg.tmp,eyear=eyear,FUN=FUN)
+        tmp <- optimize(msy.objfun,range.tmp,f.arg=farg.tmp,eyear=eyear,FUN=FUN)
         # 壁にあたっている限り続ける
         while(sum(round(tmp$minimum,3)==range.tmp)>0){
             tmp0 <- round(tmp$minimum,3)==range.tmp
             range.tmp <- sort(c(range.tmp[tmp0],
                                 range.tmp[tmp0] -2*(mean(range.tmp) - range.tmp[tmp0])))
             range.tmp <- ifelse(range.tmp<0,0,range.tmp)
-            tmp <- optimize(tmpfunc,range.tmp,f.arg=farg.tmp,eyear=eyear,FUN=FUN)
+            tmp <- optimize(msy.objfun,range.tmp,f.arg=farg.tmp,eyear=eyear,FUN=FUN)
         }
         farg.msy <- farg.tmp
         farg.msy$multi <- tmp$minimum # Fc.at.a * multiがFmsy
         cat("F multiplier=",tmp$minimum,"\n")
         fout.msy <- do.call(future.vpa,farg.msy)
+        fout.msy$input$multi <- fout.msy$multi
         if(calc.yieldcurve){
             trace$table <- rbind(trace$table,trace.func(farg.msy,eyear,hsp=Blimit,trace.N=trace.N,
                                                     fmulti=tmp$minimum+c(-0.025,-0.05,-0.075,0,0.025,0.05,0.075))$table)
@@ -3912,29 +3944,6 @@ est.MSY <- function(vpares,farg,
     rownames(MSY) <- "MSY"
 #    cat(" SSB=",MSY$"ssb.mean","\n")    
     
-    if(is.Kobe){
-        cat("Estimating Kobe plot\n")          
-        Fhist <- get.Fhist(farg.org,vpares,eyear=eyear,trace=trace$table)
-    }
-    if(is.5perlower){
-              xx <- which.min2((trace$table$lower-0.05)^2)+c(-1,1)
-              range.tmp <- trace$table$fmulti[xx]
-              if(xx[1]==0) range.tmp <- c(0,range.tmp)
-              if(is.na(xx[2])) range.tmp[2] <- max(trace$table$fmulti)*10
-              tmp <- optimize(tmpfunc2,range.tmp,f.arg=farg.org,eyear=eyear,FUN=FUN,hsp=Blimit)
-              farg.tmp$multi <- tmp$minimum
-              fout.HS.5per <- do.call(future.vpa,farg.tmp)
-    }
-
-
-    if(isTRUE(is.5perlower)){
-        tmp <- as.data.frame(t(sapply(fout.HS.5per,get.stat,eyear=eyear,hsp=Blimit)))
-        tmp$f <- sapply(fout.HS.5per,function(x)x$multi)
-    }
-    else{
-        tmp <- NA
-    }
-
     ## PGYの計算
     fout.PGY <- list()    
     if(!is.null(PGY)){
@@ -3954,6 +3963,7 @@ est.MSY <- function(vpares,farg,
                                       Blimit=PGY[j]*MSY$catch.mean,
                                       scenario="catch.mean",Frange=frange.list[[i]])
                 fout.PGY[[s]] <- do.call(future.vpa,farg.pgy)
+                fout.PGY[[s]]$input$multi <- fout.PGY[[s]]$multi                
                 s <- s+1
             }
         }
@@ -3968,7 +3978,7 @@ est.MSY <- function(vpares,farg,
     ###
 
     ## B0_%の計算
-    fout.list3 <- list()    
+    fout.B0percent <- list()    
     if(!is.null(B0percent)){
         for(j in 1:length(B0percent)){
             cat("Estimating B0 ",B0percent[j]*100,"%\n")            
@@ -3980,22 +3990,58 @@ est.MSY <- function(vpares,farg,
                                  future.year=rev(rownames(fout0$vssb))[1],
                                  Blimit=B0percent[j]*B0$ssb.mean,
                                  scenario="ssb.mean",Frange=frange.list)
-            fout.list3[[j]] <- do.call(future.vpa,farg.b0)
+            fout.B0percent[[j]] <- do.call(future.vpa,farg.b0)
+            fout.B0percent[[j]]$input$multi <- fout.B0percent[[j]]$multi
         }
-        B0stat <- as.data.frame(t(sapply(fout.list3,get.stat,eyear=eyear,hsp=Blimit)))
-        B0stat <- cbind(B0stat,as.data.frame(t(sapply(fout.list3,get.stat2,eyear=eyear,hsp=Blimit))))
-        rownames(B0stat) <- names(fout.list3) <- paste("B0-",B0percent*100,"%",sep="")
+        B0stat <- as.data.frame(t(sapply(fout.B0percent,get.stat,eyear=eyear,hsp=Blimit)))
+        B0stat <- cbind(B0stat,as.data.frame(t(sapply(fout.B0percent,get.stat2,eyear=eyear,hsp=Blimit))))
+        rownames(B0stat) <- names(fout.B0percent) <- paste("B0-",B0percent*100,"%",sep="")
     }
     else{
         B0stat <-  NULL
         }
-    ###    
+###
 
     refvalue <- rbind(MSY,B0,PGYstat,B0stat)
     sumvalue <- refvalue[,c("ssb.mean","biom.mean","U.mean","catch.mean","Fref2Fcurrent")]
     colnames(sumvalue) <- c("SSB","B","U","Catch","Fref/Fcur")
-    sumvalue <- cbind(sumvalue,refvalue[,substr(colnames(refvalue),1,1)=="F"])                
+    sumvalue <- cbind(sumvalue,refvalue[,substr(colnames(refvalue),1,1)=="F"])
 
+### ARありの場合の管理基準値の計算（平衡状態から5年分進めたときの値）
+
+    if(resid.year > 0 && is.null(current.resid)){
+        current.resid <- mean(rev(fout.msy$input$rec.arg$resid)[1:resid.year]) 
+        cat("Residuals of ",resid.year," years are averaged as, ",current.resid,"\n")
+    }
+    else{
+        if(resid.year==0){
+            current.resid <- 0
+        }
+    }
+
+    lag <- as.numeric(rownames(fout.msy$naa))[1]            
+    eyear <- mY+(lag > 0)*(lag-1)
+    
+    MSY2 <- target.func(fout.msy,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
+    B02 <- target.func(fout0,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)        
+    PGYstat2 <- t(sapply(1:length(fout.PGY),
+                         function(x) target.func(fout.PGY[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)))
+#   browser()
+
+    B0stat2 <- t(sapply(1:length(fout.B0percent),
+                       function(x) target.func(fout.B0percent[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
+                       ))
+
+    refvalue2 <- rbind(MSY2,B02,PGYstat2,B0stat2)
+    sumvalue2 <- refvalue2[,c("ssb.mean","biom.mean","U.mean","catch.mean","Fref2Fcurrent")]
+    colnames(sumvalue2) <- c("SSB","B","U","Catch","Fref/Fcur")
+    sumvalue2 <- cbind(sumvalue2,refvalue2[,substr(colnames(refvalue2),1,1)=="F"])
+
+    dimnames(refvalue2) <- dimnames(refvalue)        
+    dimnames(sumvalue2) <- dimnames(sumvalue)
+    
+### 結果のプロットなど
+    
     if(isTRUE(is.plot)){
         par(mfrow=c(1,2),mar=c(4,4,1,1))
         plot(trace$table$fmulti,trace$table$"ssb.mean"*1.2,type="n",xlab="Fref/Fcurrent",ylab="SSB")
@@ -4016,7 +4062,16 @@ est.MSY <- function(vpares,farg,
     #  }
     #dimnames(kobe2) <- list()
 
-    invisible(list(all.stat=refvalue,summary=sumvalue,trace=trace$table,fout0=fout0,fout.msy=fout.msy,fout.B0percent=fout.list3,fout.PGY=fout.PGY))    
+    input.list <- list(B0=fout0$input,
+                       msy=fout.msy$input,
+                       pgy=lapply(fout.PGY,function(x) x$input),
+                       B0percent=lapply(fout.B0percent,function(x) x$input))
+
+    invisible(list(summary=as.data.frame(as.matrix(sumvalue)),
+                   summaryAR=as.data.frame(as.matrix(sumvalue2)),
+                   all.stat=as.data.frame(as.matrix(refvalue)),
+                   all.statAR=as.data.frame(as.matrix(refvalue2)),
+                   trace=trace$table,input.list=input.list))    
 }
 
 
@@ -5349,6 +5404,11 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     ## Btarget
     
     Ftar.multi <- Fmsy.multi
+    eyear <- mY+(lag > 0)*(lag-1)
+    
+    N.m <- MSYres$naa[,eyear,]
+    e.m <- MSYres$eaa[eyear,]
+    if(lag==0) SSB.m <- NULL else SSB.m <- MSYres$ssb[,eyear-(lag-1),]
     
     TARres <- target.func(Ftar.multi,farg,mY=mY,seed=seed,N=N,eyear=mY,naa0=N.m,eaa0=e.m+w.recent,ssb0=SSB.m)
     Btar <- mean(colSums(TARres$ssb[,mY,]))
@@ -5357,7 +5417,9 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     
     N.low <- PGYlow.res$naa[,1+(lag>0)*(lag-1),]
     e.low <- PGYlow.res$eaa[1+(lag>0)*(lag-1),]
-    if(lag==0) SSB.low <- NULL else SSB.low <- PGYlow.res$ssb[,1,]
+#    if(lag==0) SSB.low <- NULL else SSB.low <- PGYlow.res$ssb[,1,]
+    if(lag==0) SSB.low <- NULL else SSB.low <- PGYlow.res$ssb[,eyear-(lag-1),]
+
     
     LOWres <- target.func(Flow.multi,farg,mY=mY,seed=seed,N=N,eyear=mY,naa0=N.low,eaa0=e.low+w.recent,ssb0=SSB.low)
 
@@ -5369,7 +5431,8 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     
     N.lim <- Lim1.res$naa[,1+(lag>0)*(lag-1),]
     e.lim <- Lim1.res$eaa[1+(lag>0)*(lag-1),]
-    if(lag==0) SSB.lim <- NULL else SSB.lim <- Lim1.res$ssb[,1,]
+                                        #    if(lag==0) SSB.lim <- NULL else SSB.lim <- Lim1.res$ssb[,1,]
+    if(lag==0) SSB.lim <- NULL else SSB.lim <- Lim1.res$ssb[,eyear-(lag-1),]    
     
     LIMres <- target.func(Flim1.multi,farg,mY=mY,seed=seed,N=N,eyear=mY,naa0=N.lim,eaa0=e.lim+w.recent,ssb0=SSB.lim)
 
@@ -5381,7 +5444,8 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     
     N.ban <- Ban1.res$naa[,1+(lag>0)*(lag-1),]
     e.ban <- Ban1.res$eaa[1+(lag>0)*(lag-1),]
-    if(lag==0) SSB.ban <- NULL else SSB.ban <- Ban1.res$ssb[,1,]
+    ##    if(lag==0) SSB.ban <- NULL else SSB.ban <- Ban1.res$ssb[,1,]
+    if(lag==0) SSB.ban <- NULL else SSB.ban <- Ban1.res$ssb[,eyear-(lag-1),]    
     
     BANres <- target.func(Fban1.multi,farg,mY=mY,seed=seed,N=N,eyear=mY,naa0=N.ban,eaa0=e.ban+w.recent,ssb0=SSB.ban)
 
@@ -5574,113 +5638,95 @@ calc.beta <- function(res,mY=5,prob.beta=c(0.5,0.9),prob.delta=c(0.9,0.95),beta=
   ssb.tmp <- targ.calc(beta)
   Prob.b1 <- mean(ssb.tmp > Btar)
   Prob.b2 <- mean(ssb.tmp > Blim)
-
+  cat("beta=",round(beta,2),"; Prob SSB>Btar=",Prob.b1, "; Prob SSB>Blim=",Prob.b2,"; \n")  
   
-  ## Limit
-        
-  if (B.cur >= Blim) lim <- res$LIMres else {
-      N0 <- sim0$naa
-      e0 <- sim0$eaa
-      if (lag==0) SSB0 <- NULL else SSB0 <- sim0$ssb[,nY-(lag-1),]
-    
-      GT2 <- round(GT*2)
-    
-      Fm2 <- seq(1,Fm2.max,by=step1)
-    
-      FSYm <- lapply(Fm2, function(x) target.func(x*Fmsy,farg,seed=seed,mY=GT2,N=round(N/thin),eyear=1,naa0=N0[,nY,1:round(N/thin)],eaa0=e0[nY,1:round(N/thin)],ssb0=SSB0[,1:round(N/thin)]))
-    
-      FSYmest.s <- sapply(1:length(Fm2), function(x) mean(colSums(FSYm[[x]]$ssb[,1,])))
-    
-      num.l <- which.min((FSYmest.s - B.cur)^2)  
-      
-      F.l <- Fm2[num.l]
-      
-      lim.calc <- function(x) target.func(x*Fmsy,farg,mY=GT2,seed=seed,N=N,eyear=1,naa0=N0[,nY,],eaa0=e0[nY,],ssb0=SSB0)
-      
-      obj.l <- function(x) (mean(colSums((lim.calc(x))$ssb[,1,]))-B.cur)^2
-      res.obj.l <- optimize(obj.l, pmin(pmax(c(F.l-step1,F.l+step1),1),max(Fm2)),tol=tol)
-      
-      F.l <- res.obj.l$minimum
-      
-      lim <- target.func(F.l*Fmsy,farg,mY=GT2,seed=seed,N=N,eyear=eyear,naa0=N0[,nY,],eaa0=e0[nY,],ssb0=SSB0)
-    }
-    
-    Nlast <- lim$naa
-    error.last <- lim$eaa+w.recent
-
-    Dim.lim <- dim(Nlast)
+  out <- list(beta=beta)
   
-    if (lag == 0) Blast <- NULL else Blast <- lim$ssb[,Dim.lim[2]-(lag-1),]
-    
-    ssb0 <- colSums(target.func(0,farg,mY=mY,seed=seed,N=N,eyear=1,naa0=Nlast[,Dim.lim[2],],eaa0=error.last[Dim.lim[2],],ssb0=Blast,beta=1,delta=0,Blim=Blim,Bban=Bban)$ssb[,1,])
+  invisible(list(out,future.pred))
+}
 
-    
-    Prob01 <- mean(ssb0 > Blim)
-    Prob02 <- mean(ssb0 > Bban)
 
-    # delta calculation
- 
-    lim.calc <- function(x) colSums(target.func(Fmsy,farg,mY=mY,seed=seed,N=N,eyear=1,naa0=Nlast[,Dim.lim[2],],eaa0=error.last[Dim.lim[2],],ssb0=Blast,beta=beta,delta=x,Blim=Blim,Bban=Bban)$ssb[,1,])
- 
-  if (delta.est){
-  
-    delta.f <- function(x) {
-      Prob1 <- mean(lim.calc(x) > Blim)
-      Prob2 <- mean(lim.calc(x) > Bban)
-      
-      dist1 <- (Prob1-Prob01*prob.delta[1])^2+(Prob2-Prob02*prob.delta[2])^2
-      dist1
-    }
-    
-    res.delta <- optimize(delta.f,delta.range,tol=tol)
-
-    delta <- res.delta$minimum
-  }
-  
-  Prob.d1 <- mean(lim.calc(delta) > Blim)
-  Prob.d2 <- mean(lim.calc(delta) > Bban)
-   
+calc.beta2 <- function(MSY.input, # Fmsy（Ftarget）で漁獲するような将来予測の引数
+                       mY=5,prob.beta=c(0.5,0.9),beta=1,delta=1,
+                       beta.est=TRUE,beta.range=c(0,1),
+                       Btar=res$Btar, # 各種管理基準値は外から与える
+                       Blim=res$Blim,
+                       Bban=res$Bban,
+                       Fmsy=res$Fmsy)
+{
+  stockid <- res$stockid
   farg <- res$farg
+  N <- res$N
+  GT <- res$GT
+  sim0 <- res$sim0
+  nyear <- res$nyear
+  lag <- res$lag
+  future.vpa1 <- get(res$future.function.name)
+  fm <- res$fm
+  w.recent <- res$w.recent
+    
+  nY <- nyear
+  eyear <- res$eyear
+  SRdata <- res$SRdata
   
-  farg$beta <- beta
-  farg$delta <- delta
-  farg$multi <- Fmsy
-  farg$Blim <- Blim
-  farg$Bban <- Bban
-  farg$N <- N
-  farg$nyear <- mY+1
-  farg$naa0 <- NULL
-  farg$eaa0 <- NULL
-  farg$ssb0 <- NULL
-#  if(!is.null(farg$vpares)) farg$vpares$Fc.at.age <- farg$vpares$Fc.at.age/fm
-#  if(!is.null(farg$res0)) farg$res0$Fc.at.age <- farg$res0$Fc.at.age/fm
+  seed <- res$seed
   
-  future.pred <- do.call(future.vpa1,farg)
-  ABC <- mean(future.pred$vwcaa[3,])  # calculation of ABC
-  Fabc <- mean(colMeans(future.pred$faa[,3,]))  
+  B.cur <- SRdata$SSB[length(SRdata$SSB)]
+  
+  # alpha & abc calculation
+    
+  target.func <- res$target.func
+  
+  targ <- res$TARres
+    
+  Nlast <- targ$naa
+  error.last <- targ$eaa+w.recent
+  
+  Dim.targ <- dim(Nlast)
+  
+  if (lag == 0) Blast <- NULL else Blast <- targ$ssb[,Dim.targ[2]-(lag-1),]
+  
+  targ.calc <- function(x) colSums(target.func(Fmsy,farg,mY=mY,eyear=1,seed=seed,N=N,naa0=Nlast[,Dim.targ[2],],eaa0=error.last[Dim.targ[2],],ssb0=Blast,beta=x,delta=0,Blim=Blim,Bban=Bban)$ssb[,1,])
+  
+  if (beta.est){   
+    beta.f1 <- function(x) {
+        ssb.tmp <- targ.calc(x)
+        Prob1 <- mean(ssb.tmp > Btar)
+        x1 <- Prob1-prob.beta[1]
+        dist1 <- x1^2
+        dist1
+    }
 
-  future.B <- mean(colSums(future.pred$ssb[,mY,]))
-  future.C <- mean(future.pred$vwcaa[mY,])
-  
-  # output
-  
-  Ccur <- res$Ccur
-  Blim.cur <- res$Blim.cur
-  
-  Bref <- c(Btar, Blim, Bban)
-  names(Bref) <- c("Target","Limit","Ban")
-#  Fc.at.age <- farg$res0$Fc.at.age  
-#  {if(!is.null(farg$vpares)){
-#       Fc.at.age <- farg$vpares$Fc.at.age
-#   }
-#n   else{
-#       
-#   }
-#  }
+    beta.f2 <- function(x) {
+        ssb.tmp <- targ.calc(x)
+        Prob2 <- mean(ssb.tmp > Blim)
 
-  cat("beta=",round(beta,2),"\n")  
+        x2 <- Prob2-prob.beta[2]
+        dist1 <- x2^2
+        dist1
+    }            
+    
+    res.beta1 <- optimize(beta.f1,beta.range)
+    res.beta2 <- optimize(beta.f2,beta.range) 
+
+    beta <- min(res.beta1$minimum,res.beta2$minimum)
+#    beta <- floor(beta * 100)/100
+  }
+
+  ## グラフによる図示
+#  ssb.msy <- apply(targ$ssb,c(2,3),sum)[5,]
+#  plot(density(ssb.msy),type="l",title="SSB")
+#  abline(v=Blim,lty=2,col=2)
+#  abline(v=Btar,lty=2)
+#  mean(ssb.msy>Blim)
+#  mean(ssb.msy>Btar)  
+
+  ssb.tmp <- targ.calc(beta)
+  Prob.b1 <- mean(ssb.tmp > Btar)
+  Prob.b2 <- mean(ssb.tmp > Blim)
+  cat("beta=",round(beta,2),"; Prob SSB>Btar=",Prob.b1, "; Prob SSB>Blim=",Prob.b2,"; \n")  
   
-  out <- list(stockid=stockid, Bref=Bref, beta=beta, delta=delta, w.recent=w.recent,P0=c(Prob01, Prob02), P.beta=c(Prob.b1, Prob.b2), P.delta=c(Prob.d1,Prob.d2), Fmsy=Fmsy, B.cur=B.cur, ssb.tmp=ssb.tmp,Ccur=Ccur, Level=c(B.cur/Btar,B.cur/Blim), Blim.ratio=(Blim/10^6)/Blim.cur, future.B=future.B, future.C=future.C, Fabc=Fabc, abc=ABC, abc.ratio=ABC/Ccur)
+  out <- list(beta=beta)
   
   invisible(list(out,future.pred))
 }
@@ -5717,28 +5763,28 @@ dyn.msy <- function(naa.past,naa.init=NULL,fmsy,a,b,resid,resid.year,waa,maa,M,S
 }
 
 
-plot.HCR <- function(alpha=1,bban=0,blimit=1,btarget=2,add=FALSE,yscale=1.3,xlim=NULL,
+plot.HCR <- function(beta=1,bban=0,blimit=1,btarget=2,add=FALSE,yscale=1.3,xlim=NULL,
                      Fmsy=1,scale=1,
                      ssb.cur=NULL,...) {
     if(is.null(xlim)) xlim <- c(0,max(c(bban,balimit,btarget)))/scale
     b.tmp <- seq(from=0,to=max(xlim),length=300)
-    y <- (b.tmp-bban)/(blimit-bban)*alpha
-    y <- ifelse(b.tmp>blimit,alpha,y)
+    y <- (b.tmp-bban)/(blimit-bban)*beta
+    y <- ifelse(b.tmp>blimit,beta,y)
     y <- ifelse(y<0,0,y)
     if(!isTRUE(add)) plot(b.tmp/scale,Fmsy*y,type="n",ylim=c(0,yscale),xlab="SSB",ylab="multiplier to current F",xlim=xlim/scale)
     points(b.tmp/scale,Fmsy*y,type="l",...)
     abline(h=Fmsy,col="gray")
     text(0,Fmsy+0.02,paste("Fmsy=",Fmsy,"Fcurrent"),adj=0)
-    text(0,Fmsy*alpha+0.02,paste("Ftarget=",round(alpha*Fmsy,2),"Fcurrent (",round(alpha,2),"*Fmsy)",sep=""),adj=0)    
+    text(0,Fmsy*beta+0.02,paste("Ftarget=",round(beta*Fmsy,2),"Fcurrent (",round(beta,2),"*Fmsy)",sep=""),adj=0)    
 
     if(!is.null(ssb.cur)){
         Frec <- (ssb.cur-bban)/(blimit-bban)
         Frec <- ifelse(Frec>1,1,Frec)
-        lines(c(0,ssb.cur/scale,ssb.cur/scale),c(Frec*alpha*Fmsy,Frec*alpha*Fmsy,0),lty=2)
-        points(ssb.cur/scale,Frec*alpha*Fmsy,lty=2,pch=4)
-        text(0,0.8*alpha*Fmsy+0.02,
-             paste("F2018=",round(Frec*alpha*Fmsy,2),"","Fcurrent (",
-                   round(Frec,2),"*",round(alpha,2),"*",round(Fmsy,2),"*Fmsy)",sep=""),adj=0)    
+        lines(c(0,ssb.cur/scale,ssb.cur/scale),c(Frec*beta*Fmsy,Frec*beta*Fmsy,0),lty=2)
+        points(ssb.cur/scale,Frec*beta*Fmsy,lty=2,pch=4)
+        text(0,0.8*beta*Fmsy+0.02,
+             paste("F2018=",round(Frec*beta*Fmsy,2),"","Fcurrent (",
+                   round(Frec,2),"*",round(beta,2),"*",round(Fmsy,2),"*Fmsy)",sep=""),adj=0)    
     }
 }
 
