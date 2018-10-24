@@ -1,0 +1,797 @@
+<style>
+
+/* body {background-color: #F7EBEF; margin: 30px; font-family: "MS ゴシック",sans-serif;
+     line-height: 120%; } */
+ body {background-color: #e0ffff; margin: 30px; font-family: "MS ゴシック",sans-serif;
+     line-height: 120%; } 
+pre {background-color: #FFFFFF; padding: 5px 20px 5px; }
+mytitle {color: #006666; font-weight: bold;}
+
+ul {margin: 10px 30px 10px;padding: 0}
+/*ul.upper li{margin: 10px 30px 10px;padding: 0; list-style-image: url(dots6/ico_dots6_1.gif);}
+ul ul li{margin: 10px 30px 10px;padding: 0; list-style-type: circle;} */
+
+ul li{ 
+  list-style-image: url(dots6/ico_dots6_22.gif);  
+} 
+    
+ul ul li{ 
+  list-style:circle;     
+} 
+
+
+</style>
+<h2 id="更新情報hp公開版とのちがい">0. 更新情報：HP公開版とのちがい</h2>
+<p>2018/10/12</p>
+<ul>
+<li>加入の誤差をリサンプリングで与える加入関数がいままで使えていませんでしたが、復活しました。</li>
+<li>HS.rec, BH.rec, RI.rec が、ホッケー・スティック、べバートン・ホルト、リッカーをそれぞれを仮定したときに、加入誤差を残差リサンプリングで実施する関数です。詳しくは　5.将来予測→（5-2) 再生産関係へ。</li>
+</ul>
+<p>2018/10/11</p>
+<ul>
+<li>以前からあったout.vpa(VPA等の結果をcsvファイルに出力する)に加えて、read.vpa(特定の書式のcsvファイルにおけるVPA結果を読んで,future.vpaやest.MSY2で使えるvpa結果のオブジェクトにする)を追加</li>
+<li>future.vpaのwaa.funオプションにおけるバグを修正（→以前のバージョンでは、将来予測の１年目のweight at ageの計算にミスがありました）</li>
+<li>その他、future.vpaでpre.catch, new.recオプションを使っている場合、est.MSY2がうまく動かない問題を修正</li>
+</ul>
+<p>2018/9/28</p>
+<ul>
+<li>将来予測関数はfuture2.1.rに更新</li>
+<li>再生産関係推定の関数をfit.HS, fit.BH, fit.RIから、一括して同じ関数で推定するfit.SRに移行</li>
+<li>MSY推定関数をest.MSYからest.MSY2へ（est.MSY2では近年の自己相関を考慮した管理基準値が計算できます）</li>
+<li>HCRにおけるβを推定する関数 calc.betaを追加</li>
+<li>ABC計算までのRコードを追加</li>
+</ul>
+<h2 id="事前準備">1. 事前準備</h2>
+<ul>
+<li>データの読み込み，RVPA関数の読み込みなど</li>
+<li><p>ここで使う関数とデータへのリンク</p>
+<ul>
+<li><a href="http://cse.fra.affrc.go.jp/ichimomo/fish/rvpa1.9.2.r">rvpa1.9.2.r</a><br />
+</li>
+<li><a href="https://www.dropbox.com/s/rjpqks8zpuzeqwy/future2.1.r?dl=0">future2.1.r</a><br />
+</li>
+<li><a href="http://cse.fra.affrc.go.jp/ichimomo/fish/data.zip">例データ</a> (展開して作業フォルダにデータを置く)</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">source</span>(<span class="st">&quot;../rvpa1.9.2.r&quot;</span>)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">source</span>(<span class="st">&quot;../future2.1.r&quot;</span>)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="co"># データの読み込み</span></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">caa &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;caa_pma.csv&quot;</span>,<span class="dt">row.names=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">waa &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;waa_pma.csv&quot;</span>,<span class="dt">row.names=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">maa &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;maa_pma.csv&quot;</span>,<span class="dt">row.names=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">dat &lt;-<span class="st"> </span><span class="kw">data.handler</span>(<span class="dt">caa=</span>caa, <span class="dt">waa=</span>waa, <span class="dt">maa=</span>maa, <span class="dt">M=</span><span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10"><span class="kw">names</span>(dat)</a></code></pre></div>
+<pre><code>## [1] &quot;caa&quot;        &quot;maa&quot;        &quot;waa&quot;        &quot;index&quot;      &quot;M&quot;         
+## [6] &quot;maa.tune&quot;   &quot;waa.catch&quot;  &quot;catch.prop&quot;</code></pre>
+<h2 id="vpaによる資源量推定">2. VPAによる資源量推定</h2>
+<p>今後はvpa関数の返り値，res.pmaを使って将来予測計算をおこなっていくので，そのためにvpaを実施します．(この辺はあまり詳しく解説しません．)</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># VPAによる資源量推定</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">res.pma &lt;-<span class="st"> </span><span class="kw">vpa</span>(dat,<span class="dt">fc.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,<span class="dt">rec=</span><span class="dv">585</span>,<span class="dt">rec.year=</span><span class="dv">2011</span>,<span class="dt">tf.year =</span> <span class="dv">2008</span><span class="op">:</span><span class="dv">2010</span>,</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">               <span class="dt">term.F=</span><span class="st">&quot;max&quot;</span>,<span class="dt">stat.tf=</span><span class="st">&quot;mean&quot;</span>,<span class="dt">Pope=</span><span class="ot">TRUE</span>,<span class="dt">tune=</span><span class="ot">FALSE</span>,<span class="dt">p.init=</span><span class="fl">1.0</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">res.pma<span class="op">$</span>Fc.at.age <span class="co"># 将来予測やMSY計算で使うcurrent F (fc.yearのオプションでいつのFの平均かが指定される)</span></a></code></pre></div>
+<pre><code>##         0         1         2         3 
+## 0.5436309 1.1766833 1.3059521 1.3059519</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">plot</span>(res.pma<span class="op">$</span>Fc.at.age,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>,<span class="dt">xlab=</span><span class="st">&quot;Age&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;F&quot;</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="kw">max</span>(res.pma<span class="op">$</span>Fc.at.age)))</a></code></pre></div>
+<figure>
+<img src="figure/unnamed-chunk-1-1.png" alt="plot of chunk unnamed-chunk-1" /><figcaption>plot of chunk unnamed-chunk-1</figcaption>
+</figure>
+<h2 id="vpa結果を外部から読み込む場合20181011追加"><font color="Red"> 2.5 VPA結果を外部から読み込む場合(2018/10/11追加) </font></h2>
+<p>以下のようにread.vpa関数を使って下さい。 サンプルとなる“out.csv”は<a href="http://cse.fra.affrc.go.jp/ichimomo/fish/out.csv"> こちら </a> にあります。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"> res.pma2 &lt;-<span class="st"> </span><span class="kw">read.vpa</span>(<span class="st">&quot;out.csv&quot;</span>)</a></code></pre></div>
+<pre><code>## Warning in file(file, &quot;rt&quot;): ファイル &#39;out.csv&#39; を開くことができません: そ
+## のようなファイルやディレクトリはありません</code></pre>
+<pre><code>## Error in file(file, &quot;rt&quot;):  コネクションを開くことができません</code></pre>
+<h2 id="再生産関係を仮定しない管理基準値の計算">3. 再生産関係を仮定しない管理基準値の計算</h2>
+<ul>
+<li>ref.F関数を使います</li>
+<li>%SPRやFmaxなど、再生産関係を仮定しない管理基準値を計算します</li>
+<li>計算結果はrres.pmaに格納されます</li>
+<li>YPR, SPR曲線とFcurrent (<code>res.pma$Fc.at.a</code>に入っている値です), Fmax, Fmed, F0.1などの位置が表示されます</li>
+</ul>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">byear &lt;-<span class="st"> </span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span> <span class="co"># 生物パラメータを平均する期間を2009年から2011年とする</span></a>
+<a class="sourceLine" id="cb10-2" data-line-number="2">rres.pma &lt;-<span class="st"> </span><span class="kw">ref.F</span>(res.pma, <span class="co"># VPAの計算結果</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3">                  <span class="dt">waa.year=</span>byear, <span class="dt">maa.year=</span>byear, <span class="dt">M.year=</span>byear, <span class="co"># weight at age, maturity at age, Mは2009から2011年までの平均とする</span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4">                  <span class="dt">rps.year=</span><span class="dv">2000</span><span class="op">:</span><span class="dv">2011</span>, <span class="co"># Fmedを計算するときに用いるRPSの範囲</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5">                  <span class="dt">max.age=</span><span class="ot">Inf</span>, <span class="co"># SPR計算で仮定する年齢の最大値 </span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6">                  <span class="dt">pSPR=</span><span class="kw">c</span>(<span class="dv">10</span>,<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">35</span>,<span class="dv">40</span>), <span class="co"># F_%SPRを計算するときに，何パーセントのSPRを計算するか</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7">                  <span class="dt">Fspr.init=</span><span class="dv">1</span>)</a></code></pre></div>
+<figure>
+<img src="figure/ref.F-1.png" alt="図：plot=TRUEで表示されるYPR, SPR曲線" /><figcaption><strong>図：plot=TRUEで表示されるYPR, SPR曲線</strong></figcaption>
+</figure>
+<ul>
+<li>結果のサマリーは<code>rres.pma$summary</code>によって見れます</li>
+<li>max: F at ageの最大値，mean: F at ageの平均値，Fref/Fcur: Fcurrentを分母にしたときのF管理基準値の比</li>
+<li>この結果から，現状のF（Fcurrent）はFmedとほぼ同等（Fref/Fcur=0.96なので），F％SRP=10％くらいであることがわかります</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">rres.pma<span class="op">$</span>summary</a></code></pre></div>
+<pre><code>##           Fcurrent      Fmed     Flow     Fhigh      Fmax      F0.1
+## max       1.305952 1.2545205 1.482739 1.0427937 0.7069380 0.3956762
+## mean      1.083055 1.0404012 1.229668 0.8648116 0.5862791 0.3281429
+## Fref/Fcur 1.000000 0.9606176 1.135370 0.7984931 0.5413200 0.3029791
+##               Fmean FpSPR.10.SPR FpSPR.20.SPR FpSPR.30.SPR FpSPR.35.SPR
+## max       1.2552763     1.434605    0.8363638    0.5648693    0.4739020
+## mean      1.0410280     1.189749    0.6936147    0.4684585    0.3930172
+## Fref/Fcur 0.9611963     1.098512    0.6404245    0.4325345    0.3628785
+##           FpSPR.40.SPR
+## max          0.4000316
+## mean         0.3317549
+## Fref/Fcur    0.3063142</code></pre>
+<h2 id="再生産関係の推定">4. 再生産関係の推定</h2>
+<h3 id="データの作成">データの作成</h3>
+<ul>
+<li>get.SRdataを使って再生産関係のフィット用のデータを作る</li>
+<li>get.SRdata関数では，<code>rownames(res.pma$naa)</code>を参照し、必要な年齢分のSSBをずらしたデータを作成する</li>
+<li>yearは加入年</li>
+</ul>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co"># VPA結果を使って再生産データを作る</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">SRdata &lt;-<span class="st"> </span><span class="kw">get.SRdata</span>(res.pma)</a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw">head</span>(SRdata)</a></code></pre></div>
+<pre><code>## $year
+##  [1] 1982 1983 1984 1985 1986 1987 1988 1989 1990 1991 1992 1993 1994 1995
+## [15] 1996 1997 1998 1999 2000 2001 2002 2003 2004 2005 2006 2007 2008 2009
+## [29] 2010 2011
+## 
+## $SSB
+##  [1] 12199.02 15266.68 15072.03 19114.22 23544.42 28769.36 34764.44
+##  [8] 38219.49 48535.10 61891.08 63966.56 38839.78 53404.29 47322.39
+## [15] 54485.00 54385.04 47917.14 46090.77 59847.97 53370.62 48781.21
+## [22] 42719.43 40095.38 39311.72 38335.98 37564.69 27604.88 23079.33
+## [29] 22902.91 21427.90
+## 
+## $R
+##  [1]  406.0086  498.9652  544.3007  469.6025 1106.8877 1043.4237  696.7049
+##  [8]  923.9567 1353.1790 1698.8457 1117.5454 2381.1352 1669.1381 1818.3638
+## [15] 1858.0043 1458.9524 1334.9288 1116.9433 1100.4598 1693.9770 1090.7181
+## [22] 1081.8377 1265.0559 1024.0418  753.5207  764.9720  879.6573  513.1128
+## [29]  570.9195  585.0000</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># SSBとRのデータだけを持っている場合</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">SRdata0 &lt;-<span class="st"> </span><span class="kw">get.SRdata</span>(<span class="dt">R.dat=</span><span class="kw">exp</span>(<span class="kw">rnorm</span>(<span class="dv">10</span>)),<span class="dt">SSB.dat=</span><span class="kw">exp</span>(<span class="kw">rnorm</span>(<span class="dv">10</span>)))</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="co"># 特定の期間のデータだけを使う場合</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4">SRdata0 &lt;-<span class="st"> </span><span class="kw">get.SRdata</span>(res.pma,<span class="dt">years=</span><span class="dv">1990</span><span class="op">:</span><span class="dv">2000</span>) </a></code></pre></div>
+<h3 id="モデルのフィット">モデルのフィット</h3>
+<ul>
+<li>HS,BH,RIをフィットし，再生産関係のパラメータを推定する</li>
+<li>結果のオブジェクトのAICcにAICcの値が入っているので，それを比較し，再生産関係を決定する</li>
+<li>以前のチュートリアルではfit.HS, fit.BH, fit.RIなど、あてはめる関数ごとに関数を分けていましたが、一括してSR.fit関数で計算できるようになりました。</li>
+<li>SR.fitオプション
+<ul>
+<li>SR:再生産関係のタイプ： “HS”（ホッケー・スティック）、“BH”（べバートン・ホルト）、“RI”（リッカー）</li>
+<li>AR: 自己相関の考慮なし(AR=1)、過去１年分の自己相関を考慮(AR=1) （１年分しか対応していない）</li>
+<li>method: 最小二乗法（“L2”)か最小絶対値法（“L1”）</li>
+<li><strong>自己相関あり・なしでAICcを比較し、自己相関を入れたほうがいいかどうか判断する</strong>
+<ul>
+<li><span class="math inline">log (<em>R</em><sub><em>t</em></sub>) = log (<em>H</em><em>S</em>(<em>S</em><em>S</em><em>B</em><sub><em>t</em></sub>)) + <em>ρ</em> × log (<em>R</em><sub><em>t</em> − 1</sub>) − log (<em>H</em><em>S</em>(<em>S</em><em>S</em><em>B</em><sub><em>t</em> − 1</sub>))</span></li>
+<li><span class="math inline">log (<em>R</em><sub><em>t</em></sub>) <em>N</em>(log (<em>R</em><sub><em>t</em></sub>), <em>σ</em><sup>2</sup>)</span></li>
+</ul></li>
+<li><strong>自己相関パラメータrhoの推定については不安定な部分があります。計算方法の改善により今後値が変わる可能性があります</strong></li>
+<li>この例の場合はHSでARなしで最もAICcが小さい→MSY計算ではHS.par0の結果を使う</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">HS.par0 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;HS&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">0</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">HS.par1 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;HS&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">1</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">BH.par0 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;BH&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">0</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">BH.par1 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;BH&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">1</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">RI.par0 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;RI&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">0</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6">RI.par1 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;RI&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">1</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb16-7" data-line-number="7"><span class="kw">c</span>(HS.par0<span class="op">$</span>AICc,HS.par1<span class="op">$</span>AICc,BH.par0<span class="op">$</span>AICc,BH.par1<span class="op">$</span>AICc,RI.par0<span class="op">$</span>AICc,RI.par1<span class="op">$</span>AICc)</a></code></pre></div>
+<pre><code>## [1] 10.66778 13.27672 11.44803 14.11029 11.40670 14.05799</code></pre>
+<ul>
+<li>結果の図示</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="kw">plot.SRdata</span>(SRdata)</a>
+<a class="sourceLine" id="cb18-2" data-line-number="2"><span class="kw">points</span>(HS.par0<span class="op">$</span>pred<span class="op">$</span>SSB,HS.par0<span class="op">$</span>pred<span class="op">$</span>R,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">lwd=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="kw">points</span>(BH.par0<span class="op">$</span>pred<span class="op">$</span>SSB,BH.par0<span class="op">$</span>pred<span class="op">$</span>R,<span class="dt">col=</span><span class="dv">3</span>,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">lwd=</span><span class="dv">3</span>)    </a>
+<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="kw">points</span>(RI.par0<span class="op">$</span>pred<span class="op">$</span>SSB,RI.par0<span class="op">$</span>pred<span class="op">$</span>R,<span class="dt">col=</span><span class="dv">4</span>,<span class="dt">type=</span><span class="st">&quot;l&quot;</span>,<span class="dt">lwd=</span><span class="dv">3</span>)</a></code></pre></div>
+<figure>
+<img src="figure/unnamed-chunk-4-1.png" alt="図：観測値（○）に対する再生産関係式．plot=赤がHS，緑と青がBH, RIだが両者はほとんど重なっていて見えない" /><figcaption>図：<strong>観測値（○）に対する再生産関係式．plot=赤がHS，緑と青がBH, RIだが両者はほとんど重なっていて見えない</strong></figcaption>
+</figure>
+<ul>
+<li>TMBオプション(<code>TMB=TRUE</code>)も使えます（<strong>ちょっと不安定です。使いたい場合はお問い合わせください</strong>）<br />
+<a href="http://cse.fra.affrc.go.jp/ichimomo/fish/autoregressiveSR2.cpp">autoregressiveSR2.cpp</a>をダウンロードして，作業フォルダに置く</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" data-line-number="1"><span class="co"># install.packages(&quot;TMB&quot;)　#TMBがインストールされてなければ</span></a>
+<a class="sourceLine" id="cb19-2" data-line-number="2"><span class="kw">library</span>(TMB)</a>
+<a class="sourceLine" id="cb19-3" data-line-number="3"><span class="kw">compile</span>(<span class="st">&quot;autoregressiveSR2.cpp&quot;</span>)</a>
+<a class="sourceLine" id="cb19-4" data-line-number="4"><span class="kw">dyn.load</span>(<span class="kw">dynlib</span>(<span class="st">&quot;autoregressiveSR2&quot;</span>))</a>
+<a class="sourceLine" id="cb19-5" data-line-number="5">HS.par11 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;HS&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">1</span>,<span class="dt">TMB=</span><span class="ot">TRUE</span>) <span class="co">#marginal likelihood</span></a></code></pre></div>
+<h3 id="モデル診断">モデル診断</h3>
+<p>再生産関係のあてはめのあとは、推定されたパラメータの信頼区間や頑健性などをチェックする必要があります。そのための関数群なども用意しています。詳しくは<a href=http://cse.fra.affrc.go.jp/ichimomo/fish/SRR-guidline0.html> SRRガイドライン </a> へ</p>
+<h2 id="将来予測">5. 将来予測</h2>
+<p>future.vpa関数を使います</p>
+<ul>
+<li>recfuncの引数に再生産関係の関数を，rec.argにrecfuncに対する引数（再生産関係のパラメータ）を入れる</li>
+<li>利用可能な再生産関数
+<ul>
+<li>HS.recAR: ホッケー・スティック＋加入は対数正規分布＋自己相関ありの場合も対応</li>
+<li>RI.recAR・BH.recAR：HS.recARのリッカー・べバートンホルトバージョン</li>
+<li>HS.rec, BH.rec, RI.rec : 残差リサンプリング用</li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" data-line-number="1">fres.HS &lt;-<span class="st"> </span><span class="kw">future.vpa</span>(res.pma,</a>
+<a class="sourceLine" id="cb20-2" data-line-number="2">                      <span class="dt">multi=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb20-3" data-line-number="3">                      <span class="dt">nyear=</span><span class="dv">50</span>, <span class="co"># 将来予測の年数</span></a>
+<a class="sourceLine" id="cb20-4" data-line-number="4">                      <span class="dt">start.year=</span><span class="dv">2012</span>, <span class="co"># 将来予測の開始年</span></a>
+<a class="sourceLine" id="cb20-5" data-line-number="5">                      <span class="dt">N=</span><span class="dv">100</span>, <span class="co"># 確率的計算の繰り返し回数</span></a>
+<a class="sourceLine" id="cb20-6" data-line-number="6">                      <span class="dt">ABC.year=</span><span class="dv">2013</span>, <span class="co"># ABCを計算する年</span></a>
+<a class="sourceLine" id="cb20-7" data-line-number="7">                      <span class="dt">waa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>, <span class="co"># 生物パラメータの参照年</span></a>
+<a class="sourceLine" id="cb20-8" data-line-number="8">                      <span class="dt">maa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb20-9" data-line-number="9">                      <span class="dt">M.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb20-10" data-line-number="10">                      <span class="dt">is.plot=</span><span class="ot">TRUE</span>, <span class="co"># 結果をプロットするかどうか</span></a>
+<a class="sourceLine" id="cb20-11" data-line-number="11">                      <span class="dt">seed=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb20-12" data-line-number="12">                      <span class="dt">silent=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb20-13" data-line-number="13">                      <span class="dt">recfunc=</span>HS.recAR, <span class="co"># 再生産関係の関数</span></a>
+<a class="sourceLine" id="cb20-14" data-line-number="14">                      <span class="co"># recfuncに対する引数</span></a>
+<a class="sourceLine" id="cb20-15" data-line-number="15">                      <span class="dt">rec.arg=</span><span class="kw">list</span>(<span class="dt">a=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>a,<span class="dt">b=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>b,</a>
+<a class="sourceLine" id="cb20-16" data-line-number="16">                                   <span class="dt">sd=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>sd,<span class="dt">resid=</span>HS.par0<span class="op">$</span>resid))</a></code></pre></div>
+<figure>
+<img src="figure/future.vpa-1.png" alt="図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示" /><figcaption><strong>図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示</strong></figcaption>
+</figure>
+<p>Beverton-Holtを仮定する場合</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1">fres.BH &lt;-<span class="st"> </span><span class="kw">future.vpa</span>(res.pma,</a>
+<a class="sourceLine" id="cb21-2" data-line-number="2">                      <span class="dt">multi=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb21-3" data-line-number="3">                      <span class="dt">nyear=</span><span class="dv">50</span>, <span class="co"># 将来予測の年数</span></a>
+<a class="sourceLine" id="cb21-4" data-line-number="4">                      <span class="dt">start.year=</span><span class="dv">2012</span>, <span class="co"># 将来予測の開始年</span></a>
+<a class="sourceLine" id="cb21-5" data-line-number="5">                      <span class="dt">N=</span><span class="dv">100</span>, <span class="co"># 確率的計算の繰り返し回数</span></a>
+<a class="sourceLine" id="cb21-6" data-line-number="6">                      <span class="dt">ABC.year=</span><span class="dv">2013</span>, <span class="co"># ABCを計算する年</span></a>
+<a class="sourceLine" id="cb21-7" data-line-number="7">                      <span class="dt">waa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>, <span class="co"># 生物パラメータの参照年</span></a>
+<a class="sourceLine" id="cb21-8" data-line-number="8">                      <span class="dt">maa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb21-9" data-line-number="9">                      <span class="dt">M.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb21-10" data-line-number="10">                      <span class="dt">is.plot=</span><span class="ot">TRUE</span>, <span class="co"># 結果をプロットするかどうか</span></a>
+<a class="sourceLine" id="cb21-11" data-line-number="11">                      <span class="dt">seed=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb21-12" data-line-number="12">                      <span class="dt">silent=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb21-13" data-line-number="13">                      <span class="dt">recfunc=</span>BH.recAR, <span class="co"># 再生産関係の関数</span></a>
+<a class="sourceLine" id="cb21-14" data-line-number="14">                      <span class="co"># recfuncに対する引数</span></a>
+<a class="sourceLine" id="cb21-15" data-line-number="15">                      <span class="dt">rec.arg=</span><span class="kw">list</span>(<span class="dt">a=</span>BH.par0<span class="op">$</span>pars<span class="op">$</span>a,<span class="dt">b=</span>BH.par0<span class="op">$</span>pars<span class="op">$</span>b,</a>
+<a class="sourceLine" id="cb21-16" data-line-number="16">                                   <span class="dt">sd=</span>BH.par0<span class="op">$</span>pars<span class="op">$</span>sd,<span class="dt">resid=</span>BH.par0<span class="op">$</span>resid))</a></code></pre></div>
+<figure>
+<img src="figure/future.vpa2-1.png" alt="図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示" /><figcaption><strong>図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示</strong></figcaption>
+</figure>
+<p>同じ引数を使ってもう一度将来予測をする</p>
+<ul>
+<li><code>fres.HS$input</code>に、将来予測で使った引数が入っているので、それにdo.call(関数、引数)すると同じ計算を繰り返せる</li>
+</ul>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" data-line-number="1">fres.HS2 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,fres.HS<span class="op">$</span>input)</a></code></pre></div>
+<figure>
+<img src="figure/unnamed-chunk-6-1.png" alt="plot of chunk unnamed-chunk-6" /><figcaption>plot of chunk unnamed-chunk-6</figcaption>
+</figure>
+<ul>
+<li>fres.HS$inputを上書きすることで，同じ引数を使いながら設定を少しだけ変更した将来予測が実行できる</li>
+<li>引数<code>multi</code>がcurrent Fへの乗数になる</li>
+<li>たとえばmulti=1からmulti=0.5に変更する例は以下のとおり</li>
+</ul>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1"><span class="co"># 引数をinput.tmpに代入．</span></a>
+<a class="sourceLine" id="cb23-2" data-line-number="2">input.tmp &lt;-<span class="st"> </span>fres.HS2<span class="op">$</span>input</a>
+<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="co"># 引数の一部を変える</span></a>
+<a class="sourceLine" id="cb23-4" data-line-number="4">input.tmp<span class="op">$</span>multi &lt;-<span class="st"> </span><span class="fl">0.5</span> <span class="co"># current Fの1/2で漁獲</span></a>
+<a class="sourceLine" id="cb23-5" data-line-number="5">fres.HS3 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.tmp)</a></code></pre></div>
+<figure>
+<img src="figure/unnamed-chunk-7-1.png" alt="plot of chunk unnamed-chunk-7" /><figcaption>plot of chunk unnamed-chunk-7</figcaption>
+</figure>
+<p>plot.futures関数を使って複数の結果を比較</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb24-2" data-line-number="2"><span class="kw">plot.futures</span>(<span class="kw">list</span>(fres.HS,fres.HS3),<span class="dt">legend.text=</span><span class="kw">c</span>(<span class="st">&quot;F=Fcurrent&quot;</span>,<span class="st">&quot;F=0.5Fcurrent&quot;</span>),<span class="dt">target=</span><span class="st">&quot;SSB&quot;</span>)</a>
+<a class="sourceLine" id="cb24-3" data-line-number="3"><span class="kw">plot.futures</span>(<span class="kw">list</span>(fres.HS,fres.HS3),<span class="dt">legend.text=</span><span class="kw">c</span>(<span class="st">&quot;F=Fcurrent&quot;</span>,<span class="st">&quot;F=0.5Fcurrent&quot;</span>),<span class="dt">target=</span><span class="st">&quot;Catch&quot;</span>)</a>
+<a class="sourceLine" id="cb24-4" data-line-number="4"><span class="kw">plot.futures</span>(<span class="kw">list</span>(fres.HS,fres.HS3),<span class="dt">legend.text=</span><span class="kw">c</span>(<span class="st">&quot;F=Fcurrent&quot;</span>,<span class="st">&quot;F=0.5Fcurrent&quot;</span>),<span class="dt">target=</span><span class="st">&quot;Biomass&quot;</span>) </a></code></pre></div>
+<figure>
+<img src="figure/unnamed-chunk-8-1.png" alt="図：plot.futures関数の結果" /><figcaption>図：plot.futures関数の結果</figcaption>
+</figure>
+<h3 id="fの設定やfrec">(5-1) Fの設定やFrec</h3>
+<p>将来予測における漁獲のシナリオ</p>
+<ul>
+<li>future.vpaの引数<code>ABC.year</code>で指定した年から，Fcurrent × multiによるFで漁獲される</li>
+<li>ABC.year-1年まではFcurrentによる漁獲</li>
+<li>Frecに引数を与えることで，任意の資源量に任意の確率で回復させるような将来予測ができます．</li>
+</ul>
+<p><strong>Frecのオプション</strong></p>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">オプション</th>
+<th style="text-align: left;">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">stochastic</td>
+<td style="text-align: left;">確率的将来予測をもとにFrecを計算するかどうか</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">future.year</td>
+<td style="text-align: left;">条件を満たしているかどうかを判断する年</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Blimit</td>
+<td style="text-align: left;">条件として使われる閾値</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">scenario</td>
+<td style="text-align: left;">=“blimit”: Blimitを<strong>下回る</strong>確率をtarget.probsにする</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">=“catch.mean”: future.year年の平均漁獲量をBlimitの値と一致させる</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">=“ssb.mean”: future.year年の平均親魚量をBlimitの値と一致させる</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">target.probs</td>
+<td style="text-align: left;">scenario=“blimit”のときに目的とする確率（パーセントで指定）</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Frange</td>
+<td style="text-align: left;">探索するFの範囲．指定しない場合，c(0.01,multi*2)の範囲で探索しますので，うまく推定できない場合はfuture.vpaの引数multiを変えるか，このオプションでそれらしいFの値に限定してください</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="co"># たとえば現状の資源量に維持するシナリオ</span></a>
+<a class="sourceLine" id="cb25-2" data-line-number="2">fres.currentSSB &lt;-<span class="st"> </span><span class="kw">future.vpa</span>(res.pma,</a>
+<a class="sourceLine" id="cb25-3" data-line-number="3">                      <span class="dt">multi=</span><span class="fl">0.8</span>,</a>
+<a class="sourceLine" id="cb25-4" data-line-number="4">                      <span class="dt">nyear=</span><span class="dv">50</span>, <span class="co"># 将来予測の年数</span></a>
+<a class="sourceLine" id="cb25-5" data-line-number="5">                      <span class="dt">start.year=</span><span class="dv">2012</span>, <span class="co"># 将来予測の開始年</span></a>
+<a class="sourceLine" id="cb25-6" data-line-number="6">                      <span class="dt">N=</span><span class="dv">100</span>, <span class="co"># 確率的計算の繰り返し回数</span></a>
+<a class="sourceLine" id="cb25-7" data-line-number="7">                      <span class="dt">ABC.year=</span><span class="dv">2013</span>, <span class="co"># ABCを計算する年</span></a>
+<a class="sourceLine" id="cb25-8" data-line-number="8">                      <span class="dt">waa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>, <span class="co"># 生物パラメータの参照年</span></a>
+<a class="sourceLine" id="cb25-9" data-line-number="9">                      <span class="dt">maa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb25-10" data-line-number="10">                      <span class="dt">M.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,<span class="dt">seed=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb25-11" data-line-number="11">                      <span class="dt">is.plot=</span><span class="ot">TRUE</span>, <span class="co"># 結果をプロットするかどうか</span></a>
+<a class="sourceLine" id="cb25-12" data-line-number="12">                      <span class="dt">Frec=</span><span class="kw">list</span>(<span class="dt">stochastic=</span><span class="ot">TRUE</span>,<span class="dt">future.year=</span><span class="dv">2023</span>,<span class="dt">Blimit=</span><span class="kw">rev</span>(<span class="kw">colSums</span>(res.pma<span class="op">$</span>ssb))[<span class="dv">1</span>],<span class="dt">scenario=</span><span class="st">&quot;blimit&quot;</span>,<span class="dt">target.probs=</span><span class="dv">50</span>),</a>
+<a class="sourceLine" id="cb25-13" data-line-number="13">                      <span class="dt">recfunc=</span>HS.recAR, <span class="co"># 再生産関係の関数</span></a>
+<a class="sourceLine" id="cb25-14" data-line-number="14">                      <span class="co"># recfuncに対する引数</span></a>
+<a class="sourceLine" id="cb25-15" data-line-number="15">                      <span class="dt">rec.arg=</span><span class="kw">list</span>(<span class="dt">a=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>a,<span class="dt">b=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>b,</a>
+<a class="sourceLine" id="cb25-16" data-line-number="16">                                   <span class="dt">sd=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>sd,<span class="dt">bias.corrected=</span><span class="ot">TRUE</span>))</a></code></pre></div>
+<pre><code>## F multiplier=  0.8 seed= 1 
+## F multiplier= 1.05842</code></pre>
+<figure>
+<img src="figure/unnamed-chunk-9-1.png" alt="Frecオプションを使った場合は、結果の図に目的とする年・資源量のところに赤線が入ります。これが将来予測の結果と一致しているか確かめてください。もし一致していない場合、multi（初期値）かFrecのオプションのFrangeを指定してやり直してください" /><figcaption>Frecオプションを使った場合は、結果の図に目的とする年・資源量のところに赤線が入ります。これが将来予測の結果と一致しているか確かめてください。もし一致していない場合、multi（初期値）かFrecのオプションのFrangeを指定してやり直してください</figcaption>
+</figure>
+<h3 id="再生産関係">(5-2) 再生産関係</h3>
+<ul>
+<li>残差リサンプリングで将来予測をする場合→refuncとしてHS.rec（ホッケー・スティック）、BH.rec（べバートン・ホルト）、RI.rec（リッカー）を使う</li>
+<li>rec.argの引数で、<strong>必ず</strong> resample=TRUEとしてください。</li>
+<li>rho&gt;0の場合には対応しておりません</li>
+</ul>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="co"># 残差リサンプリングによる将来予測</span></a>
+<a class="sourceLine" id="cb27-2" data-line-number="2">fres.HS4 &lt;-<span class="st"> </span><span class="kw">future.vpa</span>(res.pma,</a>
+<a class="sourceLine" id="cb27-3" data-line-number="3">                          <span class="dt">multi=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb27-4" data-line-number="4">                          <span class="dt">nyear=</span><span class="dv">50</span>, <span class="co"># 将来予測の年数</span></a>
+<a class="sourceLine" id="cb27-5" data-line-number="5">                          <span class="dt">start.year=</span><span class="dv">2012</span>, <span class="co"># 将来予測の開始年</span></a>
+<a class="sourceLine" id="cb27-6" data-line-number="6">                          <span class="dt">N=</span><span class="dv">100</span>, <span class="co"># 確率的計算の繰り返し回数</span></a>
+<a class="sourceLine" id="cb27-7" data-line-number="7">                          <span class="dt">ABC.year=</span><span class="dv">2013</span>, <span class="co"># ABCを計算する年</span></a>
+<a class="sourceLine" id="cb27-8" data-line-number="8">                          <span class="dt">waa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>, <span class="co"># 生物パラメータの参照年</span></a>
+<a class="sourceLine" id="cb27-9" data-line-number="9">                          <span class="dt">maa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb27-10" data-line-number="10">                          <span class="dt">M.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb27-11" data-line-number="11">                          <span class="dt">is.plot=</span><span class="ot">TRUE</span>, <span class="co"># 結果をプロットするかどうか</span></a>
+<a class="sourceLine" id="cb27-12" data-line-number="12">                          <span class="dt">seed=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb27-13" data-line-number="13">                          <span class="dt">recfunc=</span>HS.rec, <span class="co"># 再生産関係の関数（HS.rec=Hockey-stick)                                </span></a>
+<a class="sourceLine" id="cb27-14" data-line-number="14">                          <span class="dt">rec.arg=</span><span class="kw">list</span>(<span class="dt">a=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>a,<span class="dt">b=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>b,</a>
+<a class="sourceLine" id="cb27-15" data-line-number="15">                                       <span class="dt">sd=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>sd,<span class="dt">bias.correction=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb27-16" data-line-number="16">                                       <span class="dt">resample=</span><span class="ot">TRUE</span>,<span class="dt">resid=</span>HS.par0<span class="op">$</span>resid))</a></code></pre></div>
+<pre><code>## F multiplier=  1 seed= 1</code></pre>
+<figure>
+<img src="figure/unnamed-chunk-10-1.png" alt="plot of chunk unnamed-chunk-10" /><figcaption>plot of chunk unnamed-chunk-10</figcaption>
+</figure>
+<p>残差リサンプリングか対数正規分布かの違いを比較</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb29-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb29-2" data-line-number="2"><span class="kw">plot</span>(fres.HS<span class="op">$</span>vssb[,<span class="op">-</span><span class="dv">1</span>],fres.HS<span class="op">$</span>naa[<span class="dv">1</span>,,<span class="op">-</span><span class="dv">1</span>],<span class="dt">xlab=</span><span class="st">&quot;SSB&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Recruits&quot;</span>) </a>
+<a class="sourceLine" id="cb29-3" data-line-number="3"><span class="kw">plot</span>(fres.HS4<span class="op">$</span>vssb[,<span class="op">-</span><span class="dv">1</span>],fres.HS4<span class="op">$</span>naa[<span class="dv">1</span>,,<span class="op">-</span><span class="dv">1</span>],<span class="dt">xlab=</span><span class="st">&quot;SSB&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Recruits&quot;</span>) </a>
+<a class="sourceLine" id="cb29-4" data-line-number="4"><span class="kw">plot.futures</span>(<span class="kw">list</span>(fres.HS,fres.HS4)) <span class="co"># 両者の比較</span></a></code></pre></div>
+<h3 id="年齢別体重が資源尾数に影響される場合の将来予測20180612新オプションとして追加">(5-3) 年齢別体重が資源尾数に影響される場合の将来予測（2018/06/12新オプションとして追加）</h3>
+<ul>
+<li><strong><em>future.vpaで，waa.fun = TRUEとすれば、年齢別資源重量が資源尾数（log(体重)~log(資源尾数)の回帰を関数内部で実行）の関数から予測されます</em></strong></li>
+<li><strong><em>不確実性も考慮されます</em></strong></li>
+<li>30系群であてはめた例は<a href="waa-lm.pdf">こちら</a> (データは1年分古いです)</li>
+<li>太平洋マイワシ，対馬マイワシ，太平洋マサバ，ホッケ，瀬戸内サワラでは年齢別体重と年齢別資源尾数に関係がありそうなかんじです</li>
+</ul>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">lm.res &lt;-<span class="st"> </span><span class="kw">plot.waa</span>(res.pma) <span class="co"># weight at ageが資源尾数の関数になっているかどうか，確認してみる．この例の場合は特に有意な関係はない</span></a></code></pre></div>
+<pre><code>## Warning in summary.lm(lm.list[[i]]): essentially perfect fit: summary may
+## be unreliable
+
+## Warning in summary.lm(lm.list[[i]]): essentially perfect fit: summary may
+## be unreliable
+
+## Warning in summary.lm(lm.list[[i]]): essentially perfect fit: summary may
+## be unreliable
+
+## Warning in summary.lm(lm.list[[i]]): essentially perfect fit: summary may
+## be unreliable</code></pre>
+<figure>
+<img src="figure/unnamed-chunk-12-1.png" alt="plot of chunk unnamed-chunk-12" /><figcaption>plot of chunk unnamed-chunk-12</figcaption>
+</figure>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb32-1" data-line-number="1"><span class="co"># lm.resの中に回帰した結果が年齢分だけ入っています</span></a>
+<a class="sourceLine" id="cb32-2" data-line-number="2">fres.HS6 &lt;-<span class="st"> </span>fres.HS</a>
+<a class="sourceLine" id="cb32-3" data-line-number="3">fres.HS6<span class="op">$</span>input<span class="op">$</span>waa.fun &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb32-4" data-line-number="4">fres.HS6<span class="op">$</span>input<span class="op">$</span>N &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb32-5" data-line-number="5">fres.HS6 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa, fres.HS6<span class="op">$</span>input)</a></code></pre></div>
+<figure>
+<img src="figure/unnamed-chunk-12-2.png" alt="plot of chunk unnamed-chunk-12" /><figcaption>plot of chunk unnamed-chunk-12</figcaption>
+</figure>
+<h2 id="msy管理基準値の計算">6. MSY管理基準値の計算</h2>
+<ul>
+<li>MSY管理基準値計算では，上記の将来予測において，Fの値を様々に変えたときの平衡状態（世代時間×20年を<code>nyear</code>で指定します）における資源量やそれに対応するF等を管理基準値として算出します</li>
+<li>なので、ここまでのプロセスで、ABC計算のためにきちんとしたオプションを設定したfuture.vpaを実行しておいてください。その返り値<code>fres.HS</code>をMSY計算では使っていきます</li>
+<li>est.MSY(ちょっと古いバージョン、B0基準のMSYも算出されます)とest.MSY2（新しいバージョン、ARありの場合に対応します）の２つがありましたが、２つの関数をest.MSYに統合しました。</li>
+</ul>
+<h3 id="est.msyの説明">est.MSYの説明</h3>
+<ul>
+<li>この関数で計算できる管理基準値は以下のようなものになります</li>
+<li>どの管理基準値がtarget, limit, banになるかは関数内では評価されません</li>
+</ul>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">管理基準値</th>
+<th style="text-align: left;">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SSB_MSY</td>
+<td style="text-align: left;">平衡状態において平均最大漁獲量が最大になるときの親魚量</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SSB_0 (XX%)</td>
+<td style="text-align: left;">F=0で将来予測したときの平衡状態における親魚量(<span class="math inline"><em>B</em><sub>0</sub></span>)に対する割合（引数<code>B0percent</code>でc(0.4, 0.5)のように指定します）</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SSB_PGY (LXX%) (HXX%)</td>
+<td style="text-align: left;">SS_MSYで達成される漁獲量のXX%を達成するときの親魚量の下限または上限（引数<code>PGY</code>でc(0.9, 0.95)のように指定します）</td>
+</tr>
+</tbody>
+</table>
+<table>
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 59%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">関数の返り値</th>
+<th style="text-align: left;">説明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">summay</td>
+<td style="text-align: left;">平衡状態における代表的な各種統計量（SSB・総資源量・漁獲量等の平均値やFの値）*1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">summayAR</td>
+<td style="text-align: left;">直近の加入の残差を考慮した場合に、平衡状態のmY年後における各種統計量（SSB・総資源量・漁獲量等の平均値やFの値）*1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">all.stat</td>
+<td style="text-align: left;">平衡状態における各種統計量（summaryよりも詳しい)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">all.statAR</td>
+<td style="text-align: left;">直近の加入の残差を考慮した場合の各種統計量</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">trace</td>
+<td style="text-align: left;">Fcurrentに対するmultiplierを様々に変えた場合の平衡状態（GT*20年後）における各種統計量</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">input.list</td>
+<td style="text-align: left;">各種管理基準値を計算するときに使用したfuture.vpaへの引数。do.call(future.vpa,引数)で計算の再現が可能</td>
+</tr>
+</tbody>
+</table>
+<p>*1: summaryまたはsummaryARのFref/Fcurrentが現行のFからのFの削減率になります（（Fref/Fcurrent-1)×100が資源評価票の要約表の「現状のF値からの増減％」に相当します）。この値にさらにβ（Btargetを上回る確率が５０％かつBlimitを上回る確率が９０％以上になるように調整する係数）と(B-Bban)/(Blim-Bban)を乗じたFをもとにABCが算定されます</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" data-line-number="1"><span class="co"># MSY管理基準値の計算</span></a>
+<a class="sourceLine" id="cb33-2" data-line-number="2">MSY.HS &lt;-<span class="st"> </span><span class="kw">est.MSY</span>(res.pma, <span class="co"># VPAの計算結果</span></a>
+<a class="sourceLine" id="cb33-3" data-line-number="3">                 fres.HS<span class="op">$</span>input, <span class="co"># 将来予測で使用した引数</span></a>
+<a class="sourceLine" id="cb33-4" data-line-number="4"><span class="co">#                 nyear=NULL, # 何年計算するかは、指定しなければ関数内部で世代時間の20倍の年数を計算し、それを平衡状態とする</span></a>
+<a class="sourceLine" id="cb33-5" data-line-number="5">                 <span class="dt">N=</span><span class="dv">100</span>, <span class="co"># 将来予測の年数，繰り返し回数</span></a>
+<a class="sourceLine" id="cb33-6" data-line-number="6">                 <span class="dt">PGY=</span><span class="kw">c</span>(<span class="fl">0.9</span>,<span class="fl">0.6</span>,<span class="fl">0.1</span>), <span class="co"># 計算したいPGYレベル。上限と下限の両方が計算される</span></a>
+<a class="sourceLine" id="cb33-7" data-line-number="7">                 <span class="dt">onlylower.pgy=</span><span class="ot">FALSE</span>, <span class="co"># TRUEにするとPGYレベルの上限は計算しない（計算時間の節約になる）</span></a>
+<a class="sourceLine" id="cb33-8" data-line-number="8">                 <span class="dt">B0percent=</span><span class="kw">c</span>(<span class="fl">0.3</span>,<span class="fl">0.4</span>)) <span class="co"># 計算したいB0%レベル</span></a></code></pre></div>
+<pre><code>## Estimating MSY
+## F multiplier= 0.5252164 
+## Estimating PGY  90 %
+## F multiplier= 0.2636767 
+## F multiplier= 0.9704383 
+## Estimating PGY  60 %
+## F multiplier= 0.1132016 
+## F multiplier= 1.043157 
+## Estimating PGY  10 %
+## F multiplier= 0.01321078 
+## F multiplier= 1.108316 
+## Estimating B0  30 %
+## F multiplier= 0.4330439 
+## Estimating B0  40 %
+## F multiplier= 0.3064784</code></pre>
+<figure>
+<img src="figure/msy-1.png" alt="図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．" /><figcaption><strong>図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．</strong></figcaption>
+</figure>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co"># 結果の表示（平衡状態）</span></a>
+<a class="sourceLine" id="cb35-2" data-line-number="2">MSY.HS<span class="op">$</span>summary</a></code></pre></div>
+<pre><code>##                    SSB        B          U    Catch  Fref/Fcur
+## MSY           125040.8 223373.5  0.3236417 72292.99  0.5252164
+## B0            503044.1 613191.2          0        0          0
+## PGY_0.9_upper 223824.4 327619.4  0.1985929 65062.91  0.2636767
+## PGY_0.9_lower 57821.15   144908  0.4489952 65063.01  0.9704383
+## PGY_0.6_upper 341598.2 448906.4 0.09661459 43370.91  0.1132016
+## PGY_0.6_lower 35632.34 93349.12  0.4645684 43367.05   1.043157
+## PGY_0.1_upper 478855.7 588662.5 0.01228751 7233.198 0.01321078
+## PGY_0.1_lower 5643.458 15059.02  0.4794063 7219.388   1.108316
+## B0-30%        150916.3 251086.1  0.2856432 71721.05  0.4330439
+## B0-40%        201214.2 304061.4  0.2230259 67813.58  0.3064784
+##               Fref2Fcurrent          F0         F1         F2         F3
+## MSY               0.5252164   0.2855239  0.6180134  0.6859075  0.6859074
+## B0                        0           0          0          0          0
+## PGY_0.9_upper     0.2636767   0.1433428   0.310264  0.3443492  0.3443491
+## PGY_0.9_lower     0.9704383   0.5275602   1.141898   1.267346   1.267346
+## PGY_0.6_upper     0.1132016   0.0615399  0.1332025  0.1478359  0.1478359
+## PGY_0.6_lower      1.043157   0.5670922   1.227465   1.362313   1.362312
+## PGY_0.1_upper    0.01321078 0.007181791 0.01554491 0.01725265 0.01725265
+## PGY_0.1_lower      1.108316   0.6025147   1.304136   1.447407   1.447407
+## B0-30%            0.4330439   0.2354161  0.5095555  0.5655346  0.5655345
+## B0-40%            0.3064784   0.1666111   0.360628  0.4002461   0.400246</code></pre>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co"># 結果の表示（直近の自己相関を考慮）</span></a>
+<a class="sourceLine" id="cb37-2" data-line-number="2">MSY.HS<span class="op">$</span>summaryAR</a></code></pre></div>
+<pre><code>##                    SSB        B          U    Catch  Fref/Fcur
+## MSY           126880.6 222578.4  0.3253222 72409.68  0.5252164
+## B0            510537.5 617846.6          0        0          0
+## PGY_0.9_upper 227407.4 328473.5  0.1995048 65532.06  0.2636767
+## PGY_0.9_lower 58628.22 143011.4   0.451572 64579.95  0.9704383
+## PGY_0.6_upper 346976.6 451495.5 0.09697897 43785.57  0.1132016
+## PGY_0.6_lower 36730.95 94542.79  0.4658226 44040.17   1.043157
+## PGY_0.1_upper 486053.8 593028.4  0.0123251 7309.134 0.01321078
+## PGY_0.1_lower 5700.529 15568.56  0.4765128 7418.619   1.108316
+## B0-30%        153239.1 250742.4  0.2870992 71987.93  0.4330439
+## B0-40%        204420.8 304555.4   0.224088  68247.2  0.3064784
+##               Fref2Fcurrent          F0         F1         F2         F3
+## MSY               0.5252164   0.2855239  0.6180134  0.6859075  0.6859074
+## B0                        0           0          0          0          0
+## PGY_0.9_upper     0.2636767   0.1433428   0.310264  0.3443492  0.3443491
+## PGY_0.9_lower     0.9704383   0.5275602   1.141898   1.267346   1.267346
+## PGY_0.6_upper     0.1132016   0.0615399  0.1332025  0.1478359  0.1478359
+## PGY_0.6_lower      1.043157   0.5670922   1.227465   1.362313   1.362312
+## PGY_0.1_upper    0.01321078 0.007181791 0.01554491 0.01725265 0.01725265
+## PGY_0.1_lower      1.108316   0.6025147   1.304136   1.447407   1.447407
+## B0-30%            0.4330439   0.2354161  0.5095555  0.5655346  0.5655345
+## B0-40%            0.3064784   0.1666111   0.360628  0.4002461   0.400246</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># のちの使用のために、Bmsy, Blimit, Bban, Fmsyを定義しておく</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2">refs &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">BmsyAR=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summaryAR<span class="op">$</span>SSB[<span class="dv">1</span>]),</a>
+<a class="sourceLine" id="cb39-3" data-line-number="3">             <span class="dt">BlimAR=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summaryAR<span class="op">$</span>SSB[<span class="dv">6</span>]),</a>
+<a class="sourceLine" id="cb39-4" data-line-number="4">             <span class="dt">BbanAR=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summaryAR<span class="op">$</span>SSB[<span class="dv">8</span>]),</a>
+<a class="sourceLine" id="cb39-5" data-line-number="5">             <span class="dt">Bmsy=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summary<span class="op">$</span>SSB[<span class="dv">1</span>]),</a>
+<a class="sourceLine" id="cb39-6" data-line-number="6">             <span class="dt">Blim=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summary<span class="op">$</span>SSB[<span class="dv">6</span>]),</a>
+<a class="sourceLine" id="cb39-7" data-line-number="7">             <span class="dt">Bban=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summary<span class="op">$</span>SSB[<span class="dv">8</span>]),</a>
+<a class="sourceLine" id="cb39-8" data-line-number="8">             <span class="dt">Fmsy=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summary<span class="op">$</span><span class="st">&quot;Fref/Fcur&quot;</span>[<span class="dv">1</span>]))</a></code></pre></div>
+<h2 id="hcrの計算とabcの算出">8. HCRの計算とABCの算出</h2>
+<h3 id="betaの計算calc.betaにバグがありました仕様も検討中です">betaの計算　<em>calc.betaにバグがありました</em>　<em>仕様も検討中です</em></h3>
+<ul>
+<li>HCRにおけるβはcalc.beta関数から計算します。</li>
+<li>引数としてBtarget, Blimit, Bbanを与える必要があります</li>
+</ul>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1">beta &lt;-<span class="st"> </span><span class="kw">calc.beta</span>(<span class="dt">res=</span>MSY.HS2,<span class="co"># MSYの計算結果</span></a>
+<a class="sourceLine" id="cb40-2" data-line-number="2">                  <span class="dt">prob.beta=</span><span class="kw">c</span>(<span class="fl">0.5</span>,<span class="fl">0.9</span>), <span class="co"># Btarget, Blimitを何パーセントの確率で上回るか</span></a>
+<a class="sourceLine" id="cb40-3" data-line-number="3">                  <span class="dt">Btar=</span>refs<span class="op">$</span>Bmsy, <span class="co"># Btargetの値</span></a>
+<a class="sourceLine" id="cb40-4" data-line-number="4">                  <span class="dt">Blim=</span>refs<span class="op">$</span>Blim, <span class="co"># Blimitの値</span></a>
+<a class="sourceLine" id="cb40-5" data-line-number="5">                  <span class="dt">Bban=</span>refs<span class="op">$</span>Bban, <span class="co"># Bbanの値</span></a>
+<a class="sourceLine" id="cb40-6" data-line-number="6">                  <span class="dt">Fmsy=</span>refs<span class="op">$</span>Fmsy) <span class="co"># Fmsyの値</span></a>
+<a class="sourceLine" id="cb40-7" data-line-number="7">beta[[<span class="dv">1</span>]]<span class="op">$</span>beta <span class="co"># 平衡状態におけるSSBの分布が正規分布から外れる(平均値と中央値がずれるため)ほど・分散が大きいほど（Blimitを90%の確率で上回る条件が効いてくるため）betaの値は小さくなる</span></a></code></pre></div>
+<h3 id="betaの計算暫定版">betaの計算：暫定版</h3>
+<ul>
+<li><em>少なくとも</em>平衡状態においてProb(Btarget&gt;B)&gt;50%, Prob(Blimt&gt;B)&gt;10%にしたいので、その条件を満たすようなbetaを探索します。</li>
+<li>future.vpaのFrecオプションを使って下さい</li>
+</ul>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" data-line-number="1">input.beta &lt;-<span class="st"> </span>MSY.HS<span class="op">$</span>input<span class="op">$</span>msy <span class="co"># MSY計算で使った引数を使う</span></a>
+<a class="sourceLine" id="cb41-2" data-line-number="2">input.beta<span class="op">$</span>N &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># 実際に計算するときは10000以上を使ってください</span></a>
+<a class="sourceLine" id="cb41-3" data-line-number="3">input.beta<span class="op">$</span>HCR &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Blim=</span>refs<span class="op">$</span>Blim,</a>
+<a class="sourceLine" id="cb41-4" data-line-number="4">                      <span class="dt">Bban=</span>refs<span class="op">$</span>Bban,</a>
+<a class="sourceLine" id="cb41-5" data-line-number="5">                      <span class="dt">beta=</span><span class="dv">1</span>) <span class="co"># とりあえず１としておく</span></a>
+<a class="sourceLine" id="cb41-6" data-line-number="6">input.beta<span class="op">$</span>is.plot &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb41-7" data-line-number="7">input.beta<span class="op">$</span>Frec &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">stochastic=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb41-8" data-line-number="8">                        <span class="dt">future.year=</span><span class="ot">NULL</span>, <span class="co"># NULLにしておくと将来予測の最終年と判断する</span></a>
+<a class="sourceLine" id="cb41-9" data-line-number="9">                        <span class="dt">Blimit=</span>refs<span class="op">$</span>Blim,</a>
+<a class="sourceLine" id="cb41-10" data-line-number="10">                        <span class="dt">scenario=</span><span class="st">&quot;blimit&quot;</span>,<span class="dt">target.probs=</span><span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb41-11" data-line-number="11">fres.beta1 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.beta)</a></code></pre></div>
+<pre><code>## F multiplier= 1.031327</code></pre>
+<figure>
+<img src="figure/beta-tmp-1.png" alt="plot of chunk beta-tmp" /><figcaption>plot of chunk beta-tmp</figcaption>
+</figure>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1">input.beta<span class="op">$</span>Frec &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">stochastic=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb43-2" data-line-number="2">                        <span class="dt">future.year=</span><span class="ot">NULL</span>, <span class="co"># NULLにしておくと将来予測の最終年と判断する</span></a>
+<a class="sourceLine" id="cb43-3" data-line-number="3">                        <span class="dt">Blimit=</span>refs<span class="op">$</span>Bmsy,</a>
+<a class="sourceLine" id="cb43-4" data-line-number="4">                        <span class="dt">scenario=</span><span class="st">&quot;blimit&quot;</span>,<span class="dt">target.probs=</span><span class="dv">50</span>)</a>
+<a class="sourceLine" id="cb43-5" data-line-number="5">fres.beta2 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.beta)</a></code></pre></div>
+<pre><code>## F multiplier= 0.5212207</code></pre>
+<figure>
+<img src="figure/beta-tmp-2.png" alt="plot of chunk beta-tmp" /><figcaption>plot of chunk beta-tmp</figcaption>
+</figure>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1">beta &lt;-<span class="st"> </span><span class="kw">min</span>(fres.beta1<span class="op">$</span>multi<span class="op">/</span>refs<span class="op">$</span>Fmsy, fres.beta2<span class="op">$</span>multi<span class="op">/</span>refs<span class="op">$</span>Fmsy)</a></code></pre></div>
+<h3 id="hcrをもとに将来予測abc計算">HCRをもとに将来予測→ABC計算</h3>
+<ul>
+<li>決定されたHCRのもとで将来予測計算をおこないます</li>
+<li>資源評価最終年＋２年目の「平均」漁獲量をABCとします</li>
+<li>そのときに用いる親魚資源量は資源評価最終年＋２年目の親魚資源量です</li>
+</ul>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1">input.abc &lt;-<span class="st"> </span>MSY.HS<span class="op">$</span>input<span class="op">$</span>msy <span class="co"># MSY計算で使った引数を使う</span></a>
+<a class="sourceLine" id="cb46-2" data-line-number="2">input.abc<span class="op">$</span>N &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># 実際に計算するときは10000以上を使ってください</span></a>
+<a class="sourceLine" id="cb46-3" data-line-number="3">input.abc<span class="op">$</span>HCR &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Blim=</span>refs<span class="op">$</span>Blim,</a>
+<a class="sourceLine" id="cb46-4" data-line-number="4">                      <span class="dt">Bban=</span>refs<span class="op">$</span>Bban,</a>
+<a class="sourceLine" id="cb46-5" data-line-number="5">                      <span class="dt">beta=</span>beta)</a>
+<a class="sourceLine" id="cb46-6" data-line-number="6">input.abc<span class="op">$</span>nyear &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># ABC計算時には長期間計算する必要はない</span></a>
+<a class="sourceLine" id="cb46-7" data-line-number="7">input.abc<span class="op">$</span>is.plot &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb46-8" data-line-number="8">fres.abc1 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.abc)</a></code></pre></div>
+<figure>
+<img src="figure/abc-1.png" alt="plot of chunk abc" /><figcaption>plot of chunk abc</figcaption>
+</figure>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb47-1" data-line-number="1"><span class="kw">hist</span>(fres.abc1<span class="op">$</span>ABC) <span class="co"># ABCの分布</span></a>
+<a class="sourceLine" id="cb47-2" data-line-number="2">ABC &lt;-<span class="st"> </span><span class="kw">mean</span>(fres.abc1<span class="op">$</span>ABC) <span class="co"># 平均値をABCとする</span></a>
+<a class="sourceLine" id="cb47-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb47-4" data-line-number="4">## SSBの将来予測結果</a>
+<a class="sourceLine" id="cb47-5" data-line-number="5"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</a></code></pre></div>
+<figure>
+<img src="figure/abc-2.png" alt="plot of chunk abc" /><figcaption>plot of chunk abc</figcaption>
+</figure>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb48-1" data-line-number="1"><span class="kw">plot.future</span>(fres.abc1,<span class="dt">what=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>),<span class="dt">is.legend=</span><span class="ot">TRUE</span>,<span class="dt">lwd=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb48-2" data-line-number="2">            <span class="dt">col=</span><span class="st">&quot;darkblue&quot;</span>,<span class="dt">N=</span><span class="dv">5</span>,<span class="dt">label=</span><span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb48-3" data-line-number="3"><span class="kw">draw.refline</span>(<span class="kw">cbind</span>(<span class="kw">unlist</span>(refs[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)<span class="op">+</span><span class="dv">3</span>]),<span class="kw">unlist</span>(refs[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)])),<span class="dt">horiz=</span><span class="ot">TRUE</span>,<span class="dt">lwd=</span><span class="dv">1</span>,<span class="dt">scale=</span><span class="dv">1</span>)</a></code></pre></div>
+<figure>
+<img src="figure/abc-3.png" alt="plot of chunk abc" /><figcaption>plot of chunk abc</figcaption>
+</figure>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb49-1" data-line-number="1">## 漁獲量の将来予測結果</a>
+<a class="sourceLine" id="cb49-2" data-line-number="2"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb49-3" data-line-number="3"><span class="kw">plot.future</span>(fres.abc1,<span class="dt">what=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>),<span class="dt">is.legend=</span><span class="ot">TRUE</span>,<span class="dt">lwd=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb49-4" data-line-number="4">            <span class="dt">col=</span><span class="st">&quot;darkblue&quot;</span>,<span class="dt">N=</span><span class="dv">5</span>,<span class="dt">label=</span><span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb49-5" data-line-number="5"><span class="kw">points</span>(<span class="kw">rownames</span>(fres.abc1<span class="op">$</span>vssb)[<span class="dv">2</span>],ABC,<span class="dt">pch=</span><span class="dv">20</span>,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">cex=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb49-6" data-line-number="6"><span class="kw">text</span>(<span class="kw">as.numeric</span>(<span class="kw">rownames</span>(fres.abc1<span class="op">$</span>vssb)[<span class="dv">2</span>])<span class="op">+</span><span class="dv">1</span>,ABC,<span class="st">&quot;ABC&quot;</span>,<span class="dt">col=</span><span class="dv">2</span>)</a></code></pre></div>
+<figure>
+<img src="figure/abc-4.png" alt="plot of chunk abc" /><figcaption>plot of chunk abc</figcaption>
+</figure>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb50-1" data-line-number="1">## 実際に、どんなFが将来予測で使われているか</a>
+<a class="sourceLine" id="cb50-2" data-line-number="2"><span class="kw">boxplot</span>(<span class="kw">t</span>(fres.abc1<span class="op">$</span>faa[<span class="dv">1</span>,,]<span class="op">/</span>fres.abc1<span class="op">$</span>faa[<span class="dv">1</span>,<span class="dv">1</span>,]),<span class="dt">ylab=</span><span class="st">&quot;multiplier to current F&quot;</span>)</a></code></pre></div>
+<figure>
+<img src="figure/abc-5.png" alt="plot of chunk abc" /><figcaption>plot of chunk abc</figcaption>
+</figure>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb51-1" data-line-number="1"><span class="co"># どんなHCRなのか書いてみる</span></a>
+<a class="sourceLine" id="cb51-2" data-line-number="2">ssb.abc &lt;-<span class="st"> </span><span class="kw">mean</span>(fres.abc1<span class="op">$</span>vssb[<span class="dv">2</span>,]) <span class="co"># ABC計算年のssbをとる</span></a>
+<a class="sourceLine" id="cb51-3" data-line-number="3"><span class="kw">plot.HCR</span>(<span class="dt">alpha=</span>beta,<span class="dt">bban=</span>MSY.HS2<span class="op">$</span>Bban,<span class="dt">blimit=</span>MSY.HS2<span class="op">$</span>Blim,<span class="dt">btarget=</span>MSY.HS2<span class="op">$</span>Btar,<span class="dt">lwd=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb51-4" data-line-number="4">         <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,MSY.HS2<span class="op">$</span>Btar<span class="op">*</span><span class="dv">2</span>),<span class="dt">ssb.cur=</span>ssb.abc,<span class="dt">Fmsy=</span>MSY.HS2<span class="op">$</span>Fmsy,<span class="dt">yscale=</span><span class="fl">0.7</span>,<span class="dt">scale=</span><span class="dv">1000</span>)</a></code></pre></div>
+<pre><code>## Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; はグラフィッ
+## クスパラメータではありません</code></pre>
+<figure>
+<img src="figure/HCR-1.png" alt="plot of chunk HCR" /><figcaption>plot of chunk HCR</figcaption>
+</figure>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>Bmsy,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Probability&quot;</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">100</span>))</a>
+<a class="sourceLine" id="cb53-2" data-line-number="2"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>BmsyAR,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
+<a class="sourceLine" id="cb53-3" data-line-number="3"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>Blim,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">1</span>,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
+<a class="sourceLine" id="cb53-4" data-line-number="4"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>BlimAR,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">2</span>,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
+<a class="sourceLine" id="cb53-5" data-line-number="5"><span class="kw">abline</span>(<span class="dt">h=</span><span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">90</span>),<span class="dt">col=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb53-6" data-line-number="6"><span class="kw">legend</span>(<span class="st">&quot;bottomright&quot;</span>,<span class="dt">col=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>),<span class="dt">title=</span><span class="st">&quot;Probs&quot;</span>,<span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>),<span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;&gt;Btarget_Eq&quot;</span>,<span class="st">&quot;&gt;Btarget_AR&quot;</span>,<span class="st">&quot;&gt;Blimit_Eq&quot;</span>,<span class="st">&quot;&gt;Blimit_AR&quot;</span>))</a></code></pre></div>
+<figure>
+<img src="figure/probability-1.png" alt="plot of chunk probability" /><figcaption>plot of chunk probability</figcaption>
+</figure>
+<h2 id="abc計算までのまとめ時間がない人はここからスタート">9. ABC計算までのまとめ（時間がない人はここからスタート）</h2>
+<p>MSY管理基準値を計算は以下の手順でおこないます．</p>
+<ol type="1">
+<li>データの読み込み</li>
+</ol>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb54-1" data-line-number="1"><span class="co"># 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません</span></a>
+<a class="sourceLine" id="cb54-2" data-line-number="2"><span class="kw">source</span>(<span class="st">&quot;../rvpa1.9.2.r&quot;</span>)</a>
+<a class="sourceLine" id="cb54-3" data-line-number="3"><span class="kw">source</span>(<span class="st">&quot;../future2.1.r&quot;</span>)</a>
+<a class="sourceLine" id="cb54-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb54-5" data-line-number="5"><span class="co"># データの読み込み</span></a>
+<a class="sourceLine" id="cb54-6" data-line-number="6">caa &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;caa_pma.csv&quot;</span>,<span class="dt">row.names=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb54-7" data-line-number="7">waa &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;waa_pma.csv&quot;</span>,<span class="dt">row.names=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb54-8" data-line-number="8">maa &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;maa_pma.csv&quot;</span>,<span class="dt">row.names=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb54-9" data-line-number="9">dat &lt;-<span class="st"> </span><span class="kw">data.handler</span>(<span class="dt">caa=</span>caa, <span class="dt">waa=</span>waa, <span class="dt">maa=</span>maa, <span class="dt">M=</span><span class="fl">0.5</span>)</a>
+<a class="sourceLine" id="cb54-10" data-line-number="10"><span class="kw">names</span>(dat)</a></code></pre></div>
+<ol start="2" type="1">
+<li>VPAの実施(vpa)　→ res.pma(VPAの結果)を得る
+<ul>
+<li>current Fとしてどのような値を使うか、ここで設定しておく（fc.yearオプションで、何年から何年のFを平均するか指定)</li>
+</ul></li>
+</ol>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" data-line-number="1"><span class="co"># VPAによる資源量推定</span></a>
+<a class="sourceLine" id="cb55-2" data-line-number="2">res.pma &lt;-<span class="st"> </span><span class="kw">vpa</span>(dat,<span class="dt">fc.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,<span class="dt">rec=</span><span class="dv">585</span>,<span class="dt">rec.year=</span><span class="dv">2011</span>,<span class="dt">tf.year =</span> <span class="dv">2008</span><span class="op">:</span><span class="dv">2010</span>,</a>
+<a class="sourceLine" id="cb55-3" data-line-number="3">               <span class="dt">term.F=</span><span class="st">&quot;max&quot;</span>,<span class="dt">stat.tf=</span><span class="st">&quot;mean&quot;</span>,<span class="dt">Pope=</span><span class="ot">TRUE</span>,<span class="dt">tune=</span><span class="ot">FALSE</span>,<span class="dt">p.init=</span><span class="fl">1.0</span>)</a></code></pre></div>
+<ol start="3" type="1">
+<li>再生産関係パラメータのあてはめ (fit.SR)　→ HS.par0 (HSにあてはめたときのパラメータ推定結果)を得る
+<ul>
+<li>残差の自己相関がある・なしを決める。ある場合はAR=1としたときの結果を用います。</li>
+</ul></li>
+</ol>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb56-1" data-line-number="1"><span class="co"># VPA結果を使って再生産データを作る</span></a>
+<a class="sourceLine" id="cb56-2" data-line-number="2">SRdata &lt;-<span class="st"> </span><span class="kw">get.SRdata</span>(res.pma)</a>
+<a class="sourceLine" id="cb56-3" data-line-number="3"><span class="kw">head</span>(SRdata)</a></code></pre></div>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" data-line-number="1">HS.par0 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;HS&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">0</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb57-2" data-line-number="2">HS.par1 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;HS&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">1</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb57-3" data-line-number="3">BH.par0 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;BH&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">0</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb57-4" data-line-number="4">BH.par1 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;BH&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">1</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb57-5" data-line-number="5">RI.par0 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;RI&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">0</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb57-6" data-line-number="6">RI.par1 &lt;-<span class="st"> </span><span class="kw">fit.SR</span>(SRdata,<span class="dt">SR=</span><span class="st">&quot;RI&quot;</span>,<span class="dt">method=</span><span class="st">&quot;L2&quot;</span>,<span class="dt">AR=</span><span class="dv">1</span>,<span class="dt">hessian=</span><span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb57-7" data-line-number="7"><span class="kw">c</span>(HS.par0<span class="op">$</span>AICc,HS.par1<span class="op">$</span>AICc,BH.par0<span class="op">$</span>AICc,BH.par1<span class="op">$</span>AICc,RI.par0<span class="op">$</span>AICc,RI.par1<span class="op">$</span>AICc)</a></code></pre></div>
+<ol start="4" type="1">
+<li>HS.par0をもとに将来予測を実施する(future.vpa) → fres.HS (HSを仮定したときの将来予測結果)を得る
+<ul>
+<li>生物パラメータを平均する年,ABC計算年などのオプションを設定</li>
+<li>資源量と年齢別の体重に相関がある場合はそれを将来予測の設定に取り込む(waa.fun=TRUE)</li>
+</ul></li>
+</ol>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" data-line-number="1">fres.HS &lt;-<span class="st"> </span><span class="kw">future.vpa</span>(res.pma,</a>
+<a class="sourceLine" id="cb58-2" data-line-number="2">                      <span class="dt">multi=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb58-3" data-line-number="3">                      <span class="dt">nyear=</span><span class="dv">50</span>, <span class="co"># 将来予測の年数</span></a>
+<a class="sourceLine" id="cb58-4" data-line-number="4">                      <span class="dt">start.year=</span><span class="dv">2012</span>, <span class="co"># 将来予測の開始年</span></a>
+<a class="sourceLine" id="cb58-5" data-line-number="5">                      <span class="dt">N=</span><span class="dv">100</span>, <span class="co"># 確率的計算の繰り返し回数</span></a>
+<a class="sourceLine" id="cb58-6" data-line-number="6">                      <span class="dt">ABC.year=</span><span class="dv">2013</span>, <span class="co"># ABCを計算する年</span></a>
+<a class="sourceLine" id="cb58-7" data-line-number="7">                      <span class="dt">waa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>, <span class="co"># 生物パラメータの参照年</span></a>
+<a class="sourceLine" id="cb58-8" data-line-number="8">                      <span class="dt">maa.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb58-9" data-line-number="9">                      <span class="dt">M.year=</span><span class="dv">2009</span><span class="op">:</span><span class="dv">2011</span>,</a>
+<a class="sourceLine" id="cb58-10" data-line-number="10">                      <span class="dt">is.plot=</span><span class="ot">TRUE</span>, <span class="co"># 結果をプロットするかどうか</span></a>
+<a class="sourceLine" id="cb58-11" data-line-number="11">                      <span class="dt">seed=</span><span class="dv">1</span>,</a>
+<a class="sourceLine" id="cb58-12" data-line-number="12">                      <span class="dt">silent=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb58-13" data-line-number="13">                      <span class="dt">recfunc=</span>HS.recAR, <span class="co"># 再生産関係の関数</span></a>
+<a class="sourceLine" id="cb58-14" data-line-number="14">                      <span class="co"># recfuncに対する引数</span></a>
+<a class="sourceLine" id="cb58-15" data-line-number="15">                      <span class="dt">rec.arg=</span><span class="kw">list</span>(<span class="dt">a=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>a,<span class="dt">b=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>b,</a>
+<a class="sourceLine" id="cb58-16" data-line-number="16">                                   <span class="dt">sd=</span>HS.par0<span class="op">$</span>pars<span class="op">$</span>sd,<span class="dt">resid=</span>HS.par0<span class="op">$</span>resid))</a></code></pre></div>
+<ol start="5" type="1">
+<li>res.pmaとfres.HSを使ってMSY管理基準値を計算する (est.MSY2) → MSY.HS2 (管理基準値の推定結果)を得る
+<ul>
+<li>最新のest.MSY2関数を使って下さい</li>
+</ul></li>
+<li>管理基準値からβを計算する（calc.beta）</li>
+</ol>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" data-line-number="1">beta &lt;-<span class="st"> </span><span class="kw">calc.beta</span>(<span class="dt">res=</span>MSY.HS2,<span class="co"># MSYの計算結果</span></a>
+<a class="sourceLine" id="cb59-2" data-line-number="2">                  <span class="dt">prob.beta=</span><span class="kw">c</span>(<span class="fl">0.5</span>,<span class="fl">0.9</span>), <span class="co"># Btarget, Blimitを何パーセントの確率で上回るか</span></a>
+<a class="sourceLine" id="cb59-3" data-line-number="3">                  <span class="dt">Btar=</span>refs<span class="op">$</span>Bmsy, <span class="co"># Btargetの値</span></a>
+<a class="sourceLine" id="cb59-4" data-line-number="4">                  <span class="dt">Blim=</span>refs<span class="op">$</span>Blim, <span class="co"># Blimitの値</span></a>
+<a class="sourceLine" id="cb59-5" data-line-number="5">                  <span class="dt">Bban=</span>refs<span class="op">$</span>Bban, <span class="co"># Bbanの値</span></a>
+<a class="sourceLine" id="cb59-6" data-line-number="6">                  <span class="dt">Fmsy=</span>refs<span class="op">$</span>Fmsy) <span class="co"># Fmsyの値</span></a>
+<a class="sourceLine" id="cb59-7" data-line-number="7">beta[[<span class="dv">1</span>]]<span class="op">$</span>beta <span class="co"># 平衡状態におけるSSBの分布が正規分布から外れる(平均値と中央値がずれるため)ほど・分散が大きいほど（Blimitを90%の確率で上回る条件が効いてくるため）betaの値は小さくなる</span></a></code></pre></div>
+<ol start="7" type="1">
+<li>決定されたHCRを用いて20年程度の将来予測を実施し、ABC算出年のABCを計算する
+<ul>
+<li>10年後にBtargetを上回る確率なども計算</li>
+</ul></li>
+</ol>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" data-line-number="1">input.abc &lt;-<span class="st"> </span>MSY.HS<span class="op">$</span>input<span class="op">$</span>msy <span class="co"># MSY計算で使った引数を使う</span></a>
+<a class="sourceLine" id="cb60-2" data-line-number="2">input.abc<span class="op">$</span>N &lt;-<span class="st"> </span><span class="dv">1000</span> <span class="co"># 実際に計算するときは10000以上を使ってください</span></a>
+<a class="sourceLine" id="cb60-3" data-line-number="3">input.abc<span class="op">$</span>HCR &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Blim=</span>refs<span class="op">$</span>Blim,</a>
+<a class="sourceLine" id="cb60-4" data-line-number="4">                      <span class="dt">Bban=</span>refs<span class="op">$</span>Bban,</a>
+<a class="sourceLine" id="cb60-5" data-line-number="5">                      <span class="dt">beta=</span>beta)</a>
+<a class="sourceLine" id="cb60-6" data-line-number="6">input.abc<span class="op">$</span>nyear &lt;-<span class="st"> </span><span class="dv">100</span> <span class="co"># ABC計算時には長期間計算する必要はない</span></a>
+<a class="sourceLine" id="cb60-7" data-line-number="7">input.abc<span class="op">$</span>is.plot &lt;-<span class="st"> </span><span class="ot">TRUE</span></a>
+<a class="sourceLine" id="cb60-8" data-line-number="8">fres.abc1 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.abc)</a>
+<a class="sourceLine" id="cb60-9" data-line-number="9"><span class="kw">hist</span>(fres.abc1<span class="op">$</span>ABC) <span class="co"># ABCの分布</span></a>
+<a class="sourceLine" id="cb60-10" data-line-number="10">ABC &lt;-<span class="st"> </span><span class="kw">mean</span>(fres.abc1<span class="op">$</span>ABC) <span class="co"># 平均値をABCとする</span></a>
+<a class="sourceLine" id="cb60-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb60-12" data-line-number="12">## SSBの将来予測結果</a>
+<a class="sourceLine" id="cb60-13" data-line-number="13"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb60-14" data-line-number="14"><span class="kw">plot.future</span>(fres.abc1,<span class="dt">what=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">TRUE</span>,<span class="ot">FALSE</span>),<span class="dt">is.legend=</span><span class="ot">TRUE</span>,<span class="dt">lwd=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb60-15" data-line-number="15">            <span class="dt">col=</span><span class="st">&quot;darkblue&quot;</span>,<span class="dt">N=</span><span class="dv">5</span>,<span class="dt">label=</span><span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb60-16" data-line-number="16"><span class="kw">draw.refline</span>(<span class="kw">cbind</span>(<span class="kw">unlist</span>(refs[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)<span class="op">+</span><span class="dv">3</span>]),<span class="kw">unlist</span>(refs[<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>)])),<span class="dt">horiz=</span><span class="ot">TRUE</span>,<span class="dt">lwd=</span><span class="dv">1</span>,<span class="dt">scale=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb60-17" data-line-number="17">## 漁獲量の将来予測結果</a>
+<a class="sourceLine" id="cb60-18" data-line-number="18"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb60-19" data-line-number="19"><span class="kw">plot.future</span>(fres.abc1,<span class="dt">what=</span><span class="kw">c</span>(<span class="ot">FALSE</span>,<span class="ot">FALSE</span>,<span class="ot">TRUE</span>),<span class="dt">is.legend=</span><span class="ot">TRUE</span>,<span class="dt">lwd=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb60-20" data-line-number="20">            <span class="dt">col=</span><span class="st">&quot;darkblue&quot;</span>,<span class="dt">N=</span><span class="dv">5</span>,<span class="dt">label=</span><span class="kw">rep</span>(<span class="ot">NA</span>,<span class="dv">3</span>))</a>
+<a class="sourceLine" id="cb60-21" data-line-number="21"><span class="kw">points</span>(<span class="kw">rownames</span>(fres.abc1<span class="op">$</span>vssb)[<span class="dv">2</span>],ABC,<span class="dt">pch=</span><span class="dv">20</span>,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">cex=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb60-22" data-line-number="22"><span class="kw">text</span>(<span class="kw">as.numeric</span>(<span class="kw">rownames</span>(fres.abc1<span class="op">$</span>vssb)[<span class="dv">2</span>])<span class="op">+</span><span class="dv">1</span>,ABC,<span class="st">&quot;ABC&quot;</span>,<span class="dt">col=</span><span class="dv">2</span>)</a>
+<a class="sourceLine" id="cb60-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb60-24" data-line-number="24">## 実際に、どんなFが将来予測で使われているか</a>
+<a class="sourceLine" id="cb60-25" data-line-number="25"><span class="kw">boxplot</span>(<span class="kw">t</span>(fres.abc1<span class="op">$</span>faa[<span class="dv">1</span>,,]<span class="op">/</span>fres.abc1<span class="op">$</span>faa[<span class="dv">1</span>,<span class="dv">1</span>,]),<span class="dt">ylab=</span><span class="st">&quot;multiplier to current F&quot;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb61-1" data-line-number="1"><span class="co"># どんなHCRなのか書いてみる</span></a>
+<a class="sourceLine" id="cb61-2" data-line-number="2">ssb.abc &lt;-<span class="st"> </span><span class="kw">mean</span>(fres.abc1<span class="op">$</span>vssb[<span class="dv">2</span>,]) <span class="co"># ABC計算年のssbをとる</span></a>
+<a class="sourceLine" id="cb61-3" data-line-number="3"><span class="kw">plot.HCR</span>(<span class="dt">alpha=</span>beta,<span class="dt">bban=</span>MSY.HS2<span class="op">$</span>Bban,<span class="dt">blimit=</span>MSY.HS2<span class="op">$</span>Blim,<span class="dt">btarget=</span>MSY.HS2<span class="op">$</span>Btar,<span class="dt">lwd=</span><span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb61-4" data-line-number="4">         <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,MSY.HS2<span class="op">$</span>Btar<span class="op">*</span><span class="dv">2</span>),<span class="dt">ssb.cur=</span>ssb.abc,<span class="dt">Fmsy=</span>MSY.HS2<span class="op">$</span>Fmsy,<span class="dt">yscale=</span><span class="fl">0.7</span>,<span class="dt">scale=</span><span class="dv">1000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>Bmsy,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Probability&quot;</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">100</span>))</a>
+<a class="sourceLine" id="cb62-2" data-line-number="2"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>BmsyAR,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
+<a class="sourceLine" id="cb62-3" data-line-number="3"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>Blim,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">1</span>,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
+<a class="sourceLine" id="cb62-4" data-line-number="4"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>BlimAR,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">2</span>,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
+<a class="sourceLine" id="cb62-5" data-line-number="5"><span class="kw">abline</span>(<span class="dt">h=</span><span class="kw">c</span>(<span class="dv">50</span>,<span class="dv">90</span>),<span class="dt">col=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb62-6" data-line-number="6"><span class="kw">legend</span>(<span class="st">&quot;bottomright&quot;</span>,<span class="dt">col=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>),<span class="dt">title=</span><span class="st">&quot;Probs&quot;</span>,<span class="dt">pch=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>),<span class="dt">legend=</span><span class="kw">c</span>(<span class="st">&quot;&gt;Btarget_Eq&quot;</span>,<span class="st">&quot;&gt;Btarget_AR&quot;</span>,<span class="st">&quot;&gt;Blimit_Eq&quot;</span>,<span class="st">&quot;&gt;Blimit_AR&quot;</span>))</a></code></pre></div>
