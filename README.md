@@ -3,6 +3,7 @@
 
 - **future2.1.r** プログラムの本体です
 - **sample/** サンプルコードとサンプルデータが入っています
+- チュートリアルは こちら https://ichimomo.github.io/future-rvpa/future-doc-abc.html になります
 
 ## 使い方
 - githubとかを使ったことがない人
