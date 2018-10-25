@@ -3857,8 +3857,8 @@ est.MSY <- function(vpares,farg,
 ### ŠÖ”’è‹`‚¨‚í‚è
     ## ¢‘ãŽžŠÔ‚ðŒvŽZ
     if(is.null(GT)){
-        GT <- Generation.Time(vpares,maa.year=fres.HS$input$maa.year,
-                              M.year=fres.HS$input$M.year)  # Generation Time
+        GT <- Generation.Time(vpares,maa.year=farg$maa.year,
+                              M.year=farg$M.year)  # Generation Time
     }
     if(is.null(nyear)){
         nyear <- round(GT*long.term)
