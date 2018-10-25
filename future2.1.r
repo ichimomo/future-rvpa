@@ -5156,7 +5156,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
             farg$pre.catch <- NULL # pre.catchオプションがあるとうまくいかないのでなかったことにする
             cat("notice: option \"pre.catch\" is turned off in estimating MSY.\n")
         }
-        if(!is.null(farg$new.rec)){
+        if(!is.null(farg$rec.new)){
             farg$rec.new <- NULL # rec.newプションがあるとうまくいかないのでなかったことにする
             cat("notice: option \"rec.new\" is turned off in estimating MSY.\n")            
         }
