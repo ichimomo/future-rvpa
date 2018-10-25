@@ -3877,16 +3877,16 @@ est.MSY <- function(vpares,farg,
     farg.tmp$N <- N
     farg.tmp$silent <- TRUE
     farg.tmp$is.plot <- FALSE
-    farg$ABC.year <- max(years)+1
-    farg$add.year <- 1
-    farg$det.run <- FALSE    
-    
-    if(!is.null(farg$pre.catch)){
-        farg$pre.catch <- NULL # pre.catchオプションがあるとうまくいかないのでなかったことにする
+    farg.tmp$ABC.year <- max(years)+1
+    farg.tmp$add.year <- 1
+    farg.tmp$det.run <- FALSE
+
+    if(!is.null(farg.tmp$pre.catch)){
+        farg.tmp$pre.catch <- NULL # pre.catchオプションがあるとうまくいかないのでなかったことにする
         cat("notice: option \"pre.catch\" is turned off in estimating MSY.\n")
     }
-    if(!is.null(farg$new.rec)){
-        farg$rec.new <- NULL # rec.newプションがあるとうまくいかないのでなかったことにする
+    if(!is.null(farg.tmp$new.rec)){
+        farg.tmp$rec.new <- NULL # rec.newプションがあるとうまくいかないのでなかったことにする
         cat("notice: option \"rec.new\" is turned off in estimating MSY.\n")            
     }
 
