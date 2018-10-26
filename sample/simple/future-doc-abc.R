@@ -4,8 +4,8 @@ par(mar=c(4,4,3,1))
 
 ## ----data-read-----------------------------------------------------------
 # 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません
-source("../rvpa1.9.2.r")
-source("../future2.1.r")
+source("../../rvpa1.9.2.r")
+source("../../future2.1.r")
 
 # データの読み込み
 caa <- read.csv("caa_pma.csv",row.names=1)
@@ -201,7 +201,7 @@ refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
              Fmsy=as.numeric(MSY.HS$summary$"Fref/Fcur"[1]))
 
 ## ----calc.beta, eval=FALSE-----------------------------------------------
-## beta <- calc.beta(res=MSY.HS2,# MSYの計算結果
+## beta <- calc.beta(res=MSY.HS,# MSYの計算結果
 ##                   prob.beta=c(0.5,0.9), # Btarget, Blimitを何パーセントの確率で上回るか
 ##                   Btar=refs$Bmsy, # Btargetの値
 ##                   Blim=refs$Blim, # Blimitの値
@@ -262,8 +262,8 @@ boxplot(t(fres.abc1$faa[1,,]/fres.abc1$faa[1,1,]),ylab="multiplier to current F"
 ## ----HCR-----------------------------------------------------------------
 # どんなHCRなのか書いてみる
 ssb.abc <- mean(fres.abc1$vssb[2,]) # ABC計算年のssbをとる
-plot.HCR(alpha=beta,bban=MSY.HS2$Bban,blimit=MSY.HS2$Blim,btarget=MSY.HS2$Btar,lwd=2,
-         xlim=c(0,MSY.HS2$Btar*2),ssb.cur=ssb.abc,Fmsy=MSY.HS2$Fmsy,yscale=0.7,scale=1000)
+plot.HCR(beta=beta,bban=refs$Bban,blimit=refs$Blim,btarget=refs$Bmsy,lwd=2,
+         xlim=c(0,refs$Bmsy*2),ssb.cur=ssb.abc,Fmsy=refs$Fmsy,yscale=0.7,scale=1000)
 
 ## ----probability---------------------------------------------------------
 plot(apply(fres.abc1$vssb>refs$Bmsy,1,mean)*100,type="b",ylab="Probability",ylim=c(0,100))

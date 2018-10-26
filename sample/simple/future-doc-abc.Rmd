@@ -1,5 +1,6 @@
 ---
 title: "RVPAを用いた管理基準値・ABC計算チュートリアル"
+author: "Momoko Ichinokawa"
 date: "`r Sys.Date()`"
 output: 
   html_document:
@@ -51,8 +52,8 @@ par(mar=c(4,4,3,1))
 
 ```{r data-read}
 # 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません
-source("../rvpa1.9.2.r")
-source("../future2.1.r")
+source("../../rvpa1.9.2.r")
+source("../../future2.1.r")
 
 # データの読み込み
 caa <- read.csv("caa_pma.csv",row.names=1)
