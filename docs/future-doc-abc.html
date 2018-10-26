@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <meta name="dcterms.date" content="2018-10-24" />
+  <meta name="dcterms.date" content="2018-10-26" />
   <title>RVPAを用いた管理基準値・ABC計算チュートリアル</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
@@ -84,36 +84,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <body>
 <header>
 <h1 class="title">RVPAを用いた管理基準値・ABC計算チュートリアル</h1>
-<p class="date">2018-10-24</p>
+<p class="date">2018-10-26</p>
 </header>
-<nav id="TOC">
-<ul>
-<li><a href="#更新情報hp公開版とのちがい">0. 更新情報：HP公開版とのちがい</a></li>
-<li><a href="#事前準備">1. 事前準備</a></li>
-<li><a href="#vpaによる資源量推定">2. VPAによる資源量推定</a></li>
-<li><a href="#vpa結果を外部から読み込む場合20181011追加"><font color="Red"> 2.5 VPA結果を外部から読み込む場合(2018/10/11追加) </font></a></li>
-<li><a href="#再生産関係を仮定しない管理基準値の計算">3. 再生産関係を仮定しない管理基準値の計算</a></li>
-<li><a href="#再生産関係の推定">4. 再生産関係の推定</a><ul>
-<li><a href="#データの作成">データの作成</a></li>
-<li><a href="#モデルのフィット">モデルのフィット</a></li>
-<li><a href="#モデル診断">モデル診断</a></li>
-</ul></li>
-<li><a href="#将来予測">5. 将来予測</a><ul>
-<li><a href="#fの設定やfrec">(5-1) Fの設定やFrec</a></li>
-<li><a href="#再生産関係">(5-2) 再生産関係</a></li>
-<li><a href="#年齢別体重が資源尾数に影響される場合の将来予測20180612新オプションとして追加">(5-3) 年齢別体重が資源尾数に影響される場合の将来予測（2018/06/12新オプションとして追加）</a></li>
-</ul></li>
-<li><a href="#msy管理基準値の計算">6. MSY管理基準値の計算</a><ul>
-<li><a href="#est.msyの説明">est.MSYの説明</a></li>
-</ul></li>
-<li><a href="#hcrの計算とabcの算出">8. HCRの計算とABCの算出</a><ul>
-<li><a href="#betaの計算calc.betaにバグがありました仕様も検討中です">betaの計算　<em>calc.betaにバグがありました</em>　<em>仕様も検討中です</em></a></li>
-<li><a href="#betaの計算暫定版">betaの計算：暫定版</a></li>
-<li><a href="#hcrをもとに将来予測abc計算">HCRをもとに将来予測→ABC計算</a></li>
-</ul></li>
-<li><a href="#abc計算までのまとめ時間がない人はここからスタート">9. ABC計算までのまとめ（時間がない人はここからスタート）</a></li>
-</ul>
-</nav>
 <style>
 
 /* body {background-color: #F7EBEF; margin: 30px; font-family: "MS ゴシック",sans-serif;
@@ -137,26 +109,7 @@ ul ul li{
 
 
 </style>
-<h2 id="更新情報hp公開版とのちがい">0. 更新情報：HP公開版とのちがい</h2>
-<p>2018/10/12</p>
-<ul>
-<li>加入の誤差をリサンプリングで与える加入関数がいままで使えていませんでしたが、復活しました。</li>
-<li>HS.rec, BH.rec, RI.rec が、ホッケー・スティック、べバートン・ホルト、リッカーをそれぞれを仮定したときに、加入誤差を残差リサンプリングで実施する関数です。詳しくは　5.将来予測→（5-2) 再生産関係へ。</li>
-</ul>
-<p>2018/10/11</p>
-<ul>
-<li>以前からあったout.vpa(VPA等の結果をcsvファイルに出力する)に加えて、read.vpa(特定の書式のcsvファイルにおけるVPA結果を読んで,future.vpaやest.MSY2で使えるvpa結果のオブジェクトにする)を追加</li>
-<li>future.vpaのwaa.funオプションにおけるバグを修正（→以前のバージョンでは、将来予測の１年目のweight at ageの計算にミスがありました）</li>
-<li>その他、future.vpaでpre.catch, new.recオプションを使っている場合、est.MSY2がうまく動かない問題を修正</li>
-</ul>
-<p>2018/9/28</p>
-<ul>
-<li>将来予測関数はfuture2.1.rに更新</li>
-<li>再生産関係推定の関数をfit.HS, fit.BH, fit.RIから、一括して同じ関数で推定するfit.SRに移行</li>
-<li>MSY推定関数をest.MSYからest.MSY2へ（est.MSY2では近年の自己相関を考慮した管理基準値が計算できます）</li>
-<li>HCRにおけるβを推定する関数 calc.betaを追加</li>
-<li>ABC計算までのRコードを追加</li>
-</ul>
+<h1 id="msy管理基準値計算ガイドライン">MSY管理基準値計算ガイドライン</h1>
 <h2 id="事前準備">1. 事前準備</h2>
 <ul>
 <li>データの読み込み，RVPA関数の読み込みなど</li>
@@ -614,71 +567,71 @@ ul ul li{
 <a class="sourceLine" id="cb33-7" data-line-number="7">                 <span class="dt">onlylower.pgy=</span><span class="ot">FALSE</span>, <span class="co"># TRUEにするとPGYレベルの上限は計算しない（計算時間の節約になる）</span></a>
 <a class="sourceLine" id="cb33-8" data-line-number="8">                 <span class="dt">B0percent=</span><span class="kw">c</span>(<span class="fl">0.3</span>,<span class="fl">0.4</span>)) <span class="co"># 計算したいB0%レベル</span></a></code></pre></div>
 <pre><code>## Estimating MSY
-## F multiplier= 0.5252164 
+## F multiplier= 0.523244 
 ## Estimating PGY  90 %
-## F multiplier= 0.2636767 
-## F multiplier= 0.9704383 
+## F multiplier= 0.2633456 
+## F multiplier= 0.974258 
 ## Estimating PGY  60 %
-## F multiplier= 0.1132016 
-## F multiplier= 1.043157 
+## F multiplier= 0.113167 
+## F multiplier= 1.043475 
 ## Estimating PGY  10 %
-## F multiplier= 0.01321078 
-## F multiplier= 1.108316 
+## F multiplier= 0.01320955 
+## F multiplier= 1.10485 
 ## Estimating B0  30 %
-## F multiplier= 0.4330439 
+## F multiplier= 0.4342835 
 ## Estimating B0  40 %
-## F multiplier= 0.3064784</code></pre>
+## F multiplier= 0.3072256</code></pre>
 <figure>
 <img src="figure/msy-1.png" alt="図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．" /><figcaption><strong>図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．</strong></figcaption>
 </figure>
 <div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" data-line-number="1"><span class="co"># 結果の表示（平衡状態）</span></a>
 <a class="sourceLine" id="cb35-2" data-line-number="2">MSY.HS<span class="op">$</span>summary</a></code></pre></div>
 <pre><code>##                    SSB        B          U    Catch  Fref/Fcur
-## MSY           125040.8 223373.5  0.3236417 72292.99  0.5252164
-## B0            503044.1 613191.2          0        0          0
-## PGY_0.9_upper 223824.4 327619.4  0.1985929 65062.91  0.2636767
-## PGY_0.9_lower 57821.15   144908  0.4489952 65063.01  0.9704383
-## PGY_0.6_upper 341598.2 448906.4 0.09661459 43370.91  0.1132016
-## PGY_0.6_lower 35632.34 93349.12  0.4645684 43367.05   1.043157
-## PGY_0.1_upper 478855.7 588662.5 0.01228751 7233.198 0.01321078
-## PGY_0.1_lower 5643.458 15059.02  0.4794063 7219.388   1.108316
-## B0-30%        150916.3 251086.1  0.2856432 71721.05  0.4330439
-## B0-40%        201214.2 304061.4  0.2230259 67813.58  0.3064784
+## MSY           126209.5 223602.1  0.3238725 72418.58   0.523244
+## B0            504232.6 613521.6          0        0          0
+## PGY_0.9_upper 224893.7 327773.2  0.1988473 65176.82  0.2633456
+## PGY_0.9_lower 57969.94 144533.9  0.4509547 65178.24   0.974258
+## PGY_0.6_upper 342671.5 449093.3 0.09675232 43450.82   0.113167
+## PGY_0.6_lower 35370.75 93855.97  0.4629567 43451.25   1.043475
+## PGY_0.1_upper 480027.2 588972.3 0.01230245 7245.804 0.01320955
+## PGY_0.1_lower  5563.44 15235.12   0.475496  7244.24    1.10485
+## B0-30%        151263.3 250447.4  0.2870013 71878.73  0.4342835
+## B0-40%        201691.8 303589.7  0.2239784 67997.54  0.3072256
 ##               Fref2Fcurrent          F0         F1         F2         F3
-## MSY               0.5252164   0.2855239  0.6180134  0.6859075  0.6859074
+## MSY                0.523244   0.2844516  0.6156925  0.6833316  0.6833315
 ## B0                        0           0          0          0          0
-## PGY_0.9_upper     0.2636767   0.1433428   0.310264  0.3443492  0.3443491
-## PGY_0.9_lower     0.9704383   0.5275602   1.141898   1.267346   1.267346
-## PGY_0.6_upper     0.1132016   0.0615399  0.1332025  0.1478359  0.1478359
-## PGY_0.6_lower      1.043157   0.5670922   1.227465   1.362313   1.362312
-## PGY_0.1_upper    0.01321078 0.007181791 0.01554491 0.01725265 0.01725265
-## PGY_0.1_lower      1.108316   0.6025147   1.304136   1.447407   1.447407
-## B0-30%            0.4330439   0.2354161  0.5095555  0.5655346  0.5655345
-## B0-40%            0.3064784   0.1666111   0.360628  0.4002461   0.400246</code></pre>
+## PGY_0.9_upper     0.2633456   0.1431628  0.3098743  0.3439167  0.3439166
+## PGY_0.9_lower      0.974258   0.5296367   1.146393   1.272334   1.272334
+## PGY_0.6_upper      0.113167  0.06152106  0.1331617  0.1477906  0.1477906
+## PGY_0.6_lower      1.043475   0.5672651   1.227839   1.362728   1.362728
+## PGY_0.1_upper    0.01320955 0.007181119 0.01554346 0.01725104 0.01725104
+## PGY_0.1_lower       1.10485   0.6006308   1.300059   1.442882   1.442881
+## B0-30%            0.4342835   0.2360899  0.5110141  0.5671534  0.5671533
+## B0-40%            0.3072256   0.1670173  0.3615072  0.4012218  0.4012218</code></pre>
 <div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" data-line-number="1"><span class="co"># 結果の表示（直近の自己相関を考慮）</span></a>
 <a class="sourceLine" id="cb37-2" data-line-number="2">MSY.HS<span class="op">$</span>summaryAR</a></code></pre></div>
 <pre><code>##                    SSB        B          U    Catch  Fref/Fcur
-## MSY           126880.6 222578.4  0.3253222 72409.68  0.5252164
-## B0            510537.5 617846.6          0        0          0
-## PGY_0.9_upper 227407.4 328473.5  0.1995048 65532.06  0.2636767
-## PGY_0.9_lower 58628.22 143011.4   0.451572 64579.95  0.9704383
-## PGY_0.6_upper 346976.6 451495.5 0.09697897 43785.57  0.1132016
-## PGY_0.6_lower 36730.95 94542.79  0.4658226 44040.17   1.043157
-## PGY_0.1_upper 486053.8 593028.4  0.0123251 7309.134 0.01321078
-## PGY_0.1_lower 5700.529 15568.56  0.4765128 7418.619   1.108316
-## B0-30%        153239.1 250742.4  0.2870992 71987.93  0.4330439
-## B0-40%        204420.8 304555.4   0.224088  68247.2  0.3064784
+## MSY             126945   220030   0.325619 71645.95   0.523244
+## B0            510775.1 615217.3          0        0          0
+## PGY_0.9_upper 227279.5 325602.8  0.1998899 65084.72  0.2633456
+## PGY_0.9_lower 58431.47 141217.5  0.4535104 64043.63   0.974258
+## PGY_0.6_upper 346892.1 448597.2  0.0971915 43599.83   0.113167
+## PGY_0.6_lower 37538.17 96170.26  0.4666671 44879.49   1.043475
+## PGY_0.1_upper 486234.7 590348.6 0.01234943 7290.471 0.01320955
+## PGY_0.1_lower 5798.329 15133.41  0.4815429 7287.384    1.10485
+## B0-30%        152426.3 247221.6  0.2885736 71341.63  0.4342835
+## B0-40%        203698.9   301085  0.2251788 67797.95  0.3072256
 ##               Fref2Fcurrent          F0         F1         F2         F3
-## MSY               0.5252164   0.2855239  0.6180134  0.6859075  0.6859074
+## MSY                0.523244   0.2844516  0.6156925  0.6833316  0.6833315
 ## B0                        0           0          0          0          0
-## PGY_0.9_upper     0.2636767   0.1433428   0.310264  0.3443492  0.3443491
-## PGY_0.9_lower     0.9704383   0.5275602   1.141898   1.267346   1.267346
-## PGY_0.6_upper     0.1132016   0.0615399  0.1332025  0.1478359  0.1478359
-## PGY_0.6_lower      1.043157   0.5670922   1.227465   1.362313   1.362312
-## PGY_0.1_upper    0.01321078 0.007181791 0.01554491 0.01725265 0.01725265
-## PGY_0.1_lower      1.108316   0.6025147   1.304136   1.447407   1.447407
-## B0-30%            0.4330439   0.2354161  0.5095555  0.5655346  0.5655345
-## B0-40%            0.3064784   0.1666111   0.360628  0.4002461   0.400246</code></pre>
+## PGY_0.9_upper     0.2633456   0.1431628  0.3098743  0.3439167  0.3439166
+## PGY_0.9_lower      0.974258   0.5296367   1.146393   1.272334   1.272334
+## PGY_0.6_upper      0.113167  0.06152106  0.1331617  0.1477906  0.1477906
+## PGY_0.6_lower      1.043475   0.5672651   1.227839   1.362728   1.362728
+## PGY_0.1_upper    0.01320955 0.007181119 0.01554346 0.01725104 0.01725104
+## PGY_0.1_lower       1.10485   0.6006308   1.300059   1.442882   1.442881
+## B0-30%            0.4342835   0.2360899  0.5110141  0.5671534  0.5671533
+## B0-40%            0.3072256   0.1670173  0.3615072  0.4012218  0.4012218</code></pre>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1"><span class="co"># のちの使用のために、Bmsy, Blimit, Bban, Fmsyを定義しておく</span></a>
 <a class="sourceLine" id="cb39-2" data-line-number="2">refs &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">BmsyAR=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summaryAR<span class="op">$</span>SSB[<span class="dv">1</span>]),</a>
 <a class="sourceLine" id="cb39-3" data-line-number="3">             <span class="dt">BlimAR=</span><span class="kw">as.numeric</span>(MSY.HS<span class="op">$</span>summaryAR<span class="op">$</span>SSB[<span class="dv">6</span>]),</a>
@@ -716,7 +669,7 @@ ul ul li{
 <a class="sourceLine" id="cb41-9" data-line-number="9">                        <span class="dt">Blimit=</span>refs<span class="op">$</span>Blim,</a>
 <a class="sourceLine" id="cb41-10" data-line-number="10">                        <span class="dt">scenario=</span><span class="st">&quot;blimit&quot;</span>,<span class="dt">target.probs=</span><span class="dv">10</span>)</a>
 <a class="sourceLine" id="cb41-11" data-line-number="11">fres.beta1 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.beta)</a></code></pre></div>
-<pre><code>## F multiplier= 1.031327</code></pre>
+<pre><code>## F multiplier= 1.032013</code></pre>
 <figure>
 <img src="figure/beta-tmp-1.png" alt="plot of chunk beta-tmp" /><figcaption>plot of chunk beta-tmp</figcaption>
 </figure>
@@ -725,7 +678,7 @@ ul ul li{
 <a class="sourceLine" id="cb43-3" data-line-number="3">                        <span class="dt">Blimit=</span>refs<span class="op">$</span>Bmsy,</a>
 <a class="sourceLine" id="cb43-4" data-line-number="4">                        <span class="dt">scenario=</span><span class="st">&quot;blimit&quot;</span>,<span class="dt">target.probs=</span><span class="dv">50</span>)</a>
 <a class="sourceLine" id="cb43-5" data-line-number="5">fres.beta2 &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.beta)</a></code></pre></div>
-<pre><code>## F multiplier= 0.5212207</code></pre>
+<pre><code>## F multiplier= 0.5168679</code></pre>
 <figure>
 <img src="figure/beta-tmp-2.png" alt="plot of chunk beta-tmp" /><figcaption>plot of chunk beta-tmp</figcaption>
 </figure>
@@ -779,11 +732,7 @@ ul ul li{
 <a class="sourceLine" id="cb51-2" data-line-number="2">ssb.abc &lt;-<span class="st"> </span><span class="kw">mean</span>(fres.abc1<span class="op">$</span>vssb[<span class="dv">2</span>,]) <span class="co"># ABC計算年のssbをとる</span></a>
 <a class="sourceLine" id="cb51-3" data-line-number="3"><span class="kw">plot.HCR</span>(<span class="dt">alpha=</span>beta,<span class="dt">bban=</span>MSY.HS2<span class="op">$</span>Bban,<span class="dt">blimit=</span>MSY.HS2<span class="op">$</span>Blim,<span class="dt">btarget=</span>MSY.HS2<span class="op">$</span>Btar,<span class="dt">lwd=</span><span class="dv">2</span>,</a>
 <a class="sourceLine" id="cb51-4" data-line-number="4">         <span class="dt">xlim=</span><span class="kw">c</span>(<span class="dv">0</span>,MSY.HS2<span class="op">$</span>Btar<span class="op">*</span><span class="dv">2</span>),<span class="dt">ssb.cur=</span>ssb.abc,<span class="dt">Fmsy=</span>MSY.HS2<span class="op">$</span>Fmsy,<span class="dt">yscale=</span><span class="fl">0.7</span>,<span class="dt">scale=</span><span class="dv">1000</span>)</a></code></pre></div>
-<pre><code>## Warning in plot.xy(xy.coords(x, y), type = type, ...): &quot;alpha&quot; はグラフィッ
-## クスパラメータではありません</code></pre>
-<figure>
-<img src="figure/HCR-1.png" alt="plot of chunk HCR" /><figcaption>plot of chunk HCR</figcaption>
-</figure>
+<pre><code>## Error in plot.HCR(alpha = beta, bban = MSY.HS2$Bban, blimit = MSY.HS2$Blim, :  オブジェクト &#39;MSY.HS2&#39; がありません</code></pre>
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb53-1" data-line-number="1"><span class="kw">plot</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>Bmsy,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>,<span class="dt">ylab=</span><span class="st">&quot;Probability&quot;</span>,<span class="dt">ylim=</span><span class="kw">c</span>(<span class="dv">0</span>,<span class="dv">100</span>))</a>
 <a class="sourceLine" id="cb53-2" data-line-number="2"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>BmsyAR,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
 <a class="sourceLine" id="cb53-3" data-line-number="3"><span class="kw">points</span>(<span class="kw">apply</span>(fres.abc1<span class="op">$</span>vssb<span class="op">&gt;</span>refs<span class="op">$</span>Blim,<span class="dv">1</span>,mean)<span class="op">*</span><span class="dv">100</span>,<span class="dt">pch=</span><span class="dv">1</span>,<span class="dt">col=</span><span class="dv">2</span>,<span class="dt">type=</span><span class="st">&quot;b&quot;</span>)</a>
