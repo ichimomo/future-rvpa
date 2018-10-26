@@ -1,5 +1,5 @@
 ---
-title: "Ä¶YŠÖŒWƒ`ƒFƒbƒNƒŠƒXƒg"
+title: "å†ç”Ÿç”£é–¢ä¿‚ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ"
 author: ""
 date: ""
 output: html_document 
@@ -14,25 +14,25 @@ waa <- read.csv("waa_pma.csv",row.names=1)
 maa <- read.csv("maa_pma.csv",row.names=1)
 dat <- data.handler(caa=caa, waa=waa, maa=maa, M=0.5)
 
-# VPA‚É‚æ‚é‘Œ¹—Ê„’è
+# VPAã«ã‚ˆã‚‹è³‡æºé‡æ¨å®š
 res.pma <- vpa(dat,fc.year=2009:2011,rec=585,rec.year=2011,tf.year = 2008:2010,
                term.F="max",stat.tf="mean",Pope=TRUE,tune=FALSE,p.init=1.0)
 ```
-Ä¶YŠÖŒW‚Ì‘I‘ğEf’f‚ğs‚¤‚½‚ß‚Ìƒ`ƒFƒbƒNƒŠƒXƒg‚Å‚·B‚±‚±‚ÅA«—ˆ—\‘ªEŠÇ—Šî€’lŒvZƒ`ƒ…[ƒgƒŠƒAƒ‹ (../docs/future-doc-abc.html) ‚Ì—á‚ğg‚Á‚Äà–¾‚µ‚Ü‚·B
+å†ç”Ÿç”£é–¢ä¿‚ã®é¸æŠãƒ»è¨ºæ–­ã‚’è¡Œã†ãŸã‚ã®ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆã§ã™ã€‚ã“ã“ã§ã€å°†æ¥äºˆæ¸¬ãƒ»ç®¡ç†åŸºæº–å€¤è¨ˆç®—ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ« (../docs/future-doc-abc.html) ã®ä¾‹ã‚’ä½¿ã£ã¦èª¬æ˜ã—ã¾ã™ã€‚
   
-<!-- ## 0. g—pƒf[ƒ^E‰ğÍƒR[ƒh“™ -->
+<!-- ## 0. ä½¿ç”¨ãƒ‡ãƒ¼ã‚¿ãƒ»è§£æã‚³ãƒ¼ãƒ‰ç­‰ -->
 
-<!-- ‰Á“ü—ÊEe‹›—Êƒf[ƒ^F•½¬29”N“x”N“xƒ}ƒTƒo‘¾•½—mŒnŒQ‘Œ¹•]‰¿•[‚É‚¨‚¯‚é‰Á“ü—ÊEe‹›—Êƒf[ƒ^   -->
-<!-- ŠúŠÔF1970~2016”N    -->
-<!-- g—pƒvƒƒOƒ‰ƒ€:future.vpa1.11   -->
-<!-- ŠÂ‹«—vˆöƒf[ƒ^F‚È‚µ   -->
+<!-- åŠ å…¥é‡ãƒ»è¦ªé­šé‡ãƒ‡ãƒ¼ã‚¿ï¼šå¹³æˆ29å¹´åº¦å¹´åº¦ãƒã‚µãƒå¤ªå¹³æ´‹ç³»ç¾¤è³‡æºè©•ä¾¡ç¥¨ã«ãŠã‘ã‚‹åŠ å…¥é‡ãƒ»è¦ªé­šé‡ãƒ‡ãƒ¼ã‚¿   -->
+<!-- æœŸé–“ï¼š1970~2016å¹´    -->
+<!-- ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ :future.vpa1.11   -->
+<!-- ç’°å¢ƒè¦å› ãƒ‡ãƒ¼ã‚¿ï¼šãªã—   -->
   
-## 1. Ä¶YŠÖŒWŒ^‚Ì”äŠr
+## 1. å†ç”Ÿç”£é–¢ä¿‚å‹ã®æ¯”è¼ƒ
 
-Hockey-StickŒ^/Beverton-HoltŒ^/RickerŒ^‚ÌÄ¶YŠÖŒW‚ğ”äŠr‚µ‚Ü‚·B
+Hockey-Stickå‹/Beverton-Holtå‹/Rickerå‹ã®å†ç”Ÿç”£é–¢ä¿‚ã‚’æ¯”è¼ƒã—ã¾ã™ã€‚
 
 ```{r, warning=FALSE}
-SRdata <- get.SRdata(res.pma) #res.pma: vpa‚ÌŒ‹‰Ê
+SRdata <- get.SRdata(res.pma) #res.pma: vpaã®çµæœ
 
 resHS <- fit.SR(SRdata,SR="HS",method="L2",AR=0)
 resBH <- fit.SR(SRdata,SR="BH",method="L2",AR=0)
@@ -48,20 +48,20 @@ legend("topleft",
        legend=c(sprintf("HS %5.2f",resHS$AICc),sprintf("BH %5.2f",resBH$AICc),sprintf("RI %5.2f",resRI$AICc)),
        lty=1:3,col=2:4,lwd=2,title="AICc",ncol=3)
 
-resSR <- resHS #HS‚ğ‘I‘ğ
+resSR <- resHS #HSã‚’é¸æŠ
 ```
     
-**‘I‘ğ‚µ‚½Ä¶YŠÖŒWFHockey-Stick**
+**é¸æŠã—ãŸå†ç”Ÿç”£é–¢ä¿‚ï¼šHockey-Stick**
   
-——Ri“Á‚ÉBH‚âRI‚Ìê‡‚ÍÚ‚µ‚­jF
-BH‚ÆRI‚Å‚ÍÄ¶YŠÖŒW‚ª‚Ù‚Ú’¼ü‚É‚È‚é‚½‚ßAHS‚ğ‘I‘ğ‚µ‚½BAICc‚àHS‚ª‚â‚â¬‚³‚¢B   
+ç†ç”±ï¼ˆç‰¹ã«BHã‚„RIã®å ´åˆã¯è©³ã—ãï¼‰ï¼š
+BHã¨RIã§ã¯å†ç”Ÿç”£é–¢ä¿‚ãŒã»ã¼ç›´ç·šã«ãªã‚‹ãŸã‚ã€HSã‚’é¸æŠã—ãŸã€‚AICcã‚‚HSãŒã‚„ã‚„å°ã•ã„ã€‚   
 
 
-## 2. Å¬â‘Î’l–@‚âc·‚Ì©ŒÈ‘ŠŠÖ‚ÌŒŸ“¢
+## 2. æœ€å°çµ¶å¯¾å€¤æ³•ã‚„æ®‹å·®ã®è‡ªå·±ç›¸é–¢ã®æ¤œè¨
 
-ƒTƒ“ƒvƒ‹”‚ª­‚È‚¢ê‡‚âc·‚ª³‹K•ª•z‚É]‚Á‚Ä‚¢‚È‚¢ê‡i3ßQÆjAŠO‚ê’l‚É‘Î‚µ‚ÄŠæŒ’‚È„’è•û–@‚Å‚ ‚éÅ¬â‘Î’l–@i’†‰›’l„’èj‚ª—LŒø‚ÈƒIƒvƒVƒ‡ƒ“‚Æ‚µ‚Äl‚¦‚ç‚ê‚Ü‚·B
-‚Ü‚½A‰Á“ü‚Ìc·‚ªŠÂ‹«‰e‹¿‚È‚Ç‚É‚æ‚èŠÔ“I‚ÈƒgƒŒƒ“ƒh‚ğ‚à‚Âê‡‚É‚Íi4ßQÆjAc·‚Ì©ŒÈ‘ŠŠÖ‚ğl—¶‚·‚é•û–@‚ªl‚¦‚ç‚ê‚Ü‚·B
-‚±‚±‚Å‚ÍA‚±‚ê‚ç‚Ìè–@‚É‚æ‚èÄ¶YŠÖŒW‚ª‚Ç‚Ì’ö“x•Ï‚í‚é‚Ì‚©‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·B
+ã‚µãƒ³ãƒ—ãƒ«æ•°ãŒå°‘ãªã„å ´åˆã‚„æ®‹å·®ãŒæ­£è¦åˆ†å¸ƒã«å¾“ã£ã¦ã„ãªã„å ´åˆï¼ˆ3ç¯€å‚ç…§ï¼‰ã€å¤–ã‚Œå€¤ã«å¯¾ã—ã¦é ‘å¥ãªæ¨å®šæ–¹æ³•ã§ã‚ã‚‹æœ€å°çµ¶å¯¾å€¤æ³•ï¼ˆä¸­å¤®å€¤æ¨å®šï¼‰ãŒæœ‰åŠ¹ãªã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨ã—ã¦è€ƒãˆã‚‰ã‚Œã¾ã™ã€‚
+ã¾ãŸã€åŠ å…¥ã®æ®‹å·®ãŒç’°å¢ƒå½±éŸ¿ãªã©ã«ã‚ˆã‚Šæ™‚é–“çš„ãªãƒˆãƒ¬ãƒ³ãƒ‰ã‚’ã‚‚ã¤å ´åˆã«ã¯ï¼ˆ4ç¯€å‚ç…§ï¼‰ã€æ®‹å·®ã®è‡ªå·±ç›¸é–¢ã‚’è€ƒæ…®ã™ã‚‹æ–¹æ³•ãŒè€ƒãˆã‚‰ã‚Œã¾ã™ã€‚
+ã“ã“ã§ã¯ã€ã“ã‚Œã‚‰ã®æ‰‹æ³•ã«ã‚ˆã‚Šå†ç”Ÿç”£é–¢ä¿‚ãŒã©ã®ç¨‹åº¦å¤‰ã‚ã‚‹ã®ã‹ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™ã€‚
 
 ```{r,message=FALSE,warning=FALSE}
 resAR1 <- fit.SR(SRdata,SR="HS",method="L2",AR=1)
@@ -77,21 +77,21 @@ legend("topleft",
        legend=c(sprintf("L2&AR0 %5.2f",resSR$AICc),sprintf("L2&AR1 %5.2f",resAR1$AICc),sprintf("L1&AR0 %5.2f",resL1$AICc)),
        lty=1:3,col=2:4,lwd=2,title="AICc",ncol=3)
 
-resSR <- resL1 #L1 norm‚ğÌ—p
+resSR <- resL1 #L1 normã‚’æ¡ç”¨
 ```
 
-**‘I‘ğ‚µ‚½Ä¶YŠÖŒWFL1&AR0**  
+**é¸æŠã—ãŸå†ç”Ÿç”£é–¢ä¿‚ï¼šL1&AR0**  
   
-——RF
-©ŒÈ‘ŠŠÖ‚ğ„’è‚µ‚½ê‡A©ŒÈ‘ŠŠÖŒW”‚Í’á‚­(rho=0.05)AAICc‚Í‚‚­‚È‚Á‚½Bc·‚ª³‹K•ª•z‚É]‚Á‚Ä‚¢‚È‚©‚Á‚½‚½‚ßi‰º‹LQÆjAÄ¶YŠÖŒW‚Í‘å‚«‚­•Ï‚í‚ç‚È‚¢‚à‚Ì‚ÌAÅ¬â‘Î’l–@‚É‚æ‚é’†‰›’l„’è‚ğÌ—p‚µ‚½B   
+ç†ç”±ï¼š
+è‡ªå·±ç›¸é–¢ã‚’æ¨å®šã—ãŸå ´åˆã€è‡ªå·±ç›¸é–¢ä¿‚æ•°ã¯ä½ã(rho=0.05)ã€AICcã¯é«˜ããªã£ãŸã€‚æ®‹å·®ãŒæ­£è¦åˆ†å¸ƒã«å¾“ã£ã¦ã„ãªã‹ã£ãŸãŸã‚ï¼ˆä¸‹è¨˜å‚ç…§ï¼‰ã€å†ç”Ÿç”£é–¢ä¿‚ã¯å¤§ããå¤‰ã‚ã‚‰ãªã„ã‚‚ã®ã®ã€æœ€å°çµ¶å¯¾å€¤æ³•ã«ã‚ˆã‚‹ä¸­å¤®å€¤æ¨å®šã‚’æ¡ç”¨ã—ãŸã€‚   
   
   
-## 3. ³‹K«‚Ìƒ`ƒFƒbƒN
+## 3. æ­£è¦æ€§ã®ãƒã‚§ãƒƒã‚¯
 
-Ä¶YŠÖŒW‚©‚ç—\‘ª‚³‚ê‚é‰Á“ü—Ê‚ÆŠÏ‘ª’li‘Œ¹•]‰¿’lj‚Ìc·‚ª³‹K•ª•z‚É]‚Á‚Ä‚¢‚é‚©‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·B
-Shapiro-WilkŒŸ’è‚ÆKolmogorov-Smirnov ŒŸ’è‚ğs‚¢Auc·‚ª³‹K•ª•z‚É]‚Á‚Ä‚¢‚év‚Æ‚¢‚¤‹A–³‰¼à‚ğŒŸ’è‚µ‚Ü‚·B
-‚Ü‚½AQQ plot‚ğ•`‚«A—˜_—\‘ª’l (y=x) ‚©‚ç‘å‚«‚­ˆí’E‚µ‚Ä‚¢‚È‚¢‚©‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·B
-‚±‚ê‚ç‚ÌŒ‹‰ÊA³‹K«‚ª‹^‚í‚ê‚éê‡‚É‚ÍÅ¬â‘Î’l–@‚ğŒŸ“¢‚·‚é‚±‚Æ‚ª–]‚Ü‚µ‚¢‚Å‚·B
+å†ç”Ÿç”£é–¢ä¿‚ã‹ã‚‰äºˆæ¸¬ã•ã‚Œã‚‹åŠ å…¥é‡ã¨è¦³æ¸¬å€¤ï¼ˆè³‡æºè©•ä¾¡å€¤ï¼‰ã®æ®‹å·®ãŒæ­£è¦åˆ†å¸ƒã«å¾“ã£ã¦ã„ã‚‹ã‹ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™ã€‚
+Shapiro-Wilkæ¤œå®šã¨Kolmogorov-Smirnov æ¤œå®šã‚’è¡Œã„ã€ã€Œæ®‹å·®ãŒæ­£è¦åˆ†å¸ƒã«å¾“ã£ã¦ã„ã‚‹ã€ã¨ã„ã†å¸°ç„¡ä»®èª¬ã‚’æ¤œå®šã—ã¾ã™ã€‚
+ã¾ãŸã€QQ plotã‚’æãã€ç†è«–äºˆæ¸¬å€¤ (y=x) ã‹ã‚‰å¤§ããé€¸è„±ã—ã¦ã„ãªã„ã‹ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™ã€‚
+ã“ã‚Œã‚‰ã®çµæœã€æ­£è¦æ€§ãŒç–‘ã‚ã‚Œã‚‹å ´åˆã«ã¯æœ€å°çµ¶å¯¾å€¤æ³•ã‚’æ¤œè¨ã™ã‚‹ã“ã¨ãŒæœ›ã¾ã—ã„ã§ã™ã€‚
   
 ```{r,warning=FALSE}
 check1 <- shapiro.test(resSR$resid)
@@ -100,7 +100,7 @@ check2 <- ks.test(resSR$resid,y="pnorm")
 par(mfrow=c(1,2),mar=c(4,4,2,2))
 hist(resSR$resid,xlab="Residuals",main="Normality test",freq=FALSE)
 X <- seq(min(resSR$resid)*1.3,max(resSR$resid)*1.3,length=200)
-points(X,dnorm(X,0,resSR$pars$sigma),col=2,lwd=3,type="l")
+points(X,dnorm(X,0,resSR$pars$sd),col=2,lwd=3,type="l")
 mtext(text=" P value",adj=1,line=-1,lwd=2,font=2)
 mtext(text=sprintf(" SW: %1.3f",check1$p.value),adj=1,line=-2)
 mtext(text=sprintf(" KS: %1.3f",check2$p.value),adj=1,line=-3)
@@ -109,13 +109,13 @@ qqnorm(resSR$resid2,cex=2)
 qqline(resSR$resid2,lwd=3)
 ```
   
-f’fŒ‹‰ÊFKolmogorov-Smirnov ŒŸ’è‚Å‚Í—LˆÓ‚Æ‚È‚èA³‹K•ª•z‚É]‚Á‚Ä‚È‚¢‚±‚Æ‚ª¦´‚³‚ê‚½BQQ plot‚à‚â‚â’¼ü‚Æ‚Í‚¸‚ê‚Ä‚¢‚½B  
+è¨ºæ–­çµæœï¼šKolmogorov-Smirnov æ¤œå®šã§ã¯æœ‰æ„ã¨ãªã‚Šã€æ­£è¦åˆ†å¸ƒã«å¾“ã£ã¦ãªã„ã“ã¨ãŒç¤ºå”†ã•ã‚ŒãŸã€‚QQ plotã‚‚ã‚„ã‚„ç›´ç·šã¨ã¯ãšã‚Œã¦ã„ãŸã€‚  
   
   
-## 4. c·‚ÌƒgƒŒƒ“ƒh‚Æ©ŒÈ‘ŠŠÖŒW”
+## 4. æ®‹å·®ã®ãƒˆãƒ¬ãƒ³ãƒ‰ã¨è‡ªå·±ç›¸é–¢ä¿‚æ•°
 
-c·‚ÌŠÔ“I‚ÈƒgƒŒƒ“ƒh‚ğƒ`ƒFƒbƒN‚µ‚Ü‚·B
-ƒgƒŒƒ“ƒh‚ªŒ©‚ç‚ê‚½‚èA©ŒÈ‘ŠŠÖŒW”‚ª—LˆÓ‚Å‚ ‚éê‡‚É‚ÍAc·‚Ì©ŒÈ‘ŠŠÖ‚ğl—¶‚µ‚½Ä¶YŠÖŒW‚ğŒŸ“¢‚·‚é‚±‚Æ‚ª–]‚Ü‚µ‚¢‚Å‚·B
+æ®‹å·®ã®æ™‚é–“çš„ãªãƒˆãƒ¬ãƒ³ãƒ‰ã‚’ãƒã‚§ãƒƒã‚¯ã—ã¾ã™ã€‚
+ãƒˆãƒ¬ãƒ³ãƒ‰ãŒè¦‹ã‚‰ã‚ŒãŸã‚Šã€è‡ªå·±ç›¸é–¢ä¿‚æ•°ãŒæœ‰æ„ã§ã‚ã‚‹å ´åˆã«ã¯ã€æ®‹å·®ã®è‡ªå·±ç›¸é–¢ã‚’è€ƒæ…®ã—ãŸå†ç”Ÿç”£é–¢ä¿‚ã‚’æ¤œè¨ã™ã‚‹ã“ã¨ãŒæœ›ã¾ã—ã„ã§ã™ã€‚
 
 ```{r,warning=FALSE}
 par(mfrow=c(1,2),mar=c(4,4,2,2))
@@ -127,12 +127,12 @@ ac.res <- acf(resSR$resid2,plot=FALSE)
 plot(ac.res,main="",lwd=3)
 ```
 
-f’fŒ‹‰ÊFc·‚ÉŠÔ“I‚ÈƒgƒŒƒ“ƒh‚ÍŒ©‚ç‚ê‚é‚ªA©ŒÈ‘ŠŠÖŒW”‚Í—LˆÓ‚Å‚È‚©‚Á‚½B  
+è¨ºæ–­çµæœï¼šæ®‹å·®ã«æ™‚é–“çš„ãªãƒˆãƒ¬ãƒ³ãƒ‰ã¯è¦‹ã‚‰ã‚Œã‚‹ãŒã€è‡ªå·±ç›¸é–¢ä¿‚æ•°ã¯æœ‰æ„ã§ãªã‹ã£ãŸã€‚  
   
   
-## 5. c·ƒu[ƒgƒXƒgƒ‰ƒbƒv
+## 5. æ®‹å·®ãƒ–ãƒ¼ãƒˆã‚¹ãƒˆãƒ©ãƒƒãƒ—
 
-ƒpƒ‰ƒ[ƒ^„’è‚ÌM—Š«‚ğƒ`ƒFƒbƒN‚·‚é‚½‚ß‚ÉAc·ƒu[ƒgƒXƒgƒ‰ƒbƒv‚ğs‚¢‚Ü‚·BM—Š‹æŠÔ‚ªL‚¢ê‡‚âAƒu[ƒgƒXƒgƒ‰ƒbƒv‚Ì’†‰›’l‚Æ“_„’è’l‚Ì˜¨—£‚ª‘å‚«‚¢ê‡‚É‚ÍAƒpƒ‰ƒ[ƒ^„’è‚ÌM—Š«‚ª’á‚¢‚±‚Æ‚É‚È‚è‚Ü‚·B
+ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¨å®šã®ä¿¡é ¼æ€§ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹ãŸã‚ã«ã€æ®‹å·®ãƒ–ãƒ¼ãƒˆã‚¹ãƒˆãƒ©ãƒƒãƒ—ã‚’è¡Œã„ã¾ã™ã€‚ä¿¡é ¼åŒºé–“ãŒåºƒã„å ´åˆã‚„ã€ãƒ–ãƒ¼ãƒˆã‚¹ãƒˆãƒ©ãƒƒãƒ—ã®ä¸­å¤®å€¤ã¨ç‚¹æ¨å®šå€¤ã®ä¹–é›¢ãŒå¤§ãã„å ´åˆã«ã¯ã€ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¨å®šã®ä¿¡é ¼æ€§ãŒä½ã„ã“ã¨ã«ãªã‚Šã¾ã™ã€‚
 
 ```{r,warning=FALSE}
 boot.res <- boot.SR(resSR)
@@ -154,11 +154,11 @@ arrows(quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$b),0.1
        quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$b),0.9),0,
        col=4,lwd=3,code=3)
 
-hist(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma),xlab="",ylab="",main="sigma")
-abline(v=resSR$pars$sigma,col=2,lwd=3)
-abline(v=median(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma)),col=3,lwd=3,lty=2)
-arrows(quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma),0.1),0,
-       quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma),0.9),0,
+hist(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd),xlab="",ylab="",main="sd")
+abline(v=resSR$pars$sd,col=2,lwd=3)
+abline(v=median(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd)),col=3,lwd=3,lty=2)
+arrows(quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd),0.1),0,
+       quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd),0.9),0,
        col=4,lwd=3,code=3)
 
 if (resSR$input$AR==1) {
@@ -180,12 +180,12 @@ for (i in 1:length(boot.res)) {
 points(resSR$pred$SSB,resSR$pred$R,col=2,type="l",lwd=3)
 ```
 
-f’fŒ‹‰ÊFƒpƒ‰ƒ[ƒ^a‚Æb‚ÍAƒu[ƒgƒXƒgƒ‰ƒbƒv„’è’l‚Ì’†‰›’l‚Æ“_„’è’l‚ª‚Ù‚Úˆê’v‚µ‚½Bsigma‚Í‚â‚â‚¸‚ê‚Ä‚¢‚½B
-Ä¶YŠÖŒW‚Í”äŠr“IƒƒoƒXƒg‚Å‚ ‚Á‚½B
+è¨ºæ–­çµæœï¼šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿aã¨bã¯ã€ãƒ–ãƒ¼ãƒˆã‚¹ãƒˆãƒ©ãƒƒãƒ—æ¨å®šå€¤ã®ä¸­å¤®å€¤ã¨ç‚¹æ¨å®šå€¤ãŒã»ã¼ä¸€è‡´ã—ãŸã€‚sigmaã¯ã‚„ã‚„ãšã‚Œã¦ã„ãŸã€‚
+å†ç”Ÿç”£é–¢ä¿‚ã¯æ¯”è¼ƒçš„ãƒ­ãƒã‚¹ãƒˆã§ã‚ã£ãŸã€‚
   
-## 6. ƒWƒƒƒbƒNƒiƒCƒt„’è
+## 6. ã‚¸ãƒ£ãƒƒã‚¯ãƒŠã‚¤ãƒ•æ¨å®š
 
-ƒpƒ‰ƒ[ƒ^„’è‚ÌŠæŒ’«‚ğ’²‚×‚é‚½‚ß‚ÉAˆê“_‚¸‚Âœ‚¢‚Äƒf[ƒ^‚ğƒWƒƒƒbƒNƒiƒCƒt‰ğÍ‚ğs‚¢‚Ü‚·B‚±‚ê‚É‚æ‚èA‚Ç‚Ì”N‚Ìƒf[ƒ^‚Ì‰e‹¿‚ª‘å‚«‚¢‚©‚ª–¾‚ç‚©‚É‚È‚è‚Ü‚·B  
+ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æ¨å®šã®é ‘å¥æ€§ã‚’èª¿ã¹ã‚‹ãŸã‚ã«ã€ä¸€ç‚¹ãšã¤é™¤ã„ã¦ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¸ãƒ£ãƒƒã‚¯ãƒŠã‚¤ãƒ•è§£æã‚’è¡Œã„ã¾ã™ã€‚ã“ã‚Œã«ã‚ˆã‚Šã€ã©ã®å¹´ã®ãƒ‡ãƒ¼ã‚¿ã®å½±éŸ¿ãŒå¤§ãã„ã‹ãŒæ˜ã‚‰ã‹ã«ãªã‚Šã¾ã™ã€‚  
 
 ```{r,warning=FALSE}
 jack.res <- lapply(1:length(SRdata$year), function(i){
@@ -203,9 +203,9 @@ plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$b)
      xlab="Removed year",ylab="",main="b",pch=19)
 abline(resSR$pars$b,0,lwd=3,col=2)
 
-plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$sigma),type="b",
-     xlab="Removed year",ylab="",main="sigma",pch=19)
-abline(resSR$pars$sigma,0,lwd=3,col=2)
+plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$sd),type="b",
+     xlab="Removed year",ylab="",main="sd",pch=19)
+abline(resSR$pars$sd,0,lwd=3,col=2)
 
 if (resSR$input$AR==1){
   plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$rho),type="b",
@@ -224,14 +224,14 @@ points(resSR$pred$SSB,resSR$pred$R,col=2,type="l",lwd=3)
 
 ```
 
-f’fŒ‹‰ÊF1992”NE2000”N‚Ìƒf[ƒ^‚ğœ‚­‚Æb‚Ì„’è’l‚ª‘å‚«‚­‚È‚éB
-‚»‚Ì‚Ù‚©‚Ìƒpƒ‰ƒ[ƒ^‚ÍŠeƒf[ƒ^‚Ìœ‹‚É‘Î‚µ‚Ä”äŠr“IŠæŒ’‚Å‚ ‚éB  
+è¨ºæ–­çµæœï¼š1992å¹´ãƒ»2000å¹´ã®ãƒ‡ãƒ¼ã‚¿ã‚’é™¤ãã¨bã®æ¨å®šå€¤ãŒå¤§ãããªã‚‹ã€‚
+ãã®ã»ã‹ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¯å„ãƒ‡ãƒ¼ã‚¿ã®é™¤å»ã«å¯¾ã—ã¦æ¯”è¼ƒçš„é ‘å¥ã§ã‚ã‚‹ã€‚  
 
   
 
-## 7. ƒvƒƒtƒ@ƒCƒ‹–Ş“x
+## 7. ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å°¤åº¦
 
-ƒpƒ‰ƒ[ƒ^a, b‚Ì’l‚ğ•Ï‚¦‚½‚Æ‚«‚É–Ş“x‚ª‚Ç‚Ì’ö“x•Ï‰»‚·‚é‚©‚ğ‰ğÍ‚µ‚Ü‚·B‚±‚±‚Å‚ÍAsigma‚ârho‚ÍÅ–Ş„’è’l‚ÉŒÅ’è‚µ‚Ä‚¢‚Ü‚·B‚±‚ÌŒ‹‰Ê‚Æƒu[ƒgƒXƒgƒ‰ƒbƒvM—Š‹æŠÔ‚¨‚æ‚ÑƒWƒƒƒbƒNƒiƒCƒt‰ğÍ‚ÌŒ‹‰Ê‚à“¯‚É}¦‚µ‚Ü‚·B
+ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿a, bã®å€¤ã‚’å¤‰ãˆãŸã¨ãã«å°¤åº¦ãŒã©ã®ç¨‹åº¦å¤‰åŒ–ã™ã‚‹ã‹ã‚’è§£æã—ã¾ã™ã€‚ã“ã“ã§ã¯ã€sdã‚„rhoã¯æœ€å°¤æ¨å®šå€¤ã«å›ºå®šã—ã¦ã„ã¾ã™ã€‚ã“ã®çµæœã¨ãƒ–ãƒ¼ãƒˆã‚¹ãƒˆãƒ©ãƒƒãƒ—ä¿¡é ¼åŒºé–“ãŠã‚ˆã³ã‚¸ãƒ£ãƒƒã‚¯ãƒŠã‚¤ãƒ•è§£æã®çµæœã‚‚åŒæ™‚ã«å›³ç¤ºã—ã¾ã™ã€‚
 
 
 ```{r,warning=FALSE}
@@ -253,11 +253,11 @@ lines(y=as.numeric(quantile(sapply(1:length(boot.res),function(i)boot.res[[i]]$p
       x=rep(resSR$pars$b,2),col=4,lwd=2)
 lines(x=as.numeric(quantile(sapply(1:length(boot.res),function(i)boot.res[[i]]$pars$b),c(0.1,0.9))),
       y=rep(resSR$pars$a,2),col=4,lwd=2)
-legend("bottomleft",c("Bootstrap CI(0.8)","Jackknife"),lty=1:0,pch=c("","›"),col=c(4,1),lwd=2:1)
+legend("bottomleft",c("Bootstrap CI(0.8)","Jackknife"),lty=1:0,pch=c("","â—‹"),col=c(4,1),lwd=2:1)
 ```
 
-f’fŒ‹‰ÊFƒpƒ‰ƒ[ƒ^b‚Ì’l‚ª‘å‚«‚­‚È‚Á‚Ä‚à–Ş“x‚Ì•Ï‰»‚Í”äŠr“I¬‚³‚¢
+è¨ºæ–­çµæœï¼šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿bã®å€¤ãŒå¤§ãããªã£ã¦ã‚‚å°¤åº¦ã®å¤‰åŒ–ã¯æ¯”è¼ƒçš„å°ã•ã„
   
 
 
-<!-- ## 7. ‚Ü‚Æ‚ß -->
+<!-- ## 7. ã¾ã¨ã‚ -->

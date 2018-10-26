@@ -5784,7 +5784,7 @@ plot.HCR <- function(beta=1,bban=0,blimit=1,btarget=2,add=FALSE,yscale=1.3,xlim=
         points(ssb.cur/scale,Frec*beta*Fmsy,lty=2,pch=4)
         text(0,0.8*beta*Fmsy+0.02,
              paste("F2018=",round(Frec*beta*Fmsy,2),"","Fcurrent (",
-                   round(Frec,2),"*",round(beta,2),"*",round(Fmsy,2),"*Fmsy)",sep=""),adj=0)    
+                   round(Frec,2),"*",round(beta,2),"*",round(Fmsy,2),"*Fcurrent)",sep=""),adj=0)    
     }
 }
 
