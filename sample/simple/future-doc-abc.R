@@ -1,5 +1,17 @@
-## ----setup, include=FALSE------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE)
+## ---- echo=FALSE---------------------------------------------------------
+library(rmdformats)
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+#                     cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+#opts_knit$set(width=75)
+
+
 par(mar=c(4,4,3,1))
 
 ## ----data-read-----------------------------------------------------------
@@ -200,37 +212,8 @@ refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
              Bban=as.numeric(MSY.HS$summary$SSB[8]),
              Fmsy=as.numeric(MSY.HS$summary$"Fref/Fcur"[1]))
 
-## ----calc.beta, eval=FALSE-----------------------------------------------
-## beta <- calc.beta(res=MSY.HS,# MSYの計算結果
-##                   prob.beta=c(0.5,0.9), # Btarget, Blimitを何パーセントの確率で上回るか
-##                   Btar=refs$Bmsy, # Btargetの値
-##                   Blim=refs$Blim, # Blimitの値
-##                   Bban=refs$Bban, # Bbanの値
-##                   Fmsy=refs$Fmsy) # Fmsyの値
-## beta[[1]]$beta # 平衡状態におけるSSBの分布が正規分布から外れる(平均値と中央値がずれるため)ほど・分散が大きいほど（Blimitを90%の確率で上回る条件が効いてくるため）betaの値は小さくなる
-## 
-
 ## ----beta-tmp------------------------------------------------------------
-input.beta <- MSY.HS$input$msy # MSY計算で使った引数を使う
-input.beta$N <- 1000 # 実際に計算するときは10000以上を使ってください
-input.beta$HCR <- list(Blim=refs$Blim,
-                      Bban=refs$Bban,
-                      beta=1) # とりあえず１としておく
-input.beta$is.plot <- TRUE
-input.beta$Frec <- list(stochastic=TRUE,
-                        future.year=NULL, # NULLにしておくと将来予測の最終年と判断する
-                        Blimit=refs$Blim,
-                        scenario="blimit",target.probs=10)
-fres.beta1 <- do.call(future.vpa,input.beta)
-
-input.beta$Frec <- list(stochastic=TRUE,
-                        future.year=NULL, # NULLにしておくと将来予測の最終年と判断する
-                        Blimit=refs$Bmsy,
-                        scenario="blimit",target.probs=50)
-fres.beta2 <- do.call(future.vpa,input.beta)
-
-beta <- min(fres.beta1$multi/refs$Fmsy, fres.beta2$multi/refs$Fmsy)
-
+beta <- calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
 
 ## ----abc-----------------------------------------------------------------
 input.abc <- MSY.HS$input$msy # MSY計算で使った引数を使う
@@ -238,10 +221,13 @@ input.abc$N <- 1000 # 実際に計算するときは10000以上を使ってく�
 input.abc$HCR <- list(Blim=refs$Blim,
                       Bban=refs$Bban,
                       beta=beta)
-input.abc$nyear <- 100 # ABC計算時には長期間計算する必要はない
+input.abc$nyear <- 20 # ABC計算時には長期間計算する必要はない
+input.abc$ABC.year <- 2013 # ここでABC.yearを設定しなおしてください
 input.abc$is.plot <- TRUE
 fres.abc1 <- do.call(future.vpa,input.abc)
-hist(fres.abc1$ABC) # ABCの分布
+
+par(mfrow=c(1,1))
+hist(fres.abc1$ABC,main="distribution of ABC") # ABCの分布
 ABC <- mean(fres.abc1$ABC) # 平均値をABCとする
 
 ## SSBの将来予測結果
@@ -253,15 +239,15 @@ draw.refline(cbind(unlist(refs[c(1,1,2,3)+3]),unlist(refs[c(1,1,2,3)])),horiz=TR
 par(mfrow=c(1,1))
 plot.future(fres.abc1,what=c(FALSE,FALSE,TRUE),is.legend=TRUE,lwd=2,
             col="darkblue",N=5,label=rep(NA,3))
-points(rownames(fres.abc1$vssb)[2],ABC,pch=20,col=2,cex=3)
-text(as.numeric(rownames(fres.abc1$vssb)[2])+1,ABC,"ABC",col=2)
+points(fres.abc1$input$ABC.year,ABC,pch=20,col=2,cex=3)
+text(fres.abc1$input$ABC.year+1,ABC,"ABC",col=2)
 
 ## 実際に、どんなFが将来予測で使われているか
 boxplot(t(fres.abc1$faa[1,,]/fres.abc1$faa[1,1,]),ylab="multiplier to current F")
 
 ## ----HCR-----------------------------------------------------------------
 # どんなHCRなのか書いてみる
-ssb.abc <- mean(fres.abc1$vssb[2,]) # ABC計算年のssbをとる
+ssb.abc <- mean(fres.abc1$vssb[rownames(fres.abc1$vssb)%in%fres.abc1$input$ABC.year,]) # ABC計算年のssbをとる
 plot.HCR(beta=beta,bban=refs$Bban,blimit=refs$Blim,btarget=refs$Bmsy,lwd=2,
          xlim=c(0,refs$Bmsy*2),ssb.cur=ssb.abc,Fmsy=refs$Fmsy,yscale=0.7,scale=1000)
 
@@ -289,10 +275,10 @@ legend("bottomright",col=c(1,1,2,2),title="Probs",pch=c(1,2,1,2),legend=c(">Btar
 ## ----ref.label='future.vpa', eval=FALSE----------------------------------
 ## NA
 
-## ----ref.label='est.MSY2', eval=FALSE------------------------------------
+## ----ref.label='msy', eval=FALSE-----------------------------------------
 ## NA
 
-## ----ref.label='calc.beta', eval=FALSE-----------------------------------
+## ----ref.label='beta.tmp', eval=FALSE------------------------------------
 ## NA
 
 ## ----ref.label='abc', eval=FALSE-----------------------------------------

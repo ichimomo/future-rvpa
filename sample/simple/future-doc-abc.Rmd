@@ -1,55 +1,32 @@
 ---
-title: "RVPAを用いた管理基準値・ABC計算チュートリアル"
+title: "管理基準値・ABC計算チュートリアル"
 author: "Momoko Ichinokawa"
 date: "`r Sys.Date()`"
 output: 
-  html_document:
-   highlight: pygments
-   theme: cerulean
-   toc: yes
-   toc_depth: 3
-   toc_float: yes
+  rmdformats::readthedown:
+    highlight: kate
+    md_extensions: -ascii_identifiers
 ---
 
-<style>
-
-/* body {background-color: #F7EBEF; margin: 30px; font-family: "MS ゴシック",sans-serif;
-     line-height: 120%; } */
- body {background-color: #e0ffff; margin: 30px; font-family: "MS ゴシック",sans-serif;
-     line-height: 120%; } 
-pre {background-color: #FFFFFF; padding: 5px 20px 5px; }
-mytitle {color: #006666; font-weight: bold;}
-
-ul {margin: 10px 30px 10px;padding: 0}
-/*ul.upper li{margin: 10px 30px 10px;padding: 0; list-style-image: url(dots6/ico_dots6_1.gif);}
-ul ul li{margin: 10px 30px 10px;padding: 0; list-style-type: circle;} */
-
-ul li{ 
-  list-style-image: url(dots6/ico_dots6_22.gif);  
-} 
-    
-ul ul li{ 
-  list-style:circle;     
-} 
+```{r, echo=FALSE}
+library(rmdformats)
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+#                     cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+#opts_knit$set(width=75)
 
 
-</style>
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
 par(mar=c(4,4,3,1))
 ```
-# MSY管理基準値計算ガイドライン
-
-## 1. 事前準備
+# 1. 事前準備
+   
 - データの読み込み，RVPA関数の読み込みなど
-- ここで使う関数とデータへのリンク
-
-    - <a href="http://cse.fra.affrc.go.jp/ichimomo/fish/rvpa1.9.2.r">rvpa1.9.2.r</a>   
-    - <a href="https://www.dropbox.com/s/rjpqks8zpuzeqwy/future2.1.r?dl=0">future2.1.r</a>   
-    - [例データ](http://cse.fra.affrc.go.jp/ichimomo/fish/data.zip) (展開して作業フォルダにデータを置く)
-
-
 ```{r data-read}
 # 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません
 source("../../rvpa1.9.2.r")
@@ -65,7 +42,7 @@ names(dat)
 ```
 
 
-## 2. VPAによる資源量推定
+# 2. VPAによる資源量推定
 
 今後はvpa関数の返り値，res.pmaを使って将来予測計算をおこなっていくので，そのためにvpaを実施します．(この辺はあまり詳しく解説しません．)
 
@@ -80,17 +57,16 @@ res.pma$Fc.at.age # 将来予測やMSY計算で使うcurrent F (fc.yearのオプ
 plot(res.pma$Fc.at.age,type="b",xlab="Age",ylab="F",ylim=c(0,max(res.pma$Fc.at.age)))
 ```
 
-## <font color="Red"> 2.5 VPA結果を外部から読み込む場合(2018/10/11追加) </font>
+## 2.5 VPA結果を外部から読み込む場合
 
 以下のようにread.vpa関数を使って下さい。
-サンプルとなる"out.csv"は<a href="http://cse.fra.affrc.go.jp/ichimomo/fish/out.csv"> こちら </a> にあります。
 
 ```{r}
  res.pma2 <- read.vpa("out.csv")
 ```
 
 
-## 3. 再生産関係を仮定しない管理基準値の計算
+# 3. 再生産関係を仮定しない管理基準値の計算
 - ref.F関数を使います
 - %SPRやFmaxなど、再生産関係を仮定しない管理基準値を計算します
 - 計算結果はrres.pmaに格納されます
@@ -114,8 +90,8 @@ rres.pma <- ref.F(res.pma, # VPAの計算結果
 rres.pma$summary
 ```
 
-## 4. 再生産関係の推定
-### データの作成
+# 4. 再生産関係の推定
+## データの作成
 
 - get.SRdataを使って再生産関係のフィット用のデータを作る
 - get.SRdata関数では，```rownames(res.pma$naa)```を参照し、必要な年齢分のSSBをずらしたデータを作成する
@@ -134,7 +110,7 @@ SRdata0 <- get.SRdata(R.dat=exp(rnorm(10)),SSB.dat=exp(rnorm(10)))
 SRdata0 <- get.SRdata(res.pma,years=1990:2000) 
 ```
 
-### モデルのフィット
+## モデルのフィット
 - HS,BH,RIをフィットし，再生産関係のパラメータを推定する
 - 結果のオブジェクトのAICcにAICcの値が入っているので，それを比較し，再生産関係を決定する
 - 以前のチュートリアルではfit.HS, fit.BH, fit.RIなど、あてはめる関数ごとに関数を分けていましたが、一括してSR.fit関数で計算できるようになりました。
@@ -175,11 +151,11 @@ dyn.load(dynlib("autoregressiveSR2"))
 HS.par11 <- fit.SR(SRdata,SR="HS",method="L2",AR=1,TMB=TRUE) #marginal likelihood
 ```
 
-### モデル診断
-再生産関係のあてはめのあとは、推定されたパラメータの信頼区間や頑健性などをチェックする必要があります。そのための関数群なども用意しています。詳しくは<a href=http://cse.fra.affrc.go.jp/ichimomo/fish/SRR-guidline0.html> SRRガイドライン </a> へ
+## モデル診断
+再生産関係のあてはめのあとは、推定されたパラメータの信頼区間や頑健性などをチェックする必要があります。そのための関数群なども用意しています。詳しくは<a href=https://ichimomo.github.io/future-rvpa/SRR-guidline.html> SRRガイドライン </a> へ
 
 
-## 5. 将来予測
+# 5. 将来予測
 
 future.vpa関数を使います
 
@@ -257,7 +233,7 @@ plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),
 plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),target="Biomass") 
 ```
 
-### (5-1) Fの設定やFrec
+## (5-1) Fの設定やFrec
 
 将来予測における漁獲のシナリオ
 
@@ -298,7 +274,7 @@ fres.currentSSB <- future.vpa(res.pma,
                                    sd=HS.par0$pars$sd,bias.corrected=TRUE))
 ```
 
-### (5-2) 再生産関係
+## (5-2) 再生産関係
 
 - 残差リサンプリングで将来予測をする場合→refuncとしてHS.rec（ホッケー・スティック）、BH.rec（べバートン・ホルト）、RI.rec（リッカー）を使う
 - rec.argの引数で、**必ず** resample=TRUEとしてください。
@@ -332,7 +308,7 @@ plot(fres.HS4$vssb[,-1],fres.HS4$naa[1,,-1],xlab="SSB",ylab="Recruits")
 plot.futures(list(fres.HS,fres.HS4)) # 両者の比較
 ```
 
-### (5-3) 年齢別体重が資源尾数に影響される場合の将来予測（2018/06/12新オプションとして追加）
+## (5-3) 年齢別体重が資源尾数に影響される場合の将来予測（2018/06/12新オプションとして追加）
 - ***future.vpaで，waa.fun = TRUEとすれば、年齢別資源重量が資源尾数（log(体重)~log(資源尾数)の回帰を関数内部で実行）の関数から予測されます***
 - ***不確実性も考慮されます***
 - 30系群であてはめた例は<a href="waa-lm.pdf">こちら</a> (データは1年分古いです)
@@ -347,12 +323,12 @@ fres.HS6$input$N <- 1000
 fres.HS6 <- do.call(future.vpa, fres.HS6$input)
 ```
 
-## 6. MSY管理基準値の計算
+# 6. MSY管理基準値の計算
 - MSY管理基準値計算では，上記の将来予測において，Fの値を様々に変えたときの平衡状態（世代時間×20年を```nyear```で指定します）における資源量やそれに対応するF等を管理基準値として算出します
 - なので、ここまでのプロセスで、ABC計算のためにきちんとしたオプションを設定したfuture.vpaを実行しておいてください。その返り値```fres.HS```をMSY計算では使っていきます 
 - est.MSY(ちょっと古いバージョン、B0基準のMSYも算出されます)とest.MSY2（新しいバージョン、ARありの場合に対応します）の２つがありましたが、２つの関数をest.MSYに統合しました。
 
-### est.MSYの説明
+## est.MSYの説明
 - この関数で計算できる管理基準値は以下のようなものになります
 - どの管理基準値がtarget, limit, banになるかは関数内では評価されません
 
@@ -402,50 +378,16 @@ refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
              Fmsy=as.numeric(MSY.HS$summary$"Fref/Fcur"[1]))
 ```
 
-## 8. HCRの計算とABCの算出
-### betaの計算　*calc.betaにバグがありました*　*仕様も検討中です* 
-- HCRにおけるβはcalc.beta関数から計算します。
-- 引数としてBtarget, Blimit, Bbanを与える必要があります
-
-```{r calc.beta, eval=FALSE}
-beta <- calc.beta(res=MSY.HS,# MSYの計算結果
-                  prob.beta=c(0.5,0.9), # Btarget, Blimitを何パーセントの確率で上回るか
-                  Btar=refs$Bmsy, # Btargetの値
-                  Blim=refs$Blim, # Blimitの値
-                  Bban=refs$Bban, # Bbanの値
-                  Fmsy=refs$Fmsy) # Fmsyの値
-beta[[1]]$beta # 平衡状態におけるSSBの分布が正規分布から外れる(平均値と中央値がずれるため)ほど・分散が大きいほど（Blimitを90%の確率で上回る条件が効いてくるため）betaの値は小さくなる
-
-```
-
-### betaの計算：暫定版
+# 7. HCRの計算とABCの算出
+## betaの計算：暫定版
 - *少なくとも*平衡状態においてProb(Btarget>B)>50%, Prob(Blimt>B)>10%にしたいので、その条件を満たすようなbetaを探索します。
-- future.vpaのFrecオプションを使って下さい
+- 実際の計算では10,000回くらいやってください
 
 ```{r beta-tmp}
-input.beta <- MSY.HS$input$msy # MSY計算で使った引数を使う
-input.beta$N <- 1000 # 実際に計算するときは10000以上を使ってください
-input.beta$HCR <- list(Blim=refs$Blim,
-                      Bban=refs$Bban,
-                      beta=1) # とりあえず１としておく
-input.beta$is.plot <- TRUE
-input.beta$Frec <- list(stochastic=TRUE,
-                        future.year=NULL, # NULLにしておくと将来予測の最終年と判断する
-                        Blimit=refs$Blim,
-                        scenario="blimit",target.probs=10)
-fres.beta1 <- do.call(future.vpa,input.beta)
-
-input.beta$Frec <- list(stochastic=TRUE,
-                        future.year=NULL, # NULLにしておくと将来予測の最終年と判断する
-                        Blimit=refs$Bmsy,
-                        scenario="blimit",target.probs=50)
-fres.beta2 <- do.call(future.vpa,input.beta)
-
-beta <- min(fres.beta1$multi/refs$Fmsy, fres.beta2$multi/refs$Fmsy)
-
+beta <- calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
 ```
 
-### HCRをもとに将来予測→ABC計算
+## HCRをもとに将来予測→ABC計算
 - 決定されたHCRのもとで将来予測計算をおこないます
 - 資源評価最終年＋２年目の「平均」漁獲量をABCとします
 - そのときに用いる親魚資源量は資源評価最終年＋２年目の親魚資源量です
@@ -456,10 +398,13 @@ input.abc$N <- 1000 # 実際に計算するときは10000以上を使ってく�
 input.abc$HCR <- list(Blim=refs$Blim,
                       Bban=refs$Bban,
                       beta=beta)
-input.abc$nyear <- 100 # ABC計算時には長期間計算する必要はない
+input.abc$nyear <- 20 # ABC計算時には長期間計算する必要はない
+input.abc$ABC.year <- 2013 # ここでABC.yearを設定しなおしてください
 input.abc$is.plot <- TRUE
 fres.abc1 <- do.call(future.vpa,input.abc)
-hist(fres.abc1$ABC) # ABCの分布
+
+par(mfrow=c(1,1))
+hist(fres.abc1$ABC,main="distribution of ABC") # ABCの分布
 ABC <- mean(fres.abc1$ABC) # 平均値をABCとする
 
 ## SSBの将来予測結果
@@ -471,8 +416,8 @@ draw.refline(cbind(unlist(refs[c(1,1,2,3)+3]),unlist(refs[c(1,1,2,3)])),horiz=TR
 par(mfrow=c(1,1))
 plot.future(fres.abc1,what=c(FALSE,FALSE,TRUE),is.legend=TRUE,lwd=2,
             col="darkblue",N=5,label=rep(NA,3))
-points(rownames(fres.abc1$vssb)[2],ABC,pch=20,col=2,cex=3)
-text(as.numeric(rownames(fres.abc1$vssb)[2])+1,ABC,"ABC",col=2)
+points(fres.abc1$input$ABC.year,ABC,pch=20,col=2,cex=3)
+text(fres.abc1$input$ABC.year+1,ABC,"ABC",col=2)
 
 ## 実際に、どんなFが将来予測で使われているか
 boxplot(t(fres.abc1$faa[1,,]/fres.abc1$faa[1,1,]),ylab="multiplier to current F")
@@ -480,7 +425,7 @@ boxplot(t(fres.abc1$faa[1,,]/fres.abc1$faa[1,1,]),ylab="multiplier to current F"
 
 ```{r HCR}
 # どんなHCRなのか書いてみる
-ssb.abc <- mean(fres.abc1$vssb[2,]) # ABC計算年のssbをとる
+ssb.abc <- mean(fres.abc1$vssb[rownames(fres.abc1$vssb)%in%fres.abc1$input$ABC.year,]) # ABC計算年のssbをとる
 plot.HCR(beta=beta,bban=refs$Bban,blimit=refs$Blim,btarget=refs$Bmsy,lwd=2,
          xlim=c(0,refs$Bmsy*2),ssb.cur=ssb.abc,Fmsy=refs$Fmsy,yscale=0.7,scale=1000)
 ```
@@ -495,7 +440,7 @@ legend("bottomright",col=c(1,1,2,2),title="Probs",pch=c(1,2,1,2),legend=c(">Btar
 
 ```
 
-## 9. ABC計算までのまとめ（時間がない人はここからスタート）
+# 8. ABC計算までのまとめ（時間がない人はここからスタート）
 
 MSY管理基準値を計算は以下の手順でおこないます．
 
@@ -517,13 +462,12 @@ MSY管理基準値を計算は以下の手順でおこないます．
    - 資源量と年齢別の体重に相関がある場合はそれを将来予測の設定に取り込む(waa.fun=TRUE)
 ```{r ref.label='future.vpa', eval=FALSE}
 ```   
-5. res.pmaとfres.HSを使ってMSY管理基準値を計算する (est.MSY2) → MSY.HS2 (管理基準値の推定結果)を得る
-   - 最新のest.MSY2関数を使って下さい
-```{r ref.label='est.MSY2', eval=FALSE}
+5. res.pmaとfres.HSを使ってMSY管理基準値を計算する (est.MSY) → MSY.HS (管理基準値の推定結果)を得る
+```{r ref.label='msy', eval=FALSE}
 ```
 
-6. 管理基準値からβを計算する（calc.beta）
-```{r ref.label='calc.beta', eval=FALSE}
+6. 管理基準値からβを計算する
+```{r ref.label='beta.tmp', eval=FALSE}
 ```
 
 7. 決定されたHCRを用いて20年程度の将来予測を実施し、ABC算出年のABCを計算する

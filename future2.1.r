@@ -5561,7 +5561,45 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
 ## ABC Calculation
 ##
 
-calc.beta <- function(res,mY=5,prob.beta=c(0.5,0.9),prob.delta=c(0.9,0.95),beta=1,delta=1,beta.est=TRUE,delta.est=FALSE,beta.range=c(0,1),delta.range=c(0.1,5),Fm2.max=5,thin=1,step1=0.2,tol=0.0001,
+### usage
+## calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
+calc.beta <- function(msy.input,Ftar=NULL,Btar=NULL,Blim=NULL,Bban=NULL,Blim.prob=0.9,Btar.prob=0.5,N=1000){
+    input.beta <- msy.input
+    input.beta$N <- N
+    input.beta$multi <- Ftar    
+    ## Blim, BbanをもとにしたHCRを使って将来予測を実施するためのオプションを追加
+    input.beta$HCR <- list(Blim=Blim,
+                           Bban=Bban,
+                           beta=1) # そのときのベータを探索するが、ここではとりあえず１としておく
+    input.beta$is.plot <- FALSE
+    input.beta$Frec <- list(stochastic=TRUE,
+                            future.year=NULL, # NULLにしておくと将来予測の最終年の確率を見る
+                            Blimit=Blim,
+                            scenario="blimit", # 将来の親魚資源量をBlimitで指定した値を参照して決める
+                            target.probs=100-Blim.prob*100) # Blimit「以下」になる確率を設定
+    fres.beta1 <- do.call(future.vpa,input.beta) 
+
+    input.beta$Frec <- list(stochastic=TRUE,
+                            future.year=NULL, # NULLにしておくと将来予測の最終年と判断する
+                            Blimit=Btar,
+                            scenario="blimit",target.probs=100-Btar.prob*100)
+    fres.beta2 <- do.call(future.vpa,input.beta)
+
+    beta <- min(fres.beta1$multi/Ftar, fres.beta2$multi/Ftar)
+
+    input.beta$multi <- beta*Ftar
+    input.beta$Frec <- NULL
+    
+    fout <- do.call(future.vpa,input.beta)
+    cat("beta:",beta,"\n",
+        "Year:",rev(dimnames(fout$vssb)[[1]])[1],"\n",
+        "Prob(SSB>Btar):",mean(fout$vssb[nrow(fout$vssb),]>Btar)*100,"\n",
+        "Prob(SSB>Blim):",mean(fout$vssb[nrow(fout$vssb),]>Blim)*100,"\n")
+    return(beta)
+}
+
+## 岡村さん作成バージョン。新しい関数に差し替え
+calc.beta0 <- function(res,mY=5,prob.beta=c(0.5,0.9),prob.delta=c(0.9,0.95),beta=1,delta=1,beta.est=TRUE,delta.est=FALSE,beta.range=c(0,1),delta.range=c(0.1,5),Fm2.max=5,thin=1,step1=0.2,tol=0.0001,
                       Btar=res$Btar, # いちおう、各種管理基準値は外からでも与えられるようにした
                       Blow=res$Blow,
                       Blim=res$Blim,

@@ -1,18 +1,29 @@
 ## ----setup, include=FALSE, warning=FALSE---------------------------------
-source("../rvpa1.9.2.r")
-source("../future2.1.r")
+library(rmdformats)
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+                     cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
 
-caa <- read.csv("caa_pma.csv",row.names=1)
-waa <- read.csv("waa_pma.csv",row.names=1)
-maa <- read.csv("maa_pma.csv",row.names=1)
+source("../../rvpa1.9.2.r")
+source("../../future2.1.r")
+
+caa <- read.csv("../simple/caa_pma.csv",row.names=1)
+waa <- read.csv("../simple/waa_pma.csv",row.names=1)
+maa <- read.csv("../simple/maa_pma.csv",row.names=1)
 dat <- data.handler(caa=caa, waa=waa, maa=maa, M=0.5)
 
-# VPA‚É‚æ‚éŽ‘Œ¹—Ê„’è
+# VPAã«ã‚ˆã‚‹è³‡æºé‡æŽ¨å®š
 res.pma <- vpa(dat,fc.year=2009:2011,rec=585,rec.year=2011,tf.year = 2008:2010,
                term.F="max",stat.tf="mean",Pope=TRUE,tune=FALSE,p.init=1.0)
 
 ## ---- warning=FALSE------------------------------------------------------
-SRdata <- get.SRdata(res.pma) #res.pma: vpa‚ÌŒ‹‰Ê
+SRdata <- get.SRdata(res.pma) #res.pma: vpaã®çµæžœ
 
 resHS <- fit.SR(SRdata,SR="HS",method="L2",AR=0)
 resBH <- fit.SR(SRdata,SR="BH",method="L2",AR=0)
@@ -28,7 +39,7 @@ legend("topleft",
        legend=c(sprintf("HS %5.2f",resHS$AICc),sprintf("BH %5.2f",resBH$AICc),sprintf("RI %5.2f",resRI$AICc)),
        lty=1:3,col=2:4,lwd=2,title="AICc",ncol=3)
 
-resSR <- resHS #HS‚ð‘I‘ð
+resSR <- resHS #HSã‚’é¸æŠž
 
 ## ----message=FALSE,warning=FALSE-----------------------------------------
 resAR1 <- fit.SR(SRdata,SR="HS",method="L2",AR=1)
@@ -44,7 +55,7 @@ legend("topleft",
        legend=c(sprintf("L2&AR0 %5.2f",resSR$AICc),sprintf("L2&AR1 %5.2f",resAR1$AICc),sprintf("L1&AR0 %5.2f",resL1$AICc)),
        lty=1:3,col=2:4,lwd=2,title="AICc",ncol=3)
 
-resSR <- resL1 #L1 norm‚ðÌ—p
+resSR <- resL1 #L1 normã‚’æŽ¡ç”¨
 
 ## ----warning=FALSE-------------------------------------------------------
 check1 <- shapiro.test(resSR$resid)
@@ -53,7 +64,7 @@ check2 <- ks.test(resSR$resid,y="pnorm")
 par(mfrow=c(1,2),mar=c(4,4,2,2))
 hist(resSR$resid,xlab="Residuals",main="Normality test",freq=FALSE)
 X <- seq(min(resSR$resid)*1.3,max(resSR$resid)*1.3,length=200)
-points(X,dnorm(X,0,resSR$pars$sigma),col=2,lwd=3,type="l")
+points(X,dnorm(X,0,resSR$pars$sd),col=2,lwd=3,type="l")
 mtext(text=" P value",adj=1,line=-1,lwd=2,font=2)
 mtext(text=sprintf(" SW: %1.3f",check1$p.value),adj=1,line=-2)
 mtext(text=sprintf(" KS: %1.3f",check2$p.value),adj=1,line=-3)
@@ -90,11 +101,11 @@ arrows(quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$b),0.1
        quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$b),0.9),0,
        col=4,lwd=3,code=3)
 
-hist(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma),xlab="",ylab="",main="sigma")
-abline(v=resSR$pars$sigma,col=2,lwd=3)
-abline(v=median(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma)),col=3,lwd=3,lty=2)
-arrows(quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma),0.1),0,
-       quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sigma),0.9),0,
+hist(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd),xlab="",ylab="",main="sd")
+abline(v=resSR$pars$sd,col=2,lwd=3)
+abline(v=median(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd)),col=3,lwd=3,lty=2)
+arrows(quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd),0.1),0,
+       quantile(sapply(1:length(boot.res), function(i) boot.res[[i]]$pars$sd),0.9),0,
        col=4,lwd=3,code=3)
 
 if (resSR$input$AR==1) {
@@ -131,9 +142,9 @@ plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$b)
      xlab="Removed year",ylab="",main="b",pch=19)
 abline(resSR$pars$b,0,lwd=3,col=2)
 
-plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$sigma),type="b",
-     xlab="Removed year",ylab="",main="sigma",pch=19)
-abline(resSR$pars$sigma,0,lwd=3,col=2)
+plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$sd),type="b",
+     xlab="Removed year",ylab="",main="sd",pch=19)
+abline(resSR$pars$sd,0,lwd=3,col=2)
 
 if (resSR$input$AR==1){
   plot(SRdata$year,sapply(1:length(SRdata$year), function(i) jack.res[[i]]$pars$rho),type="b",
@@ -170,5 +181,5 @@ lines(y=as.numeric(quantile(sapply(1:length(boot.res),function(i)boot.res[[i]]$p
       x=rep(resSR$pars$b,2),col=4,lwd=2)
 lines(x=as.numeric(quantile(sapply(1:length(boot.res),function(i)boot.res[[i]]$pars$b),c(0.1,0.9))),
       y=rep(resSR$pars$a,2),col=4,lwd=2)
-legend("bottomleft",c("Bootstrap CI(0.8)","Jackknife"),lty=1:0,pch=c("","›"),col=c(4,1),lwd=2:1)
+legend("bottomleft",c("Bootstrap CI(0.8)","Jackknife"),lty=1:0,pch=c("","â—‹"),col=c(4,1),lwd=2:1)
 

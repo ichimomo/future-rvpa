@@ -3,15 +3,23 @@ title: "再生産関係チェックリスト"
 author: "Shota Nishijima"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-   highlight: pygments
-   theme: cerulean
-   toc: yes
-   toc_depth: 3
-   toc_float: yes
+  rmdformats::readthedown:
+    highlight: kate
+    md_extensions: -ascii_identifiers    
 ---
 
 ```{r setup, include=FALSE, warning=FALSE}
+library(rmdformats)
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+                     cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+
 source("../../rvpa1.9.2.r")
 source("../../future2.1.r")
 

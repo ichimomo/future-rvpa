@@ -41,3 +41,8 @@ rsconnect/
 
 # The folder to save stuff memo
 memo/*
+
+# for compile all sample codes
+sample/compile*
+
+sample/*/*cache/*
