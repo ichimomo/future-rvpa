@@ -37,7 +37,8 @@ res.pma$Fc.at.age # 将来予測やMSY計算で使うcurrent F (fc.yearのオプ
 plot(res.pma$Fc.at.age,type="b",xlab="Age",ylab="F",ylim=c(0,max(res.pma$Fc.at.age)))
 
 ## ------------------------------------------------------------------------
- res.pma2 <- read.vpa("out.csv")
+out.vpa(res.pma) # vpa.csvというファイルが作成されます。VPAの結果のグラフ出力となるvpa.pdfも出力されます。
+res.pma2 <- read.vpa("vpa.csv") # vpa.csvを編集後、read.vpa関数で読み込みます
 
 ## ----ref.F, fig.cap="**図：plot=TRUEで表示されるYPR, SPR曲線**"----------
 byear <- 2009:2011 # 生物パラメータを平均する期間を2009年から2011年とする

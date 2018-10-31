@@ -1595,8 +1595,12 @@ read.vpa <- function(tfile,
             else{
                 tmp.names <- list(tdat[-1,1],tdat[1,-1])
                 tdat <- tdat[,!apply(tdat=="",2,all)]
-                tdat <- tdat[,!apply(tdat=="",1,all)]        
+                tdat <- tdat[!apply(tdat=="",1,all),]
+                tdat <- tdat[,!apply(is.na(tdat),2,all)]
+                tdat <- tdat[!apply(is.na(tdat),1,all),]
                 tdat <- sapply((tdat[-1,-1]),as.numeric)
+                tmp.names <- lapply(tmp.names,function(x) x[x!=""])
+                tmp.names <- lapply(tmp.names,function(x) x[!is.na(x)])                
                 dimnames(tdat) <- tmp.names                
                 tdat <- as.data.frame(tdat)
             }
