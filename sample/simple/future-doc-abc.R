@@ -100,6 +100,7 @@ fres.HS <- future.vpa(res.pma,
                       recfunc=HS.recAR, # 再生産関係の関数
                       # recfuncに対する引数
                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                   rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
                                    sd=HS.par0$pars$sd,resid=HS.par0$resid))
 
 ## ----future.vpa2, fig.cap="**図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示**"----
@@ -152,6 +153,7 @@ fres.currentSSB <- future.vpa(res.pma,
                       recfunc=HS.recAR, # 再生産関係の関数
                       # recfuncに対する引数
                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                   rho=HS.par0$pars$rho,                                    
                                    sd=HS.par0$pars$sd,bias.corrected=TRUE))
 
 ## ------------------------------------------------------------------------
@@ -169,6 +171,7 @@ fres.HS4 <- future.vpa(res.pma,
                           seed=1,
                           recfunc=HS.rec, # 再生産関係の関数（HS.rec=Hockey-stick)                                
                           rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                       rho=HS.par0$pars$rho,
                                        sd=HS.par0$pars$sd,bias.correction=TRUE,
                                        resample=TRUE,resid=HS.par0$resid))
 

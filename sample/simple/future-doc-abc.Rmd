@@ -181,6 +181,7 @@ fres.HS <- future.vpa(res.pma,
                       recfunc=HS.recAR, # 再生産関係の関数
                       # recfuncに対する引数
                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                   rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
                                    sd=HS.par0$pars$sd,resid=HS.par0$resid))
 ```
 
@@ -271,6 +272,7 @@ fres.currentSSB <- future.vpa(res.pma,
                       recfunc=HS.recAR, # 再生産関係の関数
                       # recfuncに対する引数
                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                   rho=HS.par0$pars$rho,                                    
                                    sd=HS.par0$pars$sd,bias.corrected=TRUE))
 ```
 
@@ -295,6 +297,7 @@ fres.HS4 <- future.vpa(res.pma,
                           seed=1,
                           recfunc=HS.rec, # 再生産関係の関数（HS.rec=Hockey-stick)                                
                           rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                       rho=HS.par0$pars$rho,
                                        sd=HS.par0$pars$sd,bias.correction=TRUE,
                                        resample=TRUE,resid=HS.par0$resid))
 ```
