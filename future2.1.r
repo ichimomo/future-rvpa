@@ -4622,18 +4622,26 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
 }
 # Hockey-stick
 
-plot.kobe <- function(vpares,Bref,Uref,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",ylab.tmp="U/Umsy",xlab.tmp="SSB/SSBmsy",title.tmp=""){
+plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",ylab.tmp="U/Umsy",xlab.tmp="SSB/SSBmsy",title.tmp=""){
     
     vpares$TC.MT <- as.numeric(colSums(vpares$wcaa))
     UBdata <- data.frame(years=as.numeric(colnames(vpares$baa)),
-                         U=as.numeric(vpares$TC.MT)/as.numeric(colSums(vpares$baa,na.rm=T))/Uref,
-                         B=as.numeric(colSums(vpares$ssb))/Bref)
+                         U=as.numeric(vpares$TC.MT)/as.numeric(colSums(vpares$baa,na.rm=T))/Umsy,
+                         B=as.numeric(colSums(vpares$ssb))/Bmsy)
 
     x <- UBdata$B
     y <- UBdata$U
     tmp <- x>0 & y>0
     x <- x[tmp]
     y <- y[tmp]
+
+    if(!is.null(Blim)){
+        Blim.percent <- Blim/Bmsy
+    }
+    else{
+        Blim.percent <- 0.5
+    }
+    
     plot(x,
          y,type="n",xlim=c(0,ifelse(max(x)<2,2,max(x,na.rm=T))),
          ylim=c(0,ifelse(max(y,na.rm=T)<3,3,max(y,na.rm=T))),
@@ -4641,11 +4649,13 @@ plot.kobe <- function(vpares,Bref,Uref,plot.history=FALSE,is.plot=FALSE,pickU=""
     polygon(c(-1,1,1,-1),c(-1,-1,1,1),col="khaki1",border=NA)
     polygon(c(1,6,6,1),c(-1,-1,1,1),col="olivedrab2",border=NA)
     polygon(c(1,6,6,1),c(1,1,6,6),col="khaki1",border=NA)
-    polygon(c(-1,0.5,0.5,-1),c(1,1,6,6),col="indianred1",border=NA)
-    polygon(c(0.5,1,1,0.5),c(1,1,6,6),col="tan1",border=NA)
-    polygon(c(-1,0.5,0.5,-1),c(-1,-1,1,1),col="khaki2",border=NA)
-    polygon(c(0.5,1,1,0.5),c(-1,-1,1,1),col="khaki1",border=NA)            
+    polygon(c(-1,Blim.percent,Blim.percent,-1),c(1,1,6,6),col="indianred1",border=NA)
+    polygon(c(Blim.percent,1,1,Blim.percent),c(1,1,6,6),col="tan1",border=NA)
+    polygon(c(-1,Blim.percent,Blim.percent,-1),c(-1,-1,1,1),col="khaki2",border=NA)
+    polygon(c(Blim.percent,1,1,Blim.percent),c(-1,-1,1,1),col="khaki1",border=NA)            
     axis(side=1:2)
+
+
 
 #      points(x,y,type="o",pch=c(3,rep(1,length(y)-2),20),col=c(1,rep(1,length(y)-2),1),cex=c(1,r
       points(x,y,type="l",pch=20,col=1,lwd=1)
@@ -4659,6 +4669,7 @@ plot.kobe <- function(vpares,Bref,Uref,plot.history=FALSE,is.plot=FALSE,pickU=""
       plot(UBdata$years,x,type="b",xlab="B/Bmsy",ylim=c(0,max(y)))
       abline(h=1)
     }
+
 
     invisible(UBdata)    
 }

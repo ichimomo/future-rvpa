@@ -380,7 +380,9 @@ refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
              Bmsy=as.numeric(MSY.HS$summary$SSB[1]),
              Blim=as.numeric(MSY.HS$summary$SSB[6]),
              Bban=as.numeric(MSY.HS$summary$SSB[8]),
-             Fmsy=as.numeric(MSY.HS$summary$"Fref/Fcur"[1]))
+             Fmsy=as.numeric(MSY.HS$summary$"Fref/Fcur"[1]),
+             MSY=as.numeric(MSY.HS$summary$Catch[1]),
+             Umsy=as.numeric(MSY.HS$summary$Catch[1])/as.numeric(MSY.HS$all.stat$biom.mean[1]))
 ```
 
 # 7. HCRの計算とABCの算出
@@ -417,6 +419,7 @@ par(mfrow=c(1,1))
 plot.future(fres.abc1,what=c(FALSE,TRUE,FALSE),is.legend=TRUE,lwd=2,
             col="darkblue",N=5,label=rep(NA,3))
 draw.refline(cbind(unlist(refs[c(1,1,2,3)+3]),unlist(refs[c(1,1,2,3)])),horiz=TRUE,lwd=1,scale=1)
+
 ## 漁獲量の将来予測結果
 par(mfrow=c(1,1))
 plot.future(fres.abc1,what=c(FALSE,FALSE,TRUE),is.legend=TRUE,lwd=2,
@@ -436,13 +439,18 @@ plot.HCR(beta=beta,bban=refs$Bban,blimit=refs$Blim,btarget=refs$Bmsy,lwd=2,
 ```
 
 ```{r probability}
+# 将来の親魚資源量がBMSYやBlimitを上回る確率の表示
 plot(apply(fres.abc1$vssb>refs$Bmsy,1,mean)*100,type="b",ylab="Probability",ylim=c(0,100))
 points(apply(fres.abc1$vssb>refs$BmsyAR,1,mean)*100,pch=2,type="b")
 points(apply(fres.abc1$vssb>refs$Blim,1,mean)*100,pch=1,col=2,type="b")
 points(apply(fres.abc1$vssb>refs$BlimAR,1,mean)*100,pch=2,col=2,type="b")
 abline(h=c(50,90),col=c(1,2))
 legend("bottomright",col=c(1,1,2,2),title="Probs",pch=c(1,2,1,2),legend=c(">Btarget_Eq",">Btarget_AR",">Blimit_Eq",">Blimit_AR"))
+```
 
+```{r kobe}
+# Kobe chart
+plot.kobe(res.pma,Bmsy=refs$Bmsy,Umsy=refs$Umsy,Blim=refs$Blim)
 ```
 
 # 8. ABC計算までのまとめ（時間がない人はここからスタート）
