@@ -480,6 +480,9 @@ MSY管理基準値を計算は以下の手順でおこないます．
 ```{r ref.label='msy', eval=FALSE}
 ```
 
+```{r ref.label='summary', eval=FALSE}
+```	
+
 6. 管理基準値からβを計算する
 ```{r ref.label='beta.tmp', eval=FALSE}
 ```

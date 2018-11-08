@@ -46,3 +46,5 @@ memo/*
 sample/compile*
 
 sample/*/*cache/*
+
+.[#]*

@@ -289,6 +289,9 @@ plot.kobe(res.pma,Bmsy=refs$Bmsy,Umsy=refs$Umsy,Blim=refs$Blim)
 ## ----ref.label='msy', eval=FALSE-----------------------------------------
 ## NA
 
+## ----ref.label='summary', eval=FALSE-------------------------------------
+## NA
+
 ## ----ref.label='beta.tmp', eval=FALSE------------------------------------
 ## NA
 
