@@ -24,6 +24,7 @@ opts_chunk$set(echo=TRUE,
 
 par(mar=c(4,4,3,1))
 ```
+	
 # 1. 事前準備
    
 - データの読み込み，RVPA関数の読み込みなど

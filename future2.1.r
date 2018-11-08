@@ -4028,13 +4028,22 @@ est.MSY <- function(vpares,farg,
     
     MSY2 <- target.func(fout.msy,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
     B02 <- target.func(fout0,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)        
-    PGYstat2 <- t(sapply(1:length(fout.PGY),
-                         function(x) target.func(fout.PGY[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)))
-#   browser()
+    if(!is.null(PGY)){
+        PGYstat2 <- t(sapply(1:length(fout.PGY),
+                             function(x) target.func(fout.PGY[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)))
+    }
+    else{
+        PGYstat2 <- NULL
+    }
 
-    B0stat2 <- t(sapply(1:length(fout.B0percent),
+    if(!is.null(B0percent)){
+        B0stat2 <- t(sapply(1:length(fout.B0percent),
                        function(x) target.func(fout.B0percent[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
                        ))
+    }
+    else{
+        B0stat2 <- NULL
+    }
 
     refvalue2 <- rbind(MSY2,B02,PGYstat2,B0stat2)
     sumvalue2 <- refvalue2[,c("ssb.mean","biom.mean","U.mean","catch.mean","Fref2Fcurrent")]
