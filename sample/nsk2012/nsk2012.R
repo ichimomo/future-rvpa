@@ -102,7 +102,6 @@ source("../../future2.1.r")
   rec.arg <- list(rps.year=1989:2007,rpsmean=TRUE,
                           Blim.rec=Inf,upper.ssb=Inf,bias.corrected=FALSE,
                           upper.recruit=1858206) # 単位は千尾
-  pre.catch <- list(year=2012,wcatch=13000)
   Blim.nsk <- 139958.1456 *1000
   SSBcur.nsk <- sum(res.nsk$ssb[as.character(2006)])
   Frec.multi <- apply(res.nsk$ssb,2,sum)["2011"]/1000/Blim.nsk
@@ -119,6 +118,8 @@ SRdata <- get.SRdata(res.nsk)
 HS.par0 <- fit.SR(SRdata,SR="HS",method="L2",AR=0,hessian=FALSE)
 
 #------ 将来予測 ---------------
+pre.catch <- list(year=2012,wcatch=13000)
+rec.new <- list(year=2012,rec=385496)
 fres.nsk <- future.vpa(res.nsk,currentF=NULL,
                          # 詳細な将来予測結果は0.9*Fsusについて
                        multi=rres.nsk$summary$Fmean[3]*0.9, 
