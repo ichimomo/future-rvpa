@@ -147,8 +147,45 @@ fres.nsk2 <- future.vpa(res.nsk,currentF=NULL,
                        recfunc=HS.recAR, # 再生産関係の関数                         
                        rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
                                     rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
+                                    sd=HS.par0$pars$sd,resid=HS.par0$resid))
+
+# start.yearをもっと遡る場合、VPA結果のfaaを使ってシミュレーションをする→設定の確認（2018/11/09バグ修正）
+pre.catch <- NULL
+rec.new <- NULL
+fres.nsk3 <- future.vpa(res.nsk,currentF=NULL,
+                       multi=rres.nsk$summary$Fmean[3]*0.9, 
+                       nyear=20,start.year=2005,N=1000,
+                       waa.year=byear.nsk,maa.year=byear.nsk,
+                       rec.new=rec.new,
+                       ABC.year=2013, 
+                       pre.catch=pre.catch,
+                       recfunc=HS.recAR, # 再生産関係の関数                         
+                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                    rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
                                     sd=HS.par0$pars$sd,resid=HS.par0$resid))  
 
+# faaにVPA結果が入っているか確認
+matplot(dimnames(fres.nsk3$faa)[[2]],t(fres.nsk3$faa[,,1]),xlab="Years",ylab="F at age")
+matpoints(colnames(res.nsk$faa),t(res.nsk$faa),col=1,type="l")
 
+## ただし、faaの列にすべてゼロが入っている場合（太平洋マイワシなど）、その列のfaaには将来予測のcurrent Fの値が入る
+
+res.nsk2 <- res.nsk
+res.nsk2$faa[,32] <- 0
+pre.catch <- NULL
+rec.new <- NULL
+fres.nsk4 <- future.vpa(res.nsk2,currentF=NULL,
+                       multi=rres.nsk$summary$Fmean[3]*0.9, 
+                       nyear=20,start.year=2005,N=1000,
+                       waa.year=byear.nsk,maa.year=byear.nsk,
+                       rec.new=rec.new,
+                       ABC.year=2013, 
+                       pre.catch=pre.catch,
+                       recfunc=HS.recAR, # 再生産関係の関数                         
+                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                    rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
+                                    sd=HS.par0$pars$sd,resid=HS.par0$resid))                    
                   
-                  
+# F=0を入れた2011年のFはcurrent Fの値が使われている
+matplot(dimnames(fres.nsk4$faa)[[2]],t(fres.nsk4$faa[,,1]),xlab="Years",ylab="F at age")
+matpoints(colnames(res.nsk2$faa),t(res.nsk2$faa),col=1,type="l")

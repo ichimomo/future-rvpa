@@ -733,22 +733,23 @@ future.vpa <-
     # ABCyear以前はcurrent Fを使う。
     faa[,fyears<min(ABC.year),] <- currentF*exp(rnorm(length(faa[,fyears<min(ABC.year),]),0,F.sigma))
     
-    ## VPA期間と将来予測期間が被っている場合、VPA期間のFはVPAの結果を使う
-    if(length(tmp <- which(fyear.year %in% years))>0){  
-      tmp0 <- which(years %in% fyear.year)
-      for(jj in 1:length(tmp0)){
-        for(j in 1:length(tmp)){
-            if(any(res0$faa[,tmp0[jj]]>0) && !is.null(res0$input$dat$waa[,tmp0[jj]])){ # もしfaaがゼロでないなら（PMIの場合、2012までデータが入っているが、faaはゼロになっているので
-              faa[,tmp[j],] <- res0$faa[,tmp0[jj]]
-              waa[,tmp[j],] <- res0$input$dat$waa[,tmp0[jj]]
-              if(!is.null(res0$input$dat$waa.catch)){
-                waa.catch[,tmp[j],] <- res0$input$dat$waa.catch[,tmp0[jj]]
-              }
-              else{
-                waa.catch[,tmp[j],] <- res0$input$dat$waa[,tmp0[jj]]
-              }
-            }
-        }}}
+      ## VPA期間と将来予測期間が被っている場合、VPA期間のFはVPAの結果を使う
+      overlapped.years <- list(future=which(fyear.year %in% years),vpa=which(years %in% fyear.year))
+      if(length(overlapped.years$future)>0){  
+#          for(jj in 1:length(vpayears.overlapped)){
+              for(j in 1:length(overlapped.years$future)){
+                  if(any(res0$faa[,overlapped.years$vpa[j]]>0) && !is.null(res0$input$dat$waa[,overlapped.years$vpa[j]])){ # もしfaaがゼロでないなら（PMIの場合、2012までデータが入っているが、faaはゼロになっているので
+                      faa[,overlapped.years$future[j],] <- res0$faa[,overlapped.years$vpa[j]]
+                      waa[,overlapped.years$future[j],] <- res0$input$dat$waa[,overlapped.years$vpa[j]]
+                      if(!is.null(res0$input$dat$waa.catch)){
+                          waa.catch[,overlapped.years$future[j],] <- res0$input$dat$waa.catch[,overlapped.years$vpa[j]]
+                      }
+                      else{
+                          waa.catch[,overlapped.years$future[j],] <- res0$input$dat$waa[,overlapped.years$vpa[j]]
+                      }
+                  }
+              }}
+                                        #}
     
     tmp <- aperm(faa,c(2,1,3))
     tmp <- tmp*multi.year
