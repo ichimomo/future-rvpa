@@ -131,6 +131,22 @@ fres.nsk <- future.vpa(res.nsk,currentF=NULL,
                        recfunc=HS.recAR, # 再生産関係の関数                         
                        rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
                                     rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
+                                    sd=HS.par0$pars$sd,resid=HS.par0$resid))
+
+# res.newを与えない場合
+pre.catch <- NULL
+rec.new <- NULL
+fres.nsk2 <- future.vpa(res.nsk,currentF=NULL,
+                         # 詳細な将来予測結果は0.9*Fsusについて
+                       multi=rres.nsk$summary$Fmean[3]*0.9, 
+                       nyear=20,start.year=2012,N=1000,
+                       waa.year=byear.nsk,maa.year=byear.nsk,
+                       rec.new=rec.new,
+                       ABC.year=2013, 
+                       pre.catch=pre.catch,
+                       recfunc=HS.recAR, # 再生産関係の関数                         
+                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                    rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
                                     sd=HS.par0$pars$sd,resid=HS.par0$resid))  
 
 

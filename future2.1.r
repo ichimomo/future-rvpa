@@ -790,8 +790,9 @@ future.vpa <-
 
       # 1年目の年齢組成を入れる
       if(!start.year%in%years){
-        # VPA結果が2011年まで、将来予測が2012年の場合
-        if(start.year==(max(years)+1)){
+          # VPA結果が2011年まで、将来予測が2012年の場合
+          # 将来予測の最初の年の設定；バリエーションがありややこしいのでここで設定される
+          if(start.year==(max(years)+1)){
             {if(is.null(res0$input$dat$M)){
                 M.lastyear <- M.org
             }
@@ -814,6 +815,7 @@ future.vpa <-
             
             if(fyears[1]-min.age < start.year){
                 thisyear.ssb <- sum(res0$ssb[,as.character(fyears[1]-min.age)],na.rm=T)
+                thisyear.ssb <- rep(thisyear.ssb,N)
             }
             else{
                 if(waa.fun){
@@ -911,6 +913,7 @@ future.vpa <-
           if(fyears[i+1]-min.age < start.year){
               # 参照する親魚資源量がVPA期間である場合、VPA期間のSSBをとってくる
               thisyear.ssb <- sum(res0$ssb[,as.character(fyears[i+1]-min.age)],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom
+              thisyear.ssb <- rep(thisyear.ssb,N)              
               if(!is.null(ssb0)) thisyear.ssb <- colSums(ssb0)
           }
           else{
@@ -923,7 +926,7 @@ future.vpa <-
             thisyear.ssb <- colSums(naa[,i+1-min.age,]*waa[,i+1-min.age,]*maa[,i+1-min.age,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom            
           }
 
-          thisyear.ssb <- thisyear.ssb+(1e-10)          
+          thisyear.ssb <- thisyear.ssb+(1e-10)
           rec.tmp <- recfunc(thisyear.ssb,res0,
                              rec.resample=rec.tmp$rec.resample,
                              rec.arg=rec.arg)
