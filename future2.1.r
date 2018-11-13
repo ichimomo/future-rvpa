@@ -1632,8 +1632,8 @@ read.vpa <- function(tfile,
   dres$baa <- as.data.frame(dres$baa)
     
   # setting total catch
-  dres$waa.catch <- dres$input$dat$waa.catch * dres$input$dat$caa
-  dres$waa.catch <- as.data.frame(dres$waa.catch)
+  dres$wcaa <- dres$input$dat$waa.catch * dres$input$dat$caa
+  dres$wcaa <- as.data.frame(dres$wcaa)
     
   dres$Blimit <- Blimit
 
