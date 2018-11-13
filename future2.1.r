@@ -4,15 +4,7 @@
 # 0.3f; Frec1, Frec2, Frecの計算オプションをfuture.vpaに追加
 # 0.4: スケトウ対応
 # 0.5: 2013.1.18 全種対応のためのバージョン
-# 0.5c: 対馬のサバに対応するため、将来予測の部分にtimestepを導入
-#       資源量の単位はトン、尾数の単位は百万尾
-# 2014.7.4; 黒田さん指摘により，Popeの引数を追加
-# 2016.6.12; vpaのほうとファイルを分ける→future1.0
-## MSY計算関数(SR.est)を追加
-## 2017.08.10 SR.estにssbとRだけを単純に与えて再生産関係をフィットする機能を追加。引数SSB.datとR.datを与えると、他のデータは無視して,与えたデータにフィットさせる
-## 2017.08.28 将来予測関数(future.vpa)にBbanオプションを追加
-## 2017.11.24 ref.Fにmin.ageを追加
-## 2017.11.24 ref.F, future.vpaにwaa.catch引数（漁獲量計算時のwaa。通常のwaa引数は資源量・親魚資源量計算時に使われる）。また、vpaへの引数にcaa.catchを特別に与えている場合には、将来予測や管理基準値、MSYの漁獲量の計算時にvpaに与えたcaa.catchを使うように変更
+# 0.5c: 対馬のサバに対応するため、将来予測の部分waa.catchを使うように変更
 ## 2017.12.25 Frecの引数に "scenario"と"Frange"オプションを追加
 ##   scenario="catch.mean"とすると、将来のstochastic simulationにおける平均漁獲量Blimitで指定した値と一致するようになる
 ##   Frange=c(0.01,2) などと指定する。探索するFの範囲。特に、scenario="catch.mean"を使う場合、解が２つ出てくるので、
@@ -1637,7 +1629,7 @@ read.vpa <- function(tfile,
   dres$baa <- as.data.frame(dres$baa)
     
   # setting total catch
-  dres$waa.catch <- dres$input$dat$waa * dres$input$dat$caa
+  dres$waa.catch <- dres$input$dat$waa.catch * dres$input$dat$caa
   dres$waa.catch <- as.data.frame(dres$waa.catch)
     
   dres$Blimit <- Blimit
