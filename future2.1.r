@@ -1572,7 +1572,9 @@ read.vpa <- function(tfile,
                      faa.label="fishing mortality at age",
                      Fc.label="Current F",
                      naa.label="numbers at age",
-                     Blimit=NULL,Pope=TRUE,fc.year=NULL){
+                     Blimit=NULL,
+                     Pope=NULL, # VPA計算時にどっちを使っているか入れる（TRUE or FALSE）。デフォルトはNULLでcaa,faa,naaの関係から自動判別するが、自動判別の結果はcatで出力されるので、それをみて正しく判断されているか確認してください。
+                     fc.year=NULL){
 
     tmpdata <- read.csv(tfile,header=F,as.is=F,colClasses="character")
 
@@ -1621,7 +1623,8 @@ read.vpa <- function(tfile,
   dres$input$dat$waa <- tmpfunc(tmpdata,waa.label)
   dres$input$dat$waa <- tmpfunc(tmpdata,waa.biomass.label)        
   dres$input$dat$waa.catch <- tmpfunc(tmpdata,waa.catch.label)      
-
+  if(is.null(dres$input$dat$waa.catch)) dres$input$dat$waa.catch <- waa
+    
   dres$ssb <- dres$input$dat$waa * dres$input$dat$maa * dres$naa
   dres$ssb <- as.data.frame(dres$ssb)
   
@@ -1634,6 +1637,7 @@ read.vpa <- function(tfile,
     
   dres$Blimit <- Blimit
 
+    ## catch at ageの計算時にpopeの近似式を使っているかどうか、通常は外から情報として与えてほしいところだが、与えられない場合、入力されたcaa,faa,naaの関係を見て、Popeで計算されているのかそうでないのかを判断してdres$input$Popeに入れる
   if(is.null(Pope)){
       caa.pope  <- dres$naa*(1-exp(-dres$faa))*exp(-dres$input$dat$M/2)
         diff.pope <- mean(unlist(dres$input$dat$caa/caa.pope))
@@ -1644,14 +1648,20 @@ read.vpa <- function(tfile,
         diff.bara <- mean(unlist(dres$input$dat$caa/caa.bara))
 
         if(abs(1-mean(diff.bara))>abs(1-mean(diff.pope))){
-            dres$Pope <- TRUE
+            dres$input$Pope <- TRUE
+            cat("Pope is TRUE... OK?\n")
         }
         else{
-            dres$Pope <- FALSE
+            dres$input$Pope <- FALSE
+            cat("Pope is FALSE... OK?\n")            
         }
   }
+  else{
+      dres$input$Pope <- Pope
+  }    
     if(is.null(dres$Fc.at.age) && !is.null(fc.year)) dres$Fc.at.age <- apply(dres$faa[,colnames(dres$faa)%in%fc.year],1,mean)
-  dres
+    
+  return(dres)
 }
 
 

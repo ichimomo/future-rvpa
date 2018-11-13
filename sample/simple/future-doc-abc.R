@@ -190,6 +190,26 @@ fres.HS6$input$waa.fun <- TRUE
 fres.HS6$input$N <- 1000
 fres.HS6 <- do.call(future.vpa, fres.HS6$input)
 
+## ----options-------------------------------------------------------------
+# 残差リサンプリングによる将来予測
+fres.HS5 <- future.vpa(res.pma,
+                       multi=1,
+                       nyear=50, # 将来予測の年数
+                       start.year=2012, # 将来予測の開始年
+                       N=100, # 確率的計算の繰り返し回数
+                       ABC.year=2013, # ABCを計算する年
+                       waa.year=2009:2011, # 生物パラメータの参照年
+                       maa.year=2009:2011,
+                       M.year=2009:2011,
+                       recfunc=HS.rec, 
+                       rec.arg=list(a=HS.par0$pars$a,b=HS.par0$pars$b,
+                                       rho=HS.par0$pars$rho,
+                                       sd=HS.par0$pars$sd,bias.correction=TRUE,
+                                    resample=TRUE,resid=HS.par0$resid),
+                       rec.new=list(year=2012,rec=100),
+                       pre.catch=list(year=2013,wcatch=100)
+                       )
+
 ## ----msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5----
 
 # MSY管理基準値の計算
