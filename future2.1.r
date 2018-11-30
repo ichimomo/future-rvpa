@@ -1621,9 +1621,9 @@ read.vpa <- function(tfile,
   dres$input$dat$caa <- tmpfunc(tmpdata,caa.label)    
   dres$input$dat$M <- tmpfunc(tmpdata,M.label)
   dres$input$dat$waa <- tmpfunc(tmpdata,waa.label)
-  dres$input$dat$waa <- tmpfunc(tmpdata,waa.biomass.label)        
+  if(is.null(dres$input$dat$waa)) dres$input$dat$waa <- tmpfunc(tmpdata,waa.biomass.label)        
   dres$input$dat$waa.catch <- tmpfunc(tmpdata,waa.catch.label)      
-  if(is.null(dres$input$dat$waa.catch)) dres$input$dat$waa.catch <- waa
+  if(is.null(dres$input$dat$waa.catch)) dres$input$dat$waa.catch <- dres$input$dat$waa
     
   dres$ssb <- dres$input$dat$waa * dres$input$dat$maa * dres$naa
   dres$ssb <- as.data.frame(dres$ssb)
