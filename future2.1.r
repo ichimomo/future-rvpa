@@ -590,7 +590,11 @@ future.vpa <-
 
       ##---- set S-R functin option -----
       ## 使う関数によっては必要ないオプションもあるが、使わないオプションを入れてもエラーは出ないので、
-      # rec.arg$resampleがNULLかどうかで、パラメトリックな誤差分布かそうでないか（残差リサンプリング）を判別する
+                                        # rec.arg$resampleがNULLかどうかで、パラメトリックな誤差分布かそうでないか（残差リサンプリング）を判別する
+      if(is.null(rec.arg$rho)){
+          rec.arg$rho <- 0
+          cat("rec.arg$rho is assumed to be 0...\n")
+      }
       if(is.null(rec.arg$sd2)) rec.arg$sd2 <- sqrt(rec.arg$sd^2/(1-rec.arg$rho^2)) #rho込み平均補正用SD # HS.recAR
 
       ## resampling optionを使わない場合
