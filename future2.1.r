@@ -4838,10 +4838,10 @@ Generation.Time <- function(vpares,
 ){
 
   maa <- vpares$input$dat$maa
-  maa <- rowMeans(maa[,colnames(maa) %in% maa.year],na.rm=T)
+  maa <- rowMeans(maa[,colnames(maa) %in% maa.year,drop=F],na.rm=T)
   maa <- maa[!is.na(maa)]    
   M <- vpares$input$dat$M
-  M <- rowMeans(M[,colnames(M) %in% M.year],na.rm=T)
+  M <- rowMeans(M[,colnames(M) %in% M.year,drop=F],na.rm=T)
   M <- M[!is.na(M)]
     
   age <- as.numeric(names(maa))
