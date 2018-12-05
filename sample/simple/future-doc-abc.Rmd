@@ -205,7 +205,7 @@ fres.BH <- future.vpa(res.pma,
                       silent=TRUE,
                       recfunc=BH.recAR, # 再生産関係の関数
                       # recfuncに対する引数
-                      rec.arg=list(a=BH.par0$pars$a,b=BH.par0$pars$b,
+                      rec.arg=list(a=BH.par0$pars$a,b=BH.par0$pars$b,rho=BH.par0$rho,
                                    sd=BH.par0$pars$sd,resid=BH.par0$resid))
 ```
 

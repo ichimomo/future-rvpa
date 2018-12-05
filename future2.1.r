@@ -633,18 +633,21 @@ future.vpa <-
     
     fyear.year <- floor(fyears)
     ntime <- length(fyears)
-    ages <- as.numeric(dimnames(res0$naa)[[1]])
+    ages <- as.numeric(dimnames(res0$naa)[[1]]) # ages:VPAで考慮される最大年齢数
     min.age <- min(as.numeric(ages))
 #    if(ts>1){
 #      ages <- seq(from=min(ages),to=max(ages)+1/ts,by=1/ts)
 #      nage <- length(ages) # naaにNAが入っていて、かつ、半年毎の将来予測をする場合対応できない可能性がある
 #    }
-    if(any(is.na(res0$naa[,ncol(res0$naa)]))){
-      nage <- sum(!is.na(res0$naa[,ncol(res0$naa)])) # naaにNAが入っている対馬マイワシ対応
-    }
-    else{
-      nage <- length(ages)
-    }  
+#    if(any(is.na(res0$naa[,ncol(res0$naa)]))){
+
+    year.overlap <- years %in% start.year   
+    {if(sum(year.overlap)==0){
+         nage <- sum(!is.na(res0$naa[,ncol(res0$naa)])) # nage:将来予測で考慮すべき年の数
+     }
+     else{
+         nage <- sum(!is.na(res0$naa[,year.overlap])) # nage:将来予測で考慮すべき年の数
+     }}
     
     if(!silent)  cat("F multiplier= ", multi,"seed=",seed,"\n")
     
@@ -796,10 +799,10 @@ future.vpa <-
             else{
                 M.lastyear <- res0$input$dat$M[,length(years)]
             }}            
-            tmp <- forward.calc.simple(res0$faa[,length(years)],
-                                     res0$naa[,length(years)],
+            tmp <- forward.calc.simple(res0$faa[1:nage,length(years)],
+                                     res0$naa[1:nage,length(years)],
 #                                     res0$input$dat$M[,length(years)],
-                                     M.lastyear,
+                                     M.lastyear[1:nage],
                                      plus.group=plus.group)
             naa[1:nage,1,] <- tmp
 
@@ -1728,15 +1731,15 @@ solv.Feq <- function(cvec,nvec,mvec){
 }
 
 forward.calc.simple <- function(fav,nav,Mv,plus.group=TRUE){
-  nage <- max(which(!is.na(nav)))#length(fav)
-  naa <- rep(NA,nage)
-#  for(a in 2:(nage-1)){
+    nage <- length(nav)#length(fav)
+    naa <- rep(NA,nage)
     naa[c(-1,-nage)] <- nav[c(-nage,-(nage-1))]*exp(-fav[c(-nage,-(nage-1))]-Mv[c(-nage,-(nage-1))])
-#  }
-  naa[nage] <- nav[nage-1]*exp(-fav[nage-1]-Mv[nage-1]) 
-  pg <- nav[nage]*exp(-fav[nage]-Mv[nage])
-  if(plus.group) naa[nage] <- naa[nage] + pg
-  return(naa)
+
+    naa[nage] <- nav[nage-1]*exp(-fav[nage-1]-Mv[nage-1]) 
+    pg <- nav[nage]*exp(-fav[nage]-Mv[nage])
+    if(plus.group) naa[nage] <- naa[nage] + pg
+
+    return(naa)
 }
 
 forward.calc.mat <- function(fav,nav,Mv,plus.group=TRUE){
