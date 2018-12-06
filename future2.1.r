@@ -933,7 +933,7 @@ future.vpa <-
           if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- rec.tmp$rec          
 #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg      
           rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb
-          eaa[i,] <- rec.tmp$rec.resample[1:N]
+          eaa[i+1,] <- rec.tmp$rec.resample[1:N]
           rec.arg$resid <- rec.tmp$rec.resample # ARƒIƒvƒVƒ‡ƒ“‚É‘Î‰
       }
       
@@ -3779,7 +3779,7 @@ plot.SRdata <- function(SRdata){
 }
 
 est.MSY <- function(vpares,farg,
-                   seed=1,n.imputation=1,
+                   seed=1,
                    nyear=NULL,
                    eyear=0, # «—ˆ—\‘ª‚ÌÅŒã‚Ìeyear+1”N•ª‚ğ•½tó‘Ô‚Æ‚·‚é
 #                   FUN=median, # ‹™Šl—Ê‚Ì‰½‚ğÅ‘å‰»‚·‚é‚©H
@@ -3862,6 +3862,7 @@ est.MSY <- function(vpares,farg,
         if(!is.null(sd0)) farg$rec.arg$sd <- sd0
         farg$Frec <- NULL
         fout <- do.call(future.vpa,farg)
+        browser()
 #        nY <- mY+1
       
                                         #        out <- list(catch=fout$vwcaa[(mY-(eyear-1)):mY,,drop=FALSE],ssb=fout$ssb[,(mY-(eyear-1)):mY,,drop=FALSE],naa=fout$naa[,(mY-(eyear-1)):mY,,drop=FALSE],baa=fout$baa[,(mY-(eyear-1)):mY,,drop=FALSE],eaa=fout$eaa[(mY-(eyear-1)):mY,,drop=FALSE])
