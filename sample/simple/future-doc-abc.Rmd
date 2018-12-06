@@ -187,8 +187,30 @@ fres.HS <- future.vpa(res.pma,
                                    rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
                                    sd=HS.par0$pars$sd,resid=HS.par0$resid))
 ```
+### 将来予測で自己相関を考慮する場合
 
-Beverton-Holtを仮定する場合
+```{r future.vpaAR}
+fres.HS.AR <- future.vpa(res.pma,
+                      multi=1,
+                      nyear=50, # 将来予測の年数
+                      start.year=2012, # 将来予測の開始年
+                      N=100, # 確率的計算の繰り返し回数
+                      ABC.year=2013, # ABCを計算する年
+                      waa.year=2009:2011, # 生物パラメータの参照年
+                      maa.year=2009:2011,
+                      M.year=2009:2011,is.plot=FALSE, 
+                      seed=1, silent=TRUE,recfunc=HS.recAR, 
+                      # recfuncに対する引数 => 自己相関ありのオプションで計算した結果を入れる
+                      rec.arg=list(a=HS.par1$pars$a,b=HS.par1$pars$b,
+                                   rho=HS.par1$pars$rho, # 自己相関が高い場合、この値が>0となる
+                                   sd=HS.par1$pars$sd,
+                                   resid=HS.par1$resid, # 再生産関係における残差の時系列
+                                   resid.year=NULL # 近年の残差を何年分平均して将来予測に使うか？NULLの場合は、最後の年の残差を使う
+                                   ) 
+                      )
+```
+
+### Beverton-Holtを仮定する場合
 
 ```{r future.vpa2, fig.cap="**図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示**"}
 fres.BH <- future.vpa(res.pma,
