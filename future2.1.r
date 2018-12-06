@@ -542,8 +542,8 @@ future.vpa <-
            # list(year=, rec=)で与える場合は、対応する年の加入を置き換える。
            ##--- 加入関数
            recfunc=HS.recAR, # 再生産関係の関数
-           rec.arg=list(upper.ssb=Inf,upper.recruit=Inf), # 加入の各種設定
-           
+           rec.arg=list(a=1,b=1,rho=0,sd=0,bias.correction=TRUE,
+                        resample=FALSE,resid=0,resid.year=NULL), # 加入の各種設定
            ##--- Frecオプション；Frec計算のための設定リストを与えると、指定された設定でのFrecに対応するFで将来予測を行う
            Frec=NULL,
            # list(stochastic=TRUE, # TRUEの場合、stochastic simulationで50%の確率でBlimitを越す(PMS, TMI)
@@ -606,8 +606,13 @@ future.vpa <-
           }
           if(!is.null(rec.arg$rho)){
               if(rec.arg$rho>0){
-                  if(is.null(eaa0)) rec.arg$resid <- rep(rev(rec.arg$resid)[1],N)
-                  else{ rec.arg$resid <- eaa0 }
+                  if(is.null(eaa0)){
+                      if(is.null(rec.arg$resid.year)) rec.arg$resid <- rep(rev(rec.arg$resid)[1],N)
+                      else rec.arg$resid <- rep(mean(rev(rec.arg$resid)[1:rec.arg$resid.year]),N)
+                  }
+                  else{
+                      rec.arg$resid <- eaa0
+                  }
               }
               else{
                   rec.arg$resid <- rep(0,N)
@@ -3849,7 +3854,7 @@ est.MSY <- function(vpares,farg,
         
         farg$seed <- seed
         farg$N <- N
-        farg$nyear <- mY+1
+        farg$nyear <- mY
         farg$naa0 <- p*fout$naa[,last.year,]
         farg$eaa0 <- fout$eaa[last.year,]+current.resid
         farg$ssb0 <- p*ssb0
@@ -3862,14 +3867,9 @@ est.MSY <- function(vpares,farg,
         if(!is.null(sd0)) farg$rec.arg$sd <- sd0
         farg$Frec <- NULL
         fout <- do.call(future.vpa,farg)
-        browser()
-#        nY <- mY+1
-      
-                                        #        out <- list(catch=fout$vwcaa[(mY-(eyear-1)):mY,,drop=FALSE],ssb=fout$ssb[,(mY-(eyear-1)):mY,,drop=FALSE],naa=fout$naa[,(mY-(eyear-1)):mY,,drop=FALSE],baa=fout$baa[,(mY-(eyear-1)):mY,,drop=FALSE],eaa=fout$eaa[(mY-(eyear-1)):mY,,drop=FALSE])
-
         out <- get.stat(fout,eyear=0,hsp=Blimit)
         out <- cbind(out,get.stat2(fout,eyear=0,hsp=Blimit))
-        return(out)
+        return(list(out,fout))
     }    
 
 ### 関数定義おわり
@@ -4043,42 +4043,60 @@ est.MSY <- function(vpares,farg,
     MSY2 <- target.func(fout.msy,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
     B02 <- target.func(fout0,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)        
     if(!is.null(PGY)){
-        PGYstat2 <- t(sapply(1:length(fout.PGY),
-                             function(x) target.func(fout.PGY[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)))
+        PGYstat2 <- lapply(1:length(fout.PGY),
+                             function(x) target.func(fout.PGY[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid))
     }
     else{
         PGYstat2 <- NULL
     }
 
     if(!is.null(B0percent)){
-        B0stat2 <- t(sapply(1:length(fout.B0percent),
+        B0stat2 <- lapply(1:length(fout.B0percent),
                        function(x) target.func(fout.B0percent[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
-                       ))
+                       )
     }
     else{
         B0stat2 <- NULL
     }
 
-    refvalue2 <- rbind(MSY2,B02,PGYstat2,B0stat2)
+    refvalue2 <- rbind(MSY2[[1]],B02[[1]],
+                       t(sapply(PGYstat2,function(x) x[[1]])),
+                       t(sapply(B0stat2,function(x) x[[1]])))
     sumvalue2 <- refvalue2[,c("ssb.mean","biom.mean","U.mean","catch.mean","Fref2Fcurrent")]
     colnames(sumvalue2) <- c("SSB","B","U","Catch","Fref/Fcur")
     sumvalue2 <- cbind(sumvalue2,refvalue2[,substr(colnames(refvalue2),1,1)=="F"])
 
     dimnames(refvalue2) <- dimnames(refvalue)        
     dimnames(sumvalue2) <- dimnames(sumvalue)
+
+    ssb.ar.mean <- cbind(apply(MSY2[[2]]$vssb,1,mean),
+                         apply(B02[[2]]$vssb,1,mean),
+                         sapply(PGYstat2,function(x) apply(x[[2]]$vssb,1,mean)),
+                         sapply(B0stat2,function(x) apply(x[[2]]$vssb,1,mean)))
+    ssb.ar.mean <- sweep(matrix(as.numeric(ssb.ar.mean),nrow(ssb.ar.mean),ncol(ssb.ar.mean)),
+              2,unlist(sumvalue$SSB),FUN="/")
+    colnames(ssb.ar.mean) <- rownames(sumvalue$SSB)
     
 ### 結果のプロットなど
     
     if(isTRUE(is.plot)){
-        par(mfrow=c(1,2),mar=c(4,4,1,1))
+        # plot of yield curve
+        par(mfrow=c(1,3),mar=c(4,4,2,1))
         plot(trace$table$fmulti,trace$table$"ssb.mean"*1.2,type="n",xlab="Fref/Fcurrent",ylab="SSB")
         abline(v=sumvalue$Fref2Fcurrent,col="gray")
         text(sumvalue$Fref2Fcurrent,max(trace$table$"ssb.mean")*seq(from=1.1,to=0.8,length=nrow(sumvalue)),rownames(sumvalue))
         menplot(trace$table$fmulti,cbind(0,trace$table$"ssb.mean"),col="skyblue",line.col="darkblue")
+        title("Equiribrium SSB")
         
         plot(trace$table$fmulti,trace$table$"catch.mean",type="n",xlab="Fref/Fcurrent",ylab="Catch")
         abline(v=sumvalue$Fref2Fcurrent,col="gray")        
-        menplot(trace$table$fmulti,cbind(0,trace$table$"catch.mean"),col="lightgreen",line.col="darkgreen")        
+        menplot(trace$table$fmulti,cbind(0,trace$table$"catch.mean"),col="lightgreen",line.col="darkgreen")
+        title("Equiribrium Catch (Yield curve)")        
+
+        # plot of the effect of AR
+        matplot(ssb.ar.mean,type="b",ylab="SSB_MSY_AR/SSB_MSY",xlab="Years from Equiribrium")
+        legend("topright",col=1:ncol(ssb.ar.mean),legend=rownames(sumvalue),lty=1:ncol(ssb.ar.mean))
+        title("plot of the effect of AR")
     }
 
     ## kobe II matrix
@@ -4098,7 +4116,8 @@ est.MSY <- function(vpares,farg,
                    summaryAR=as.data.frame(as.matrix(sumvalue2)),
                    all.stat=as.data.frame(as.matrix(refvalue)),
                    all.statAR=as.data.frame(as.matrix(refvalue2)),
-                   trace=trace$table,input.list=input.list))    
+                   trace=trace$table,input.list=input.list,
+                   ssb.ar.mean=ssb.ar.mean))    
 }
 
 
