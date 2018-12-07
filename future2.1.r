@@ -2232,9 +2232,7 @@ SR.est <- function(vpares,SSB.dat=NULL,R.dat=NULL,gamma1=0.0001,er.log=TRUE,
         for(i in 1:length(fmulti)){
             farg$multi <- fmulti[i]
             tmp <- do.call(future.vpa2,farg)
-#            trace.res <- rbind(trace.res,get.stat(tmp,eyear=eyear,hsp=hsp))
-            tmp2 <- cbind(get.stat(tmp,eyear=eyear,hsp=hsp),
-                          get.stat2(tmp,eyear=eyear,hsp=hsp))
+            tmp2 <- get.stat3(tmp,eyear=eyear,hsp=hsp)
             trace.res <- rbind(trace.res,tmp2)
             if(tmp2$"ssb.mean"<trace.res$"ssb.mean"[1]/1000){
                 fmulti <- fmulti[1:i]
@@ -2607,6 +2605,95 @@ get.stat2 <- function(fout,unit.waa=1,eyear=2,hsp=NULL,tmp.year=NULL){
             
         return(as.data.frame(t(c(tb.mat,tc.mat,ssb.mat))))
     }    
+
+
+get.stat3 <- function(fout,eyear=0,hsp=NULL,tmp.year=NULL,unit.waa=1){
+    col.target <- ifelse(fout$input$N==0,1,-1)
+    tmp <- as.numeric(fout$vssb[(nrow(fout$vssb)-eyear):nrow(fout$vssb),col.target])
+    lhs <- sum(tmp<hsp)/length(tmp)
+    if(is.null(tmp.year)) tmp.year <- (nrow(fout$vwcaa)-eyear):nrow(fout$vwcaa)
+    
+    a <- data.frame("catch.mean"=mean(fout$vwcaa[tmp.year,col.target]),
+                    "catch.sd"=sd(fout$vwcaa[tmp.year,col.target]),
+                    "catch.geomean"=geomean(fout$vwcaa[tmp.year,col.target]),
+                    "catch.median"=median(fout$vwcaa[tmp.year,col.target],na.rm=T),
+                    "catch.det"=mean(fout$vwcaa[tmp.year,1],na.rm=T),
+                    "catch.L10"=quantile(fout$vwcaa[tmp.year,col.target],na.rm=T,probs=0.1),
+                    "catch.H10"=quantile(fout$vwcaa[tmp.year,col.target],na.rm=T,probs=0.9),
+                    "ssb.mean"=mean(fout$vssb[tmp.year,col.target]),
+                    "ssb.sd"=sd(fout$vssb[tmp.year,col.target]),                        
+                    "ssb.geomean"=geomean(fout$vssb[tmp.year,col.target]),
+                    "ssb.median"=median(fout$vssb[tmp.year,col.target],na.rm=T),
+                    "ssb.det"=mean(fout$vssb[tmp.year,1],na.rm=T),
+                    "ssb.L10"=quantile(fout$vssb[tmp.year,col.target],na.rm=T,probs=0.1),
+                    "ssb.H10"=quantile(fout$vssb[tmp.year,col.target],na.rm=T,probs=0.9),
+
+                    "biom.mean"=mean(fout$vbiom[tmp.year,col.target]),
+                    "biom.sd"=sd(fout$vbiom[tmp.year,col.target]),                        
+                    "biom.geomean"=geomean(fout$vbiom[tmp.year,col.target]),
+                    "biom.median"=median(fout$vbiom[tmp.year,col.target],na.rm=T),
+                    "biom.det"=mean(fout$vbiom[tmp.year,1],na.rm=T),
+                    "biom.L10"=quantile(fout$vbiom[tmp.year,col.target],na.rm=T,probs=0.1),
+                    "biom.H10"=quantile(fout$vbiom[tmp.year,col.target],na.rm=T,probs=0.9),
+                    "lower.HSpoint"=lhs,
+                    "Fref2Fcurrent"=fout$multi
+                    )
+    a$U.mean <- a$catch.mean/a$biom.mean
+    a$U.median <- a$catch.median/a$biom.median
+    a$U.geomean <- a$catch.geomean/a$biom.geomean
+    a$U.det <- a$catch.det/a$biom.det
+
+    a$catch.CV <- a$catch.sd/a$catch.mean
+    a$ssb.CV <- a$ssb.sd/a$ssb.mean
+    a$biom.CV <- a$biom.sd/a$biom.mean
+
+    Faa <- as.data.frame(t(fout$multi * fout$input$res0$Fc.at.age))
+    colnames(Faa) <- paste("F",dimnames(fout$naa)[[1]],sep="")
+    res.stat1 <- cbind(a,Faa) # ‚±‚±‚Ü‚ÅAget.stat
+
+    nage <- dim(fout$naa)[[1]]
+    tb <- fout$naa * fout$waa * unit.waa
+    if(is.null(fout$waa.catch)) fout$waa.catch <- fout$waa
+    tc <- fout$caa * fout$waa.catch * unit.waa
+    ssb <- fout$naa * fout$waa *fout$maa  * unit.waa
+    tb.mat <- tc.mat <- ssb.mat <- matrix(0,nage,6)
+    for(i in 1:nage){
+            tb.mat[i,1] <- mean(tb[i,tmp.year,col.target])
+            tb.mat[i,2] <- median(tb[i,tmp.year,col.target])
+            tb.mat[i,3] <- geomean(tb[i,tmp.year,col.target])
+            tb.mat[i,4] <- mean(tb[i,tmp.year,1])
+            tb.mat[i,5:6] <- quantile(tb[i,tmp.year,col.target],probs=c(0.1,0.9),na.rm=T)
+            
+            tc.mat[i,1] <- mean(tc[i,tmp.year,col.target])
+            tc.mat[i,2] <- median(tc[i,tmp.year,col.target])
+            tc.mat[i,3] <- geomean(tc[i,tmp.year,col.target])
+            tc.mat[i,4] <- mean(tc[i,tmp.year,1])
+            tc.mat[i,5:6] <- quantile(tc[i,tmp.year,col.target],probs=c(0.1,0.9),na.rm=T)            
+
+            ssb.mat[i,1] <- mean(ssb[i,tmp.year,col.target])
+            ssb.mat[i,2] <- median(ssb[i,tmp.year,col.target])
+            ssb.mat[i,3] <- geomean(ssb[i,tmp.year,col.target])
+            ssb.mat[i,4] <- mean(ssb[i,tmp.year,1])
+            ssb.mat[i,5:6] <- quantile(ssb[i,tmp.year,col.target],probs=c(0.1,0.9),na.rm=T)                        
+    }
+    tc.mat <- as.numeric(tc.mat)
+    tb.mat <- as.numeric(tb.mat)
+    ssb.mat <- as.numeric(ssb.mat)        
+
+        # MA; mean, ME; median, GM; geometric mean
+        names(tc.mat) <- c(paste("TC-MA-A",1:nage,sep=""),paste("TC-ME-A",1:nage,sep=""),
+                           paste("TC-GM-A",1:nage,sep=""),paste("TC-DE-A",1:nage,sep=""),
+                           paste("TC-L10-A",1:nage,sep=""),paste("TC-H10-A",1:nage,sep=""))
+        names(tb.mat) <- c(paste("TB-MA-A",1:nage,sep=""),paste("TB-ME-A",1:nage,sep=""),
+                           paste("TB-GM-A",1:nage,sep=""),paste("TB-DE-A",1:nage,sep=""),
+                           paste("TB-L10-A",1:nage,sep=""),paste("TB-H10-A",1:nage,sep=""))
+        names(ssb.mat) <- c(paste("SSB-GA-A",1:nage,sep=""),paste("SSB-ME-A",1:nage,sep=""),
+                            paste("SSB-GM-A",1:nage,sep=""),paste("SSB-DE-A",1:nage,sep=""),
+                            paste("SSB-L10-A",1:nage,sep=""),paste("SSB-H10-A",1:nage,sep=""))
+    res.stat2 <- as.data.frame(t(c(tb.mat,tc.mat,ssb.mat)))
+    res.stat <- cbind(res.stat1,res.stat2)
+    return(res.stat)    
+}    
 
 
 
@@ -3825,8 +3912,7 @@ est.MSY <- function(vpares,farg,
             farg$multi <- fmulti[i]
             tmp <- do.call(future.vpa,farg)
 #            ssb.array[,,i] <- tmp$vssb
-            tmp2 <- cbind(get.stat(tmp,eyear=eyear,hsp=hsp),
-                          get.stat2(tmp,eyear=eyear,hsp=hsp))
+            tmp2 <- get.stat3(tmp,eyear=eyear,hsp=hsp)
             trace.res <- rbind(trace.res,tmp2)
             if(tmp2$"ssb.mean"<trace.res$"ssb.mean"[1]/1000){
                 fmulti <- fmulti[1:i]
@@ -3868,8 +3954,8 @@ est.MSY <- function(vpares,farg,
         if(!is.null(sd0)) farg$rec.arg$sd <- sd0
         farg$Frec <- NULL
         fout <- do.call(future.vpa,farg)
-        out <- get.stat(fout,eyear=0,hsp=Blimit)
-        out <- cbind(out,get.stat2(fout,eyear=0,hsp=Blimit))
+        out <- get.stat3(fout,eyear=0,hsp=Blimit)
+#        out <- cbind(out,get.stat2(fout,eyear=0,hsp=Blimit))
         return(list(out,fout))
     }    
 
@@ -3912,8 +3998,8 @@ est.MSY <- function(vpares,farg,
     # B0‚ÌŒvŽZ
     farg.tmp$multi <- 0
     fout0 <- do.call(future.vpa,farg.tmp)
-    B0 <- get.stat(fout0,eyear=eyear,hsp=Blimit)
-    B0 <- cbind(B0,get.stat2(fout0,eyear=eyear,hsp=Blimit))
+    B0 <- get.stat3(fout0,eyear=eyear,hsp=Blimit)
+#    B0 <- cbind(B0,get.stat2(fout0,eyear=eyear,hsp=Blimit))
     rownames(B0) <- "B0"    
     
     trace <- trace.func(farg.tmp,eyear,hsp=Blimit,fmulti=trace.multi,trace.N=trace.N)
@@ -3958,13 +4044,14 @@ est.MSY <- function(vpares,farg,
         trace$table <- trace$table[order(trace$table$fmulti),]        
     }
 
-    MSY <- get.stat(fout.msy,eyear=eyear)
-    MSY <- cbind(MSY,get.stat2(fout.msy,eyear=eyear))
+    MSY <- get.stat3(fout.msy,eyear=eyear)
+#    MSY <- cbind(MSY,get.stat2(fout.msy,eyear=eyear))
     rownames(MSY) <- "MSY"
 #    cat(" SSB=",MSY$"ssb.mean","\n")    
     
     ## PGY‚ÌŒvŽZ
-    fout.PGY <- list()    
+    fout.PGY <- list()
+    PGYstat <- NULL
     if(!is.null(PGY)){
         s <- 1
         for(j in 1:length(PGY)){
@@ -3982,12 +4069,13 @@ est.MSY <- function(vpares,farg,
                                       Blimit=PGY[j]*MSY$catch.mean,
                                       scenario="catch.mean",Frange=frange.list[[i]])
                 fout.PGY[[s]] <- do.call(future.vpa,farg.pgy)
-                fout.PGY[[s]]$input$multi <- fout.PGY[[s]]$multi                
+                fout.PGY[[s]]$input$multi <- fout.PGY[[s]]$multi
+                PGYstat <- rbind(PGYstat,get.stat3(fout.PGY[[s]]))
                 s <- s+1
             }
         }
-        PGYstat <- as.data.frame(t(sapply(fout.PGY,get.stat,eyear=eyear,hsp=Blimit)))
-        PGYstat <- cbind(PGYstat,as.data.frame(t(sapply(fout.PGY,get.stat2,eyear=eyear,hsp=Blimit))))
+#        PGYstat <- as.data.frame(t(sapply(fout.PGY,get.stat3,eyear=eyear,hsp=Blimit)))
+#        PGYstat <- cbind(PGYstat,as.data.frame(t(sapply(fout.PGY,get.stat2,eyear=eyear,hsp=Blimit))))
         rownames(PGYstat) <- names(fout.PGY) <- paste("PGY",rep(PGY,each=length(i.tmp)),
                                                       rep(c("upper","lower")[i.tmp],length(PGY)),sep="_")
     }
@@ -3997,7 +4085,8 @@ est.MSY <- function(vpares,farg,
     ###
 
     ## B0_%‚ÌŒvŽZ
-    fout.B0percent <- list()    
+    fout.B0percent <- list()
+    B0stat <- NULL
     if(!is.null(B0percent)){
         for(j in 1:length(B0percent)){
             cat("Estimating B0 ",B0percent[j]*100,"%\n")            
@@ -4011,9 +4100,8 @@ est.MSY <- function(vpares,farg,
                                  scenario="ssb.mean",Frange=frange.list)
             fout.B0percent[[j]] <- do.call(future.vpa,farg.b0)
             fout.B0percent[[j]]$input$multi <- fout.B0percent[[j]]$multi
+            B0stat <- rbind(B0stat,get.stat3(fout.B0[[s]]))            
         }
-        B0stat <- as.data.frame(t(sapply(fout.B0percent,get.stat,eyear=eyear,hsp=Blimit)))
-        B0stat <- cbind(B0stat,as.data.frame(t(sapply(fout.B0percent,get.stat2,eyear=eyear,hsp=Blimit))))
         rownames(B0stat) <- names(fout.B0percent) <- paste("B0-",B0percent*100,"%",sep="")
     }
     else{
