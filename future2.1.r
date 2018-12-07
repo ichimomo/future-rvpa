@@ -4151,6 +4151,7 @@ est.MSY <- function(vpares,farg,
     refvalue2 <- rbind(MSY2[[1]],B02[[1]],
                        t(sapply(PGYstat2,function(x) x[[1]])),
                        t(sapply(B0stat2,function(x) x[[1]])))
+    refvalue2 <- apply(refvalue2,2,as.numeric)
     sumvalue2 <- refvalue2[,c("ssb.mean","biom.mean","U.mean","catch.mean","Fref2Fcurrent")]
     colnames(sumvalue2) <- c("SSB","B","U","Catch","Fref/Fcur")
     sumvalue2 <- cbind(sumvalue2,refvalue2[,substr(colnames(refvalue2),1,1)=="F"])
