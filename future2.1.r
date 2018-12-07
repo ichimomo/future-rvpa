@@ -3863,7 +3863,8 @@ est.MSY <- function(vpares,farg,
         farg$delta <- delta
         farg$Blim <- Blim
         farg$Bban <- Bban
-        if(!is.null(farg$ABC.year)) farg$ABC.year <- farg$start.year
+        farg$start.year <- max(as.numeric(colnames(farg$res0$naa)))+1
+        farg$ABC.year <- farg$start.year
         if(!is.null(sd0)) farg$rec.arg$sd <- sd0
         farg$Frec <- NULL
         fout <- do.call(future.vpa,farg)
