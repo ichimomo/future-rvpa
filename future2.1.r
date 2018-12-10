@@ -4100,7 +4100,7 @@ est.MSY <- function(vpares,farg,
                                  scenario="ssb.mean",Frange=frange.list)
             fout.B0percent[[j]] <- do.call(future.vpa,farg.b0)
             fout.B0percent[[j]]$input$multi <- fout.B0percent[[j]]$multi
-            B0stat <- rbind(B0stat,get.stat3(fout.B0[[s]]))            
+            B0stat <- rbind(B0stat,get.stat3(fout.B0percent[[j]]))            
         }
         rownames(B0stat) <- names(fout.B0percent) <- paste("B0-",B0percent*100,"%",sep="")
     }
