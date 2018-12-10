@@ -5966,7 +5966,7 @@ plot.HCR <- function(beta=1,bban=0,blimit=1,btarget=2,add=FALSE,yscale=1.3,xlim=
 
     if(!is.null(ssb.cur)){
         Frec <- (ssb.cur-bban)/(blimit-bban)
-        Frec <- if(Frec<0,0,Frec)
+        Frec <- ifelse(Frec<0,0,Frec)
         Frec <- ifelse(Frec>1,1,Frec)
         lines(c(0,ssb.cur/scale,ssb.cur/scale),c(Frec*beta*Fmsy,Frec*beta*Fmsy,0),lty=2)
         points(ssb.cur/scale,Frec*beta*Fmsy,lty=2,pch=4)
