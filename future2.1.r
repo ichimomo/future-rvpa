@@ -620,7 +620,7 @@ future.vpa <-
           }
       }
       else{
-         rec.arg$rho <- 0 # resamplingの場合に自己相関は考慮できないのでrhoは強制的にゼロ
+         if(rec.arg$rho>0) stop("You set rho is >0. You cannot use resample=TRUE option when rho>0") # resamplingの場合に自己相関は考慮できないのでrhoは強制的にゼロ
       }
       
       if(!is.null(rec.arg$sd)) rec.arg$sd <- c(0,rep(rec.arg$sd,N-1))
