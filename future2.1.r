@@ -5961,11 +5961,12 @@ plot.HCR <- function(beta=1,bban=0,blimit=1,btarget=2,add=FALSE,yscale=1.3,xlim=
     if(!isTRUE(add)) plot(b.tmp/scale,Fmsy*y,type="n",ylim=c(0,yscale),xlab="SSB",ylab="multiplier to current F",xlim=xlim/scale)
     points(b.tmp/scale,Fmsy*y,type="l",...)
     abline(h=Fmsy,col="gray")
-    text(0,Fmsy+0.02,paste("Fmsy=",Fmsy,"Fcurrent"),adj=0)
+    text(0,Fmsy+0.02,paste("Fmsy=",round(Fmsy,2),"Fcurrent"),adj=0)
     text(0,Fmsy*beta+0.02,paste("Ftarget=",round(beta*Fmsy,2),"Fcurrent (",round(beta,2),"*Fmsy)",sep=""),adj=0)    
 
     if(!is.null(ssb.cur)){
         Frec <- (ssb.cur-bban)/(blimit-bban)
+        Frec <- if(Frec<0,0,Frec)
         Frec <- ifelse(Frec>1,1,Frec)
         lines(c(0,ssb.cur/scale,ssb.cur/scale),c(Frec*beta*Fmsy,Frec*beta*Fmsy,0),lty=2)
         points(ssb.cur/scale,Frec*beta*Fmsy,lty=2,pch=4)
