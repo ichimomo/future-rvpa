@@ -1222,6 +1222,7 @@ plot.future <- function(fres0,ylim.tmp=NULL,xlim.tmp=NULL,vpares=NULL,what=c(TRU
         if(!is.null(vpares)){
             points(colnames(vpares$baa),colSums(vpares$baa),type="o",pch=20)
         }
+        if(N.line>0) matpoints(rownames(fres0$vbiom),fres0$vbiom[,2:(N.line+1)],col="gray",type="l",lty=1)
     }
 
   if(what[2]){
