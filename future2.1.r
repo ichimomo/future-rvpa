@@ -1126,7 +1126,7 @@ BH.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
                                         resample=FALSE,resid=0, # 残差リサンプリングする場合、resample=TRUEにして、residにリサンプリングする残差（対数）を入れる
                                         bias.correction=TRUE)){
-    rec0 <- rec.arg$a*SSB/(1+rec.arg$b*SSB)
+    rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
 #    rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb) 
     if(!isTRUE(rec.arg$resample)){
         if(isTRUE(rec.arg$bias.correction)){
