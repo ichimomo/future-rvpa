@@ -5969,10 +5969,10 @@ plot.HCR <- function(beta=1,bban=0,blimit=1,btarget=2,add=FALSE,yscale=1.3,xlim=
         Frec <- ifelse(Frec<0,0,Frec)
         Frec <- ifelse(Frec>1,1,Frec)
         lines(c(0,ssb.cur/scale,ssb.cur/scale),c(Frec*beta*Fmsy,Frec*beta*Fmsy,0),lty=2)
-        points(ssb.cur/scale,Frec*beta*Fmsy,lty=2,pch=4)
-        text(0,0.8*beta*Fmsy+0.02,
-             paste("F2018=",round(Frec*beta*Fmsy,2),"","Fcurrent (",
-                   round(Frec,2),"*",round(beta,2),"*",round(Fmsy,2),"*Fcurrent)",sep=""),adj=0)    
+#        points(ssb.cur/scale,Frec*beta*Fmsy,lty=2,pch=4)
+#        text(0,0.8*beta*Fmsy+0.02,
+#             paste("F2018=",round(Frec*beta*Fmsy,2),"","Fcurrent (",
+#                   round(Frec,2),"*",round(beta,2),"*",round(Fmsy,2),"*Fcurrent)",sep=""),adj=0)    
     }
 }
 
