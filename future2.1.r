@@ -1222,6 +1222,7 @@ plot.future <- function(fres0,ylim.tmp=NULL,xlim.tmp=NULL,vpares=NULL,what=c(TRU
         if(!is.null(vpares)){
             points(colnames(vpares$baa),colSums(vpares$baa),type="o",pch=20)
         }
+        if(N.line>0) matpoints(rownames(fres0$vbiom),fres0$vbiom[,2:(N.line+1)],col="gray",type="l",lty=1)
     }
 
   if(what[2]){
@@ -4756,6 +4757,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
 
 plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",ylab.tmp="U/Umsy",xlab.tmp="SSB/SSBmsy",title.tmp=""){
     
+    if (is.null(vpares$wcaa)) vpares$wcaa <- vpares$input$dat$caa * vpares$input$dat$waa
     vpares$TC.MT <- as.numeric(colSums(vpares$wcaa))
     UBdata <- data.frame(years=as.numeric(colnames(vpares$baa)),
                          U=as.numeric(vpares$TC.MT)/as.numeric(colSums(vpares$baa,na.rm=T))/Umsy,
