@@ -457,15 +457,6 @@ ref.F <- function(
   ypr <- sapply(tmp,function(x) sum(x$ypr))
   spr <- sapply(tmp,function(x) sum(x$spr))/spr0*100
 
-  if (isTRUE(plot)){
-  plot(F.range,spr,xlab="F at selectivity=1",ylab="%SPR",type="l",ylim=c(0,max(spr)))
-  par(new=T)
-  plot(F.range,ypr,axes=F,xlab="",ylab="",lty=2,type="l",ylim=c(0,max(ypr)))
-  axis(side=4)
-  mtext("YPR",side=4,line=2)
-  abline(v=xx <- c(Res$Fmax[1],Res$Fcurrent[1],Res$F0.1[1],Res$Fmed[1]))
-  text(xx,rep(max(ypr)*c(0.4,0.3,0.2,0.1),length(xx)),c("Fmax","Fcur","F0.1","Fmed"))
-  }
 
   ypr.spr <- data.frame(F.range=F.range,ypr=ypr,spr=spr)
   Res$ypr.spr  <- ypr.spr
@@ -480,8 +471,33 @@ ref.F <- function(
   Res$arglist <- arglist
   Res$spr0 <- spr0
   class(Res) <- "ref"
-#  print(Res)
+    
+  if(isTRUE(plot)){
+      plot.Fref(Res)
+  }    
   return(Res)
+}
+
+plot.Fref <- function(rres,xlabel="max", # or, "mean","Fref/Fcur"
+                      vline.text=c("F0.1","Fmax","Fcurrent","Fmed") # and "FpSPR.20.SPR" etc..
+                      ){
+    old.par <- par()
+    par(mar=c(4,4,1,4))
+    F.range <- rres$ypr.spr$F.range
+    if(xlabel=="Fref/Fcur") F.range <- F.range/rres.pma$summary$Fcurrent[1]*rres.pma$summary$Fcurrent[3]
+    if(xlabel=="mean") F.range <- F.range/rres.pma$summary$Fcurrent[1]*rres.pma$summary$Fcurrent[2]    
+    spr <- rres$ypr.spr$spr
+    ypr <- rres$ypr.spr$ypr
+    plot(F.range,spr,xlab=xlabel,ylab="%SPR",type="l",ylim=c(0,max(spr)))
+    par(new=T)
+    plot(F.range,ypr,axes=F,xlab="",ylab="",lty=2,type="l",ylim=c(0,max(ypr)))
+    axis(side=4)
+    mtext("YPR",side=4,line=2)
+    n.line <- which(rownames(rres$summary) %in% xlabel)
+    abline(v=xx <- c(rres$summary[vline.text][n.line,]))
+    text(xx,max(ypr)*seq(from=0.5,to=0.3,length=length(vline.text)),vline.text)
+    legend("topright",lty=1:2,legend=c("SPR","YPR"))
+    options(warn=-1); par(old.par); options(warn=0)
 }
 
 calc.rel.abund <- function(sel,Fr,na,M,waa,waa.catch=NULL,maa,min.age=0,max.age=Inf,Pope=TRUE,ssb.coef=0){

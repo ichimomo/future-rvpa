@@ -48,6 +48,9 @@ rres.pma <- ref.F(res.pma, # VPAの計算結果
                   max.age=Inf, # SPR計算で仮定する年齢の最大値 
                   pSPR=c(10,20,30,35,40), # F_%SPRを計算するときに，何パーセントのSPRを計算するか
                   Fspr.init=1)
+# 横軸や縦線で示す管理基準値を調整する場合、plot.Fref関数を使う
+# x.labelは res.pma$summaryの行名、vline.textは res.pma$summaryの列名前に対応させて指定する
+plot.Fref(rres.pma,xlabel="Fref/Fcur", vline.text=c("FpSPR.20.SPR","FpSPR.30.SPR","FpSPR.40.SPR"))
 
 ## ----ref.F2--------------------------------------------------------------
 rres.pma$summary
@@ -104,6 +107,26 @@ fres.HS <- future.vpa(res.pma,
                                    rho=HS.par0$pars$rho, # ここではrho=0なので指定しなくてもOK
                                    sd=HS.par0$pars$sd,resid=HS.par0$resid))
 
+## ----future.vpaAR--------------------------------------------------------
+fres.HS.AR <- future.vpa(res.pma,
+                      multi=1,
+                      nyear=50, # 将来予測の年数
+                      start.year=2012, # 将来予測の開始年
+                      N=100, # 確率的計算の繰り返し回数
+                      ABC.year=2013, # ABCを計算する年
+                      waa.year=2009:2011, # 生物パラメータの参照年
+                      maa.year=2009:2011,
+                      M.year=2009:2011,is.plot=FALSE, 
+                      seed=1, silent=TRUE,recfunc=HS.recAR, 
+                      # recfuncに対する引数 => 自己相関ありのオプションで計算した結果を入れる
+                      rec.arg=list(a=HS.par1$pars$a,b=HS.par1$pars$b,
+                                   rho=HS.par1$pars$rho, # 自己相関が高い場合、この値が>0となる
+                                   sd=HS.par1$pars$sd,
+                                   resid=HS.par1$resid, # 再生産関係における残差の時系列
+                                   resid.year=NULL # 近年の残差を何年分平均して将来予測に使うか？NULLの場合は、最後の年の残差を使う
+                                   ) 
+                      )
+
 ## ----future.vpa2, fig.cap="**図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示**"----
 fres.BH <- future.vpa(res.pma,
                       multi=1,
@@ -119,7 +142,7 @@ fres.BH <- future.vpa(res.pma,
                       silent=TRUE,
                       recfunc=BH.recAR, # 再生産関係の関数
                       # recfuncに対する引数
-                      rec.arg=list(a=BH.par0$pars$a,b=BH.par0$pars$b,
+                      rec.arg=list(a=BH.par0$pars$a,b=BH.par0$pars$b,rho=BH.par0$rho,
                                    sd=BH.par0$pars$sd,resid=BH.par0$resid))
 
 ## ------------------------------------------------------------------------
@@ -216,6 +239,7 @@ fres.HS5 <- future.vpa(res.pma,
 MSY.HS <- est.MSY(res.pma, # VPAの計算結果
                  fres.HS$input, # 将来予測で使用した引数
 #                 nyear=NULL, # 何年計算するかは、指定しなければ関数内部で世代時間の20倍の年数を計算し、それを平衡状態とする
+                 resid.year=0, # ARありの場合、最近何年分の残差を平均するかをここで指定する。ARありの設定を反映させたい場合必ずここを１以上とすること（とりあえず１としておいてください）。
                  N=100, # 将来予測の年数，繰り返し回数
                  PGY=c(0.9,0.6,0.1), # 計算したいPGYレベル。上限と下限の両方が計算される
                  onlylower.pgy=FALSE, # TRUEにするとPGYレベルの上限は計算しない（計算時間の節約になる）
@@ -239,14 +263,15 @@ refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
              Umsy=as.numeric(MSY.HS$summary$Catch[1])/as.numeric(MSY.HS$all.stat$biom.mean[1]))
 
 ## ----beta-tmp------------------------------------------------------------
-beta <- calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
+# beta <- calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
+beta.value <- 0.8
 
 ## ----abc-----------------------------------------------------------------
 input.abc <- MSY.HS$input$msy # MSY計算で使った引数を使う
 input.abc$N <- 1000 # 実際に計算するときは10000以上を使ってください
 input.abc$HCR <- list(Blim=refs$Blim,
                       Bban=refs$Bban,
-                      beta=beta)
+                      beta=beta.value)
 input.abc$nyear <- 20 # ABC計算時には長期間計算する必要はない
 input.abc$ABC.year <- 2013 # ここでABC.yearを設定しなおしてください
 input.abc$is.plot <- TRUE

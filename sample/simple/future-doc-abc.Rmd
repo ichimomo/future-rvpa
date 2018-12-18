@@ -83,6 +83,9 @@ rres.pma <- ref.F(res.pma, # VPAの計算結果
                   max.age=Inf, # SPR計算で仮定する年齢の最大値 
                   pSPR=c(10,20,30,35,40), # F_%SPRを計算するときに，何パーセントのSPRを計算するか
                   Fspr.init=1)
+# 横軸や縦線で示す管理基準値を調整する場合、plot.Fref関数を使う
+# x.labelは res.pma$summaryの行名、vline.textは res.pma$summaryの列名前に対応させて指定する
+plot.Fref(rres.pma,xlabel="Fref/Fcur", vline.text=c("FpSPR.20.SPR","FpSPR.30.SPR","FpSPR.40.SPR"))
 ```
 
 - 結果のサマリーは```rres.pma$summary```によって見れます
@@ -448,12 +451,12 @@ refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
 ```
 
 # 7. HCRの計算とABCの算出
-## betaの計算：暫定版
-- *少なくとも*平衡状態においてProb(Btarget>B)>50%, Prob(Blimt>B)>10%にしたいので、その条件を満たすようなbetaを探索します。
-- 実際の計算では10,000回くらいやってください
+## betaの計算　
+- 0.8として設定します
 
 ```{r beta-tmp}
-beta <- calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
+# beta <- calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
+beta.value <- 0.8
 ```
 
 ## HCRをもとに将来予測→ABC計算
@@ -466,7 +469,7 @@ input.abc <- MSY.HS$input$msy # MSY計算で使った引数を使う
 input.abc$N <- 1000 # 実際に計算するときは10000以上を使ってください
 input.abc$HCR <- list(Blim=refs$Blim,
                       Bban=refs$Bban,
-                      beta=beta)
+                      beta=beta.value)
 input.abc$nyear <- 20 # ABC計算時には長期間計算する必要はない
 input.abc$ABC.year <- 2013 # ここでABC.yearを設定しなおしてください
 input.abc$is.plot <- TRUE
