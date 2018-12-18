@@ -40,7 +40,7 @@ plot(res.pma$Fc.at.age,type="b",xlab="Age",ylab="F",ylim=c(0,max(res.pma$Fc.at.a
 out.vpa(res.pma) # vpa.csvというファイルが作成されます。VPAの結果のグラフ出力となるvpa.pdfも出力されます。
 res.pma2 <- read.vpa("vpa.csv") # vpa.csvを編集後、read.vpa関数で読み込みます
 
-## ----ref.F, fig.cap="**図：plot=TRUEで表示されるYPR, SPR曲線**"----------
+## ----ref.F, fig.cap="図：YPR, SPR曲線"-----------------------------------
 byear <- 2009:2011 # 生物パラメータを平均する期間を2009年から2011年とする
 rres.pma <- ref.F(res.pma, # VPAの計算結果
                   waa.year=byear, maa.year=byear, M.year=byear, # weight at age, maturity at age, Mは2009から2011年までの平均とする
@@ -48,12 +48,14 @@ rres.pma <- ref.F(res.pma, # VPAの計算結果
                   max.age=Inf, # SPR計算で仮定する年齢の最大値 
                   pSPR=c(10,20,30,35,40), # F_%SPRを計算するときに，何パーセントのSPRを計算するか
                   Fspr.init=1)
-# 横軸や縦線で示す管理基準値を調整する場合、plot.Fref関数を使う
-# x.labelは res.pma$summaryの行名、vline.textは res.pma$summaryの列名前に対応させて指定する
-plot.Fref(rres.pma,xlabel="Fref/Fcur", vline.text=c("FpSPR.20.SPR","FpSPR.30.SPR","FpSPR.40.SPR"))
 
 ## ----ref.F2--------------------------------------------------------------
 rres.pma$summary
+
+## ----ref.F3, fig.cap="図：YPR, SPR曲線 (x軸などを変更した場合)"----------
+# 横軸や縦線で示す管理基準値を調整する場合、plot.Fref関数を使う
+# x.labelは res.pma$summaryの行名、vline.textは res.pma$summaryの列名前に対応させて指定する
+plot.Fref(rres.pma,xlabel="Fref/Fcur", vline.text=c("FpSPR.20.SPR","FpSPR.30.SPR","FpSPR.40.SPR"))
 
 ## ----SRdata--------------------------------------------------------------
 # VPA結果を使って再生産データを作る
