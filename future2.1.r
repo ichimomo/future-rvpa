@@ -843,8 +843,11 @@ future.vpa <-
                     waa[2:nage,1,] <- t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,1,])+waa.rand[ii,1,]))))
                 }
                 thisyear.ssb <- colSums(naa[,1,]*waa[,1,]*maa[,1,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom                           }
-                
+            
             thisyear.ssb <- thisyear.ssb+(1e-10)
+            
+            if(!is.null(ssb0)) thisyear.ssb <- colSums(ssb0)
+                        
             rec.tmp <- recfunc(thisyear.ssb,res0,
                                rec.resample=rec.tmp$rec.resample,
                                rec.arg=rec.arg)
@@ -4147,7 +4150,7 @@ est.MSY <- function(vpares,farg,
     eyear <- mY+(lag > 0)*(lag-1)
     
     MSY2 <- target.func(fout.msy,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
-    B02 <- target.func(fout0,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)        
+    B02 <- target.func(fout0,mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
     if(!is.null(PGY)){
         PGYstat2 <- lapply(1:length(fout.PGY),
                              function(x) target.func(fout.PGY[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid))
