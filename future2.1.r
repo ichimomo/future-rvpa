@@ -3954,8 +3954,8 @@ est.MSY <- function(vpares,farg,
         last.year <- dim(fout$naa)[[2]]
 
         lag <- as.numeric(dimnames(fout$naa)[[1]])[1]        
-        if(lag==0) SSB.m <- NULL else SSB.m <- fout$ssb[,last.year-lag,]
-###        if(lag==0) SSB.m <- NULL else SSB.m <- fout$ssb[,last.year-(lag-1),]                     
+        # if(lag==0) SSB.m <- NULL else SSB.m <- fout$ssb[,last.year-lag,]
+        SSB.m <- fout$ssb[,last.year-lag,]
         ssb0 <- SSB.m
         
         farg$seed <- seed
