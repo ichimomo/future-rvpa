@@ -4774,7 +4774,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
 }
 # Hockey-stick
 
-plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",ylab.tmp="U/Umsy",xlab.tmp="SSB/SSBmsy",title.tmp=""){
+plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",ylab.tmp="U/Umsy",xlab.tmp="SSB/SSBmsy",title.tmp="",HCR=NULL){ # HCR=list(beta=0.8)
     
     if (is.null(vpares$wcaa)) vpares$wcaa <- vpares$input$dat$caa * vpares$input$dat$waa
     vpares$TC.MT <- as.numeric(colSums(vpares$wcaa))
@@ -4787,6 +4787,7 @@ plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,plot.history=FALSE,is.plot=FALS
     tmp <- x>0 & y>0
     x <- x[tmp]
     y <- y[tmp]
+    UBdata <- UBdata[tmp,]
 
     if(!is.null(Blim)){
         Blim.percent <- Blim/Bmsy
@@ -4808,6 +4809,9 @@ plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,plot.history=FALSE,is.plot=FALS
     polygon(c(Blim.percent,1,1,Blim.percent),c(-1,-1,1,1),col="khaki1",border=NA)            
     axis(side=1:2)
 
+    if(!is.null(HCR)){
+        lines(c(Bban/Bmsy,Blim/Bmsy,6),c(0,0.8,0.8),lty=2)
+    }
 
 
 #      points(x,y,type="o",pch=c(3,rep(1,length(y)-2),20),col=c(1,rep(1,length(y)-2),1),cex=c(1,r
@@ -4817,10 +4821,10 @@ plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,plot.history=FALSE,is.plot=FALS
     title(title.tmp,adj=0.8,line=-2)
     
     if(isTRUE(plot.history)){
-      plot(UBdata$years,y,type="b",ylab="F/Fmsy",ylim=c(0,max(y)))
-      abline(h=1)    
-      plot(UBdata$years,x,type="b",xlab="B/Bmsy",ylim=c(0,max(y)))
+      plot(UBdata$years,y,type="b",ylab="U/Umsy",xlab="Year",ylim=c(0,max(y)))
       abline(h=1)
+      plot(UBdata$years,x,type="b",ylab="SSB/SSBmsy",xlab="Year",ylim=c(0,max(y)))
+      abline(h=1); abline(h=Blim.percent,lty=2)
     }
 
 
