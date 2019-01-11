@@ -1,229 +1,3 @@
-#---------------- rfuture & Fref
-# 2012. 7. 28.; calc.rel.abund導入。SPR、YPRを計算する関数。
-# 2012. 8. 1; 加入の関数を大幅改善
-# 0.3f; Frec1, Frec2, Frecの計算オプションをfuture.vpaに追加
-# 0.4: スケトウ対応
-# 0.5: 2013.1.18 全種対応のためのバージョン
-# 0.5c: 対馬のサバに対応するため、将来予測の部分waa.catchを使うように変更
-## 2017.12.25 Frecの引数に "scenario"と"Frange"オプションを追加
-##   scenario="catch.mean"とすると、将来のstochastic simulationにおける平均漁獲量Blimitで指定した値と一致するようになる
-##   Frange=c(0.01,2) などと指定する。探索するFの範囲。特に、scenario="catch.mean"を使う場合、解が２つ出てくるので、
-##   Frange=c(0.01,Fmsy), c(Fmsy,2) のように、２種類のFの範囲で探索することになる
-## 2018.6.5 user interfaceの大幅改善。SR.estをいくつかの要素に分ける
-# 2018.6.8, 11:05;  plot.kobe, plot.kobemat, get.kobematなど、結果のプロット系の関数を追加
-# 2018.6.8, 16:30;  SR.fitの出力に加入の予測値が入るように変更
-# 2018.6.11, get.kobemat2, plot.kobemat2を追加
-## 2018.7.12 2.0にバージョンアップ。future.vpaで使っていない関数などを整理し、ベクトル化。
-##   加入関数で動くのはHS.rec(自己相関なし。残差のランダムリサンプリング対応), HS.recAR, BH.recAR, RI.recAI（←自己相関に対応。残差のランダムリサンプリングには未対応）のみ
-## 2018.9.18 2.1; 岡村さんのABC計算用プログラムに対応するためのfuture.vpaに置き換え
-##                資源量の面プロットを作る関数plotBfishを追加
-##                岡村さん作成のest.MSY2（ARの考慮あり）、calc.abc関数を追加
-## 
-## 2018.10.17; github上にアップ
-## 2018.10.22; est.MSYとest.MSY2を統合しest.MSYとする
-
-if(0){
-    # 再生産関係のフィットに使うデータセットを作る
-    # rownames(res.pma$naa)を参照し、必要な年齢分、SSBをずらす
-    # yearは加入年
-    #
-    out.vpa(res.pma,file="out")
-
-    ## csvファイルからVPAの結果を読み込む場合
-    ## get.vpares  
-    res.pma <- read.vpa("out.csv")
-
-    # VPA結果を持っている場合
-    SRdata <- get.SRdata(res.pma)
-#    SRdata <- get.SRdata(res.pma,years=1990:2000) # 特定の期間のデータだけを使う場合
-    head(SRdata)
-
-   
-    # SSBとRのデータだけを持っている場合
-    #SRdata <- get.SRdata(R.dat=exp(rnorm(10)),SSB.dat=exp(rnorm(10)))
-
-    # SSR&Rをプロットする
-    plot.SRdata(SRdata)
-
-    # Hockey-Stickをフィットする
-#    HS.par <- fit.HS(SRdata,er.log=TRUE,gamma1=0.001,do.profile=TRUE)
-#    HS.par$pars    
-#    points(HS.par$pred$SSB,HS.par$pred$R,col=2,type="l",lwd=3)
-    
-    # Beverton-Holtをフィットする
-#    BH.par <- fit.BH(SRdata,er.log=TRUE)
-#    BH.par$pars    
-#    points(BH.par$pred$SSB,BH.par$pred$R,col=3,type="l",lwd=3)
-    
-    ##  Rickerをフィットする
-#    RI.par <- fit.RI(SRdata,er.log=TRUE)
-#    RI.par$pars        
-#    points(RI.par$pred$SSB,RI.par$pred$R,col=4,type="l",lwd=3)
-
-    ## 西嶋さん作成の汎用関数(fit.SR)
-    ## AR=0で自己相関の考慮なし、AR=1で過去１年分の自己相関が考慮できる（１年分しか対応していない）
-    ## HS, BH, RIを選べる。最小二乗法（L2)か最小絶対値法（L1）か選択できる
-    HS.par <- fit.SR(SRdata,SR="HS",method="L2",AR=1,hessian=FALSE)
-    BH.par <- fit.SR(SRdata,SR="BH",method="L2",AR=1,hessian=FALSE)
-    RI.par <- fit.SR(SRdata,SR="RI",method="L2",AR=1,hessian=FALSE)    
-
-    # AICcの比較
-    c(HS.par$AICc,BH.par$AICc,RI.par$AICc)
-
-    ## 将来予測
-    fres.HS <- future.vpa(res.pma,
-                      multi=1,
-                      nyear=50, # 将来予測の年数
-                      start.year=2012, # 将来予測の開始年
-                      N=100, # 確率的計算の繰り返し回数
-                      ABC.year=2013, # ABCを計算する年
-                      waa.year=2009:2011, # 生物パラメータの参照年
-                      maa.year=2009:2011,
-                      M.year=2009:2011,
-                      is.plot=TRUE, # 結果をプロットするかどうか
-                      seed=1,
-                      recfunc=HS.recAR, # 再生産関係の関数
-                      # recfuncに対する引数
-                      rec.arg=list(a=HS.par$pars$a,b=HS.par$pars$b,rho=HS.par$pars$rho,
-                                   sd=HS.par$pars$sd,bias.correction=TRUE,
-                                   resample=TRUE,resid=HS.par$resid))
-
-    ## さっきと同じ引数を使ってもう一度将来予測をするやり方：do.callを使う
-    # fres.HS$inputに、将来予測で使った引数が入っているので、それにdo.call(関数、引数)すると同じ計算を再現できる
-    fres.HS2 <- do.call(future.vpa,fres.HS$input)
-
-    # 引数の一部だけを変えて計算する
-    input.tmp <- fres.HS2$input
-    input.tmp$multi <- 0.5 # current Fの1/2で漁獲
-    fres.HS3 <- do.call(future.vpa,input.tmp)
-
-    # 結果の比較
-    plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),target="SSB")
-    plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),target="Catch")
-    plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),target="Biomass")
-
-    ## Frecの例
-    fres.test <- future.vpa(res.pma,
-                      multi=1,
-                      nyear=50, # 将来予測の年数
-                      start.year=2012, # 将来予測の開始年
-                      N=100, # 確率的計算の繰り返し回数
-                      ABC.year=2013, # ABCを計算する年
-                      waa.year=2009:2011, # 生物パラメータの参照年
-                      maa.year=2009:2011,
-                      M.year=2009:2011,seed=1,
-                      is.plot=TRUE, # 結果をプロットするかどうか
-                      Frec=list(stochastic=TRUE,future.year=2023,Blimit=max(colSums(res.pma$ssb)),scenario="blimit",target.probs=50),
-                      recfunc=HS.rec, # 再生産関係の関数
-                      # recfuncに対する引数
-                      rec.arg=list(a=HS.par$pars$a,b=HS.par$pars$b,
-                                   sd=HS.par$pars$sd,bias.correction=TRUE))
-
-    ## HSで推定されたパラメータを使って将来予測する(残差リサンプリング)
-    fres.HS4 <- future.vpa(res.pma,multi=1,nyear=50, start.year=2012, 
-                           N=1000, ABC.year=2013,is.plot=TRUE, seed=1,
-                           waa.year=2009:2011, # 生物パラメータの参照年
-                           maa.year=2009:2011,
-                           M.year=2009:2011,
-                           recfunc=HS.rec, # 再生産関係の関数（HS.rec=Hockey-stick)                                
-                           rec.arg=list(a=HS.par$pars$a,b=HS.par$pars$b,
-                                        sd=HS.par$pars$sd,bias.correction=TRUE,
-                                        resample=TRUE,resid=HS.par$resid))
-    plot(fres.HS$vssb[,-1],fres.HS$naa[1,,-1]) # 対数正規分布
-    plot(fres.HS4$vssb[,-1],fres.HS4$naa[1,,-1]) # 残差リサンプリング
-    plot.futures(list(fres.HS,fres.HS4))
-
-    ## BHによる将来予測
-    fres.BH <- future.vpa(res.pma,multi=1,nyear=50, start.year=2012, 
-                          N=1000, ABC.year=2013,is.plot=TRUE, seed=1,
-                          waa.year=2009:2011, # 生物パラメータの参照年
-                          maa.year=2009:2011,
-                          M.year=2009:2011,
-                          recfunc=BH.rec, # 再生産関係の関数（HS.rec=Hockey-stick)                                
-                          rec.arg=list(a=BH.par$pars$a,b=BH.par$pars$b,
-                                       sd=BH.par$pars$sd,bias.correction=TRUE,
-                                       resample=TRUE,resid=BH.par$resid))
-
-    # 将来予測期間はgeneration timeの20倍
-    GT <- Generation.Time(res.pma,maa.year=2009:2011, M.year=2009:2011,Plus = 100)
-
-    ## MSY管理基準値の計算（VPAの結果と将来予測の引数を使う）
-    # nyear（将来予測年数）やN（シミュレーション回数）,seed(乱数のシード)はこの関数の引数としても設定できる
-    # nyearで指定した最終年の資源量や漁獲量の平均値を見てB0やMSYが計算される
-    # 最後、数年分の平均値を使いたい場合はeyear=3とかで指定すると、最終年の３年分の平均が参照される
-    
-    MSY.HS <- est.MSY(res.pma,fres.HS$input,nyear=20*GT,N=500,PGY=c(0.9,0.6,0.1),B0percent=c(0.3,0.4))
-
-    #MSY.HS <- est.MSY(res.pma,fres.HS$input,nyear=20*GT,N=500,PGY=c(0.9,0.95),B0percent=c(0.3,0.4),trace.multi=seq(from=0,to=1,by=0.1))
-    # 計算時間を短縮するいくつかのオプション
-    # 通常計算(N=500回で78秒)
-    #aa0 <- system.time(MSY.HS1 <- est.MSY(res.pma,fres.HS$input,nyear=20*GT,N=1000,PGY=c(0.9,0.6,0.1),B0percent=NULL))
-    # グリッドサーチ（かえって遅くなる、92秒）
-    #system.time(a2 <- est.MSY(res.pma,fres.HS$input,nyear=20*GT,N=500,PGY=NULL,B0percent=NULL,optim.method="grid"))
-    # yield curveを正確に書かない（最初、決定論的な将来予測でグリッドサーチして、そこで推定されたFmsy付近で確率的計算をし、最適化する。BMSYがHS付近にある場合には探索範囲を変えながらoptimを繰り返すので場合によっては遅くなるかも）（29秒）
-    #system.time(a3 <- est.MSY(res.pma,fres.HS$input,nyear=20*GT,N=500,PGY=NULL,B0percent=NULL,calc.yieldcurve=FALSE))        
-    
-    # BHによるMSY管理基準値を計算する場合：BH関数を使った将来予測の結果を引数に入れる
-    MSY.BH <- est.MSY(res.pma,fres.BH$input,nyear=20*GT,N=1000,PGY=c(0.9,0.95),B0percent=c(0.3,0.4))
-
-    ### 岡村さん関数を使った管理基準値の計算
-    # 岡村さん関数では内部でGTが計算されているのでGTを与える必要はない
-    MSY.HS2 <- est.MSY2(res.pma,sim0=fres.HS,future.function.name="future.vpa",res1=HS.par,
-                        nyear=NULL,N=1000,current.resid=0)
-    
-    ## ABC計算 => ここで出てくるABCはまだ確かめていないので使わない。アルファだけ使う
-    abc1 <- calc.abc(MSY.HS2,delta.est=FALSE,delta=1)    
-    
-    ## パフォーマンス指標のとりだし
-    MSY.index <- get.perform(MSY.HS$fout.msy,
-                             Blimit=HS.par$pars$b, # Blimit的なしきい値を下回る確率を計算するときのしきい値を与える
-                             longyear=50, # 十分長いと考えられる年。longyear年の間に何回悪いことが起きるか、という指標を計算するときに使う
-                             smallcatch=0.5) # おこってほしくない漁獲量のしきい値。平均に対する割合であたえる（0.5の場合、平均漁獲量の半分よりも漁獲量が少なくなる年数をカウントする）
-
-    PGY.index <- sapply(MSY.HS$fout.PGY,get.perform,
-                        Blimit=HS.par$pars$b, longyear=50, smallcatch=0.5)
-    B0percent.index <- sapply(MSY.HS$fout.B0percent,get.perform,
-                        Blimit=HS.par$pars$b, longyear=50, smallcatch=0.5)
-
-    total.index <- rbind(MSY.index, t(PGY.index),t(B0percent.index)) # パフォーマンス指標まとめ
-    index.name <- c("catch.mean","biom.mean","short.catch3","short.catch5","short.catch10","catch.safe","ssb.safe","effort","largefish.catch") # 特に注目したいパフォーマンス指標のみとりだす
-    total.index[index.name] # パフォーマンス指標の出力
-
-    # プロット
-    library(RColorBrewer)
-    library(plotrix)    
-    plotRadial(total.index[index.name],
-               base=1) # どの管理基準値をベースにするか。行の番号
-
-    # kobe plotの出力
-    par(mfrow=c(2,2),mar=c(4,4,2,1))    
-    plot.kobe(res.pma,unlist(MSY.HS$summary$SSB[1]),unlist(MSY.HS$summary$U[1]),title.tmp="MSY")
-    plot.kobe(res.pma,unlist(MSY.HS$summary$SSB[7]),unlist(MSY.HS$summary$U[7]),title.tmp="B0-30%")
-    plot.kobe(res.pma,unlist(MSY.HS$summary$SSB[8]),unlist(MSY.HS$summary$U[8]),title.tmp="B0-40%")    
-
-### 短期的戦略=>Kobe matrix的なものを出力する
-    kobe2.msy <-get.kobemat(MSY.HS$fout.msy,Btarget=MSY.HS$summary$SSB[1],nyear=15,fmulti=seq(from=0.2,to=0.7,by=0.1),N=1000)
-    kobe2.B30 <-get.kobemat(MSY.HS$fout.msy,Btarget=MSY.HS$summary$SSB[7],nyear=15,fmulti=seq(from=0.2,to=0.7,by=0.1),N=1000)
-    kobe2.B40 <-get.kobemat(MSY.HS$fout.msy,Btarget=MSY.HS$summary$SSB[8],nyear=15,fmulti=seq(from=0.2,to=0.7,by=0.1),N=1000)    
-    par(mfrow=c(2,2),mar=c(4,4,2,1))
-    plot.kobemat(kobe2.msy,title.name="MSY",line=MSY.HS$summary$"Fref/Fcur"[1])
-    plot.kobemat(kobe2.B30,title.name="B0_30%",line=MSY.HS$summary$"Fref/Fcur"[7])    
-    plot.kobemat(kobe2.B40,title.name="B0_40%",line=MSY.HS$summary$"Fref/Fcur"[8])    
-    
-    ## 再生産関係の推定から管理基準値の計算まで一気にやるプログラム。
-    mout.hs <- SR.est(res.pma, 
-                      what.est=c(TRUE,TRUE,TRUE), # HS,BH,RIのどれをフィットするか。
-                      bref.year=1982:2011, # 生物パラメータを用いる期間(比較的長い期間をとったほうがロバストかも)
-                                        #               years=1970:2013, # 観測されたSR関係を用いる期間
-                      er.log=TRUE, # 誤差。TRUEで対数正規誤差。残差のサンプリングにはまだ対応していないです。
-                      fc.year=2009:2011, # MSY計算のさいに選択率を平均する期間
-                      N=50, # stochastic simulationの繰り返し回数。5000以上が推奨値ですが、最初はN=10くらいでエラーが出ないか確認してください
-                      seed=1, # 乱数の種。この値を変えると乱数が変わるので結果も変わる
-                      PGY=c(0.9,0.95) # PGY管理基準値を計算するかどうか。計算しない場合はNULLを入れる
-                      )
-}
-
-
 #---------------- 管理基準値計算のための関数 ------------------------
 # ref.F
 ref.F <- function(
@@ -254,7 +28,6 @@ ref.F <- function(
     arglist <- lapply(argname,function(x) eval(parse(text=x)))
     names(arglist) <- argname
   
-#  caa <- res$input$dat$caa
   naa <- res$naa
   ssb <- res$ssb
   ny <- ncol(naa)
@@ -318,18 +91,8 @@ ref.F <- function(
     tmp <- calc.rel.abund(sel,Fr,na,M,waa,waa.catch,maa,min.age=min.age,max.age=max.age,Pope=Pope,ssb.coef=ssb.coef)
     rel.abund <- tmp$rel.abund
     spr <- sum(tmp$spr)
-#    rel.abund <- rep(NA, na)
-#    rel.abund[1] <- 1
-#    for (i in 2:(na-1)) {
-#      rel.abund[i] <- rel.abund[i-1]*exp(-M[i-1]-sel[i-1]*Fr)
-#    }
-#    rel.abund[na] <- rel.abund[na-1]*exp(-M[na-1]-sel[na-1]*Fr)*(1-exp(-(max.age-(na-2))*(M[na]+sel[na]*Fr)))/(1-exp(-M[na]-sel[na]*Fr))
- 
-#    spr <- sum(rel.abund*waa*maa)
-
     if (isTRUE(out)) obj <- spr
     else{
-#      browser()
      if(sub=="mean") obj <- (spr-spr.q[4])^2       
      if(sub=="low") obj <- (spr-spr.q[3])^2 
      if(sub=="med") obj <- (spr-spr.q[2])^2
@@ -371,13 +134,6 @@ ref.F <- function(
   ypr.f.est <- function(log.p, out=FALSE){
     Fr <- exp(log.p)
   
-#    rel.abund <- rep(NA, na)
-#    rel.abund[1] <- 1
-#    for (i in 2:(na-1)) {
-#      rel.abund[i] <- rel.abund[i-1]*exp(-M[i-1]-sel[i-1]*Fr)
-#    }
-#    rel.abund[na] <- rel.abund[na-1]*exp(-M[na-1]-sel[na-1]*Fr)*(1-exp(-(max.age-(na-2))*(M[na]+sel[na]*Fr)))/(1-exp(-M[na]-sel[na]*Fr))
-#    ypr <- sum(rel.abund*waa*(1-exp(-sel*Fr))*exp(-M/2))
     tmp <- calc.rel.abund(sel,Fr,na,M,waa,waa.catch,maa,max.age=max.age,Pope=Pope,ssb.coef=ssb.coef)
     rel.abund <- tmp$rel.abund
     ypr <- sum(tmp$ypr)    
@@ -399,18 +155,9 @@ ref.F <- function(
     tmp <- calc.rel.abund(sel,Fr,na,M,waa,waa.catch,maa,max.age=max.age,Pope=Pope,ssb.coef=ssb.coef)
     rel.abund <- tmp$rel.abund
     ypr <- sum(tmp$ypr)
-    
-#    rel.abund <- rep(NA, na)
-#    rel.abund[1] <- 1
-#    for (i in 2:(na-1)) {
-#      rel.abund[i] <- rel.abund[i-1]*exp(-M[i-1]-sel[i-1]*Fr)
-#    }
-#   rel.abund[na] <- rel.abund[na-1]*exp(-M[na-1]-sel[na-1]*Fr)*(1-exp(-(max.age-(na-2))*(M[na]+sel[na]*Fr)))/(1-exp(-M[na]-sel[na]*Fr))
-#   ypr <- sum(rel.abund*waa*(1-exp(-sel*Fr))*exp(-M/2))
+    if (isTRUE(out)) obj <- ypr else obj <- -ypr
 
-   if (isTRUE(out)) obj <- ypr else obj <- -ypr
-
-   return(obj)
+    return(obj)
   }
 
   F0.1.est <- function(log.p){
@@ -656,11 +403,6 @@ future.vpa <-
     ntime <- length(fyears)
     ages <- as.numeric(dimnames(res0$naa)[[1]]) # ages:VPAで考慮される最大年齢数
     min.age <- min(as.numeric(ages))
-#    if(ts>1){
-#      ages <- seq(from=min(ages),to=max(ages)+1/ts,by=1/ts)
-#      nage <- length(ages) # naaにNAが入っていて、かつ、半年毎の将来予測をする場合対応できない可能性がある
-#    }
-#    if(any(is.na(res0$naa[,ncol(res0$naa)]))){
 
     year.overlap <- years %in% start.year   
     {if(sum(year.overlap)==0){
@@ -798,13 +540,6 @@ future.vpa <-
       cv.vec <- rep(WAA.cv,N*ntime)
       waa.rand <- array(rnorm(length(cv.vec),-0.5*cv.vec^2,cv.vec),dim=c(nage,ntime,N))
       waa.rand[,,1] <- 0
-#      for (ii in 1:N) {
-#        if (ii==1) {
-#          waa.rand[,,ii] <- t(sapply(1:nage, function (j) rnorm(ntime,0,0)))
-#        } else {
-#          waa.rand[,,ii] <- t(sapply(1:nage, function (j) rnorm(ntime,-0.5*WAA.cv[j]^2,WAA.cv[j])))
-#        }
-                                       #      }
     }
     
       set.seed(arglist$seed)        
@@ -869,14 +604,7 @@ future.vpa <-
           naa[,1,] <- res0$naa[,start.year==years]
       }
 
-      ### ARを考える場合ここにあると変？もっと前に移動
-      ### 任意の年齢組成からスタートさせたい場合###
-###      if(!is.null(naa0)){
-###          naa[,1,] <- naa0
-###          if(is.null(faa0)) faa0 <- res0$Fc.at.age
-###          faa[] <- faa0*multi
-###      }
-     
+    
       if(!is.null(rec.new)){
         if(!is.list(rec.new)){
           naa[1,1,] <- rec.new
@@ -961,21 +689,8 @@ future.vpa <-
           rec.arg$resid <- rec.tmp$rec.resample # ARオプションに対応
       }
       
-#      if(Pope){
-#        caa[,ntime,] <- naa[,ntime,]*(1-exp(-faa[,ntime,]))*exp(-M[,ntime,]/2)
-#      }
-#      else{
-#        caa[,ntime,] <- naa[,ntime,]*(1-exp(-faa[,ntime,]-M[,ntime,]))*faa[,ntime,]/(faa[,ntime,]+M[,ntime,])
-#      }
       if (!is.null(rec.arg$rho)) rec.tmp$rec.resample <- NULL
 
-
-#      if(Pope){
-#          caa[,i,] <- naa[,i,]*(1-exp(-faa[,i,]))*exp(-M[,i,]/2)
-#      }
-#      else{
-#          caa[,i,] <- naa[,i,]*(1-exp(-faa[,i,]-M[,i,]))*faa[,i,]/(faa[,i,]+M[,i,])
-#      }
 
       if(Pope){
           caa[] <- naa*(1-exp(-faa))*exp(-M/2)
