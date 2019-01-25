@@ -4508,16 +4508,23 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
 }
 # Hockey-stick
 
-plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",ylab.tmp="U/Umsy",xlab.tmp="SSB/SSBmsy",title.tmp="",HCR=NULL){ # HCR=list(beta=0.8)
+plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",
+                      ylab.tmp=ifelse(yaxis=="U","U/Umsy","F/Fmsy"),
+                      xlab.tmp="SSB/SSBmsy",title.tmp="",HCR=NULL,
+                      yaxis="U" # yŽ²‚É‚È‚É‚ð‚Æ‚é‚©BU‚Ìê‡‚Í‹™Šl—¦BF‚Ìê‡‚Í F=-log(1-U)‚Æ‚µ‚ÄŒvŽZ‚µ‚½fishing mortality
+                      ){ # HCR=list(beta=0.8)
     
     if (is.null(vpares$wcaa)) vpares$wcaa <- vpares$input$dat$caa * vpares$input$dat$waa
     vpares$TC.MT <- as.numeric(colSums(vpares$wcaa))
+    U_history <- as.numeric(vpares$TC.MT)/as.numeric(colSums(vpares$baa,na.rm=T))
+    F_history <- -log(1-U_history)
+    F_msy <- -log(1-Umsy)
     UBdata <- data.frame(years=as.numeric(colnames(vpares$baa)),
-                         U=as.numeric(vpares$TC.MT)/as.numeric(colSums(vpares$baa,na.rm=T))/Umsy,
-                         B=as.numeric(colSums(vpares$ssb))/Bmsy)
-
+                         U=U_history/Umsy,
+                         B=as.numeric(colSums(vpares$ssb))/Bmsy,
+                         F=F_history/F_msy)
     x <- UBdata$B
-    y <- UBdata$U
+    if(yaxis=="U") y <- UBdata$U else y <- UBdata$F
     tmp <- x>0 & y>0
     x <- x[tmp]
     y <- y[tmp]
@@ -4529,7 +4536,7 @@ plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is
     else{
         Blim.percent <- 0.5
     }
-    
+
     plot(x,
          y,type="n",xlim=c(0,ifelse(max(x)<2,2,max(x,na.rm=T))),
          ylim=c(0,ifelse(max(y,na.rm=T)<3,3,max(y,na.rm=T))),
@@ -4555,9 +4562,11 @@ plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is
     title(title.tmp,adj=0.8,line=-2)
     
     if(isTRUE(plot.history)){
-      plot(UBdata$years,y,type="b",ylab="U/Umsy",xlab="Year",ylim=c(0,max(y)))
+      plot(UBdata$years,UBdata$U,type="b",ylab="U/Umsy",xlab="Year",ylim=c(0,max(y)))
       abline(h=1)
-      plot(UBdata$years,x,type="b",ylab="SSB/SSBmsy",xlab="Year",ylim=c(0,max(y)))
+      plot(UBdata$years,UBdata$F,type="b",ylab="F/Fmsy",xlab="Year",ylim=c(0,max(y)))
+      abline(h=1)      
+      plot(UBdata$years,UBdata$B,type="b",ylab="SSB/SSBmsy",xlab="Year",ylim=c(0,max(y)))
       abline(h=1); abline(h=Blim.percent,lty=2)
     }
 
