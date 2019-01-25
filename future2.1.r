@@ -197,26 +197,29 @@ ref.F <- function(
     Res$FpSPR <- FpSPR
   }
 
-  #-----  YPR & SPR figure -----
+  #---- make summary
+  Res$summary <- as.data.frame(Res[substr(names(Res),1,1)=="F"])
+  Res$summary <- rbind(Res$summary,Res$summary[1,]/Res$summary[1,1])
+  dimnames(Res$summary)[[1]][3] <- "Fref/Fcur"    
 
+  #-----  YPR & SPR figure -----
+    F_current <- Res$summary$Fcurrent[1]*Res$summary$Fcurrent[3]
+    F.range <- sort(c(F.range,  F_current))
   spr0 <- sum(calc.rel.abund(sel,0,na,M,waa,waa.catch,maa,min.age=min.age,max.age=max.age,Pope=Pope,ssb.coef=ssb.coef)$spr)  
   tmp <- lapply(F.range, function(x) calc.rel.abund(sel,x,na,M,waa,waa.catch,maa,min.age=min.age,max.age=max.age,Pope=Pope,ssb.coef=ssb.coef))
   ypr <- sapply(tmp,function(x) sum(x$ypr))
   spr <- sapply(tmp,function(x) sum(x$spr))/spr0*100
 
-
-  ypr.spr <- data.frame(F.range=F.range,ypr=ypr,spr=spr)
-  Res$ypr.spr  <- ypr.spr
+  Res$ypr.spr  <- data.frame(F.range=F.range,ypr=ypr,spr=spr)
   Res$waa <- waa
   Res$waa.catch <- waa.catch  
   Res$maa <- maa
   #------------------------------
 
-  Res$summary <- as.data.frame(Res[substr(names(Res),1,1)=="F"])
-  Res$summary <- rbind(Res$summary,Res$summary[1,]/Res$summary[1,1])
-  dimnames(Res$summary)[[1]][3] <- "Fref/Fcur"
   Res$arglist <- arglist
   Res$spr0 <- spr0
+
+  Res$ypr.spr$Frange2Fcurrent  <- Res$ypr.spr$F.range/F_current
   class(Res) <- "ref"
     
   if(isTRUE(plot)){
@@ -3542,26 +3545,42 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 #    points(fout.tmp$multi,fout.tmp$vssb[100,1],pch=4)
 }
 
-get.SPR <- function(dres){
+get.SPR <- function(dres,target.SPR=NULL,byear.current=NULL){
     # Fの歴史的な%SPRを見てみる                                                                             
-    # 毎年異なるFや生物パラメータに対して、YPR,SPR、SPR0がどのくらい変わっているのか見る(Rコード例2)        
-    dres$ysdata <- matrix(0,ncol(dres$faa),4)
-    dimnames(dres$ysdata) <- list(colnames(dres$faa),c("perSPR","YPR","SPR","SPR0"))
+    # 毎年異なるFや生物パラメータに対して、YPR,SPR、SPR0がどのくらい変わっているのか見る(Rコード例2)
+    # target.SPRが与えられると、target.SPR（％）として与えた数字に対応するSPR値に対するFの乗数も出力する
+    #   NULLの場合にはFc.at.ageで与えられたFに対する乗数とする
+    #   F=Ftarget.SPR/Fcurrent
+    #
+
+    if(is.null(target.SPR)){
+        if(is.null(byear.current)) byear.current <- rev(colnames(dres$naa))[1]
+        current_spr <- ref.F(dres,waa.year=byear,maa.year=byear,M.year=byear,rps.year=2000:2011,
+                             F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*2),
+                                           length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)$ypr.spr
+        target.SPR <- current_spr[current_spr$Frange2Fcurrent==1,]$spr[1]
+    }
+    
+    dres$ysdata <- matrix(0,ncol(dres$faa),5)
+    dimnames(dres$ysdata) <- list(colnames(dres$faa),c("perSPR","YPR","SPR","SPR0","F/Ftarget"))
     for(i in 1:ncol(dres$faa)){
 	dres$Fc.at.age <- dres$faa[,i] # Fc.at.ageに対象年のFAAを入れる
         if(all(dres$Fc.at.age>0)){
             byear <- colnames(dres$faa)[i] # 何年の生物パラメータを使うか                                       
-        # RVPAのref.F関数でYPRなどを計算。                                                                  
-        # 配布している1.3から1.4にアップデートしているので、新しいほうの関数を使うこと(返り値がちょっと違う)
+            # RVPAのref.F関数でYPRなどを計算。                                                                  
+            # 配布している1.3から1.4にアップデートしているので、新しいほうの関数を使うこと(返り値がちょっと違う)
             a <- ref.F(dres,waa.year=byear,maa.year=byear,M.year=byear,rps.year=2000:2011,
+                       pSPR=round(target.SPR),
                        F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*2),
                                      length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)
-        # YPRと%SPR                                                                                         
-            dres$ysdata[i,1:2] <- (as.numeric(rev(a$ypr.spr[nrow(a$ypr.spr),-1])))
-        # SPR                                                                                               
-        dres$ysdata[i,3] <- a$spr0*dres$ysdata[i,1]/100
-        # SPR0                                                                                              
-        dres$ysdata[i,4] <- a$spr0
+            # YPRと%SPR
+            dres$ysdata[i,1:2] <- (as.numeric(rev(a$ypr.spr[which(a$ypr.spr$Frange2Fcurrent==1)[1],2:3])))
+            # SPR                                                                                               
+            dres$ysdata[i,3] <- a$spr0*dres$ysdata[i,1]/100
+            # SPR0                                                                                              
+            dres$ysdata[i,4] <- a$spr0
+            # relative F
+            dres$ysdata[i,5] <- 1/a$summary[3,grep("SPR",colnames(a$summary))][1]
         }
         else{
             break;
