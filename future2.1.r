@@ -415,7 +415,10 @@ future.vpa <-
          nage <- sum(!is.na(res0$naa[,year.overlap])) # nage:将来予測で考慮すべき年の数
      }}
     
-    if(!silent)  cat("F multiplier= ", multi,"seed=",seed,"\n")
+      if(!silent){
+          cat("F multiplier= ", multi,"seed=",seed,"\n")
+          cat("ABC year= ", ABC.year,"\n")
+      }
     
     # シードの設定
     if(is.null(seed)) arglist$seed <- as.numeric(Sys.time())
@@ -2389,7 +2392,8 @@ get.stat3 <- function(fout,eyear=0,hsp=NULL,tmp.year=NULL,unit.waa=1){
     colnames(Faa) <- paste("F",dimnames(fout$naa)[[1]],sep="")
     res.stat1 <- cbind(a,Faa) # ここまで、get.stat
 
-    nage <- dim(fout$naa)[[1]]
+    agename <- dimnames(fout$naa)[[1]]
+    nage <- dim(fout$naa)[[1]]    
     tb <- fout$naa * fout$waa * unit.waa
     if(is.null(fout$waa.catch)) fout$waa.catch <- fout$waa
     tc <- fout$caa * fout$waa.catch * unit.waa
@@ -2418,20 +2422,52 @@ get.stat3 <- function(fout,eyear=0,hsp=NULL,tmp.year=NULL,unit.waa=1){
     tb.mat <- as.numeric(tb.mat)
     ssb.mat <- as.numeric(ssb.mat)        
 
-        # MA; mean, ME; median, GM; geometric mean
-        names(tc.mat) <- c(paste("TC-MA-A",1:nage,sep=""),paste("TC-ME-A",1:nage,sep=""),
-                           paste("TC-GM-A",1:nage,sep=""),paste("TC-DE-A",1:nage,sep=""),
-                           paste("TC-L10-A",1:nage,sep=""),paste("TC-H10-A",1:nage,sep=""))
-        names(tb.mat) <- c(paste("TB-MA-A",1:nage,sep=""),paste("TB-ME-A",1:nage,sep=""),
-                           paste("TB-GM-A",1:nage,sep=""),paste("TB-DE-A",1:nage,sep=""),
-                           paste("TB-L10-A",1:nage,sep=""),paste("TB-H10-A",1:nage,sep=""))
-        names(ssb.mat) <- c(paste("SSB-GA-A",1:nage,sep=""),paste("SSB-ME-A",1:nage,sep=""),
-                            paste("SSB-GM-A",1:nage,sep=""),paste("SSB-DE-A",1:nage,sep=""),
-                            paste("SSB-L10-A",1:nage,sep=""),paste("SSB-H10-A",1:nage,sep=""))
+        # mean, ME; median, geomean; geometric mean
+        names(tc.mat) <- c(paste("TC-mean-A",agename,sep=""),paste("TC-median-A",agename,sep=""),
+                           paste("TC-geomean-A",agename,sep=""),paste("TC-det-A",agename,sep=""),
+                           paste("TC-L10-A",agename,sep=""),paste("TC-H10-A",agename,sep=""))
+        names(tb.mat) <- c(paste("TB-mean-A",agename,sep=""),paste("TB-median-A",agename,sep=""),
+                           paste("TB-geomean-A",agename,sep=""),paste("TB-det-A",agename,sep=""),
+                           paste("TB-L10-A",agename,sep=""),paste("TB-H10-A",agename,sep=""))
+        names(ssb.mat) <- c(paste("SSB-GA-A",agename,sep=""),paste("SSB-median-A",agename,sep=""),
+                            paste("SSB-geomean-A",agename,sep=""),paste("SSB-det-A",agename,sep=""),
+                            paste("SSB-L10-A",agename,sep=""),paste("SSB-H10-A",agename,sep=""))
     res.stat2 <- as.data.frame(t(c(tb.mat,tc.mat,ssb.mat)))
     res.stat <- cbind(res.stat1,res.stat2)
     return(res.stat)    
 }    
+
+get.stat4 <- function(fout,Brefs,refyear=NULL){
+    col.target <- ifelse(fout$input$N==0,1,-1)
+    years <- as.numeric(rownames(fout$vwcaa))
+
+    if(is.null(catch_refyear)){
+        catch_refyear <- c(seq(from=min(years),to=min(years)+5),
+                           c(min(years)+seq(from=10,to=20,by=5)))
+    }
+
+    catch.mean <- rowMeans(fout$vwcaa[years%in%ref_year,col.target])
+    names(catch.mean) <- str_c("Catch",names(catch.mean)) 
+    catch.mean <- as_tibble(t(catch.mean))
+    
+    Btarget.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]>Brefs$Btarget) %>%
+        t() %>% as_tibble() 
+    names(Btarget.prob) <- str_c("Btarget_prob",names(Btarget.prob))
+
+    Blow.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]>Brefs$Blow) %>%
+        t() %>% as_tibble() 
+    names(Blow.prob) <- str_c("Blow_prob",names(Blow.prob))
+
+    Blimit.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]<Brefs$Blimit) %>%
+        t() %>% as_tibble() 
+    names(Blimit.prob) <- str_c("Blimit_prob",names(Blimit.prob))
+
+    Bban.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]<Brefs$Bban) %>%
+        t() %>% as_tibble() 
+    names(Bban.prob) <- str_c("Bban_prob",names(Bban.prob))             
+
+    return(bind_cols(catch.mean,Btarget.prob,Blow.prob,Blimit.prob,Bban.prob))
+}
 
 
 
@@ -3258,10 +3294,10 @@ allplot <- function(res0,target="hs",biomass.scale=1000,
         layout(t(matrix(c(1,2,3,3,4,4,5,5),2,4)),heights=c(1,2,1,1))
         tres0 <- res00$trace[[1]]
         ssb <- res00$trace[[1]]$ssb.mean/biomass.scale
-        tmp <- substr(colnames(tres0),1,5)=="TB-MA"
+        tmp <- substr(colnames(tres0),1,7)=="TB-mean"
         tb <- tres0[,tmp]/biomass.scale
         tb2 <- sapply(1:ncol(tb),function(x) apply(tb[,1:x,drop=F],1,sum,na.rm=T))
-        tmp <- substr(colnames(tres0),1,5)=="TC-MA"
+        tmp <- substr(colnames(tres0),1,7)=="TC-mean"
         tc <- tres0[,tmp]/biomass.scale
         tc2 <- sapply(1:ncol(tc),function(x) apply(tc[,1:x,drop=F],1,sum,na.rm=T))
         library(png)
@@ -3450,9 +3486,9 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 #    fout.tmp <- do.call(future.vpa2,arg.tmp)
 
     # average
-    plot(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$catch.mean,type="n",xlim=c(0,max(x)),
-         xlab="Multiplier to current F",ylab="Catch weight",ylim=c(0,max(res00$trace[[1]]$catch.det,y)))
-    menplot(res00$trace[[1]]$fmulti,cbind(res00$trace[[1]]$catch.L10,res00$trace[[1]]$catch.H10),
+    plot(x <- res00$trace$fmulti,y <- res00$trace$catch.mean,type="n",xlim=c(0,max(x)),
+         xlab="Multiplier to current F",ylab="Catch weight",ylim=c(0,max(res00$trace$catch.det,y)))
+    menplot(res00$trace$fmulti,cbind(res00$trace$catch.L10,res00$trace$catch.H10),
             col=rgb(210/255,94/255,44/255,0.3),border=NA)    
 
     ## integrate
@@ -3461,22 +3497,22 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
         points(fmax5 <- x[which.max(y)],y[which.max(y)],pch=20,col="gray")
     }
 
-    points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$catch.mean,type="l",xlim=c(0,max(x)),
-           xlab="Multiplier to current F",ylab="Catch weight",ylim=c(0,max(res00$trace[[1]]$catch.det,y)))    
+    points(x <- res00$trace$fmulti,y <- res00$trace$catch.mean,type="l",xlim=c(0,max(x)),
+           xlab="Multiplier to current F",ylab="Catch weight",ylim=c(0,max(res00$trace$catch.det,y)))    
     points(fmax1 <- x[which.max(y)],y[which.max(y)],pch=20,col=1)    
 
     if(isTRUE(detail.plot)){    
     # geomean
-        points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$catch.geomean,col=2,type="l",xlim=c(0,2))
+        points(x <- res00$trace$fmulti,y <- res00$trace$catch.geomean,col=2,type="l",xlim=c(0,2))
     points(fmax2 <- x[which.max(y)],y[which.max(y)],pch=20,col=2)
 
     # median
-        points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$catch.median,col=3,type="l",xlim=c(0,2))
+        points(x <- res00$trace$fmulti,y <- res00$trace$catch.median,col=3,type="l",xlim=c(0,2))
         points(fmax3 <- x[which.max(y)],y[which.max(y)],pch=20,col=3)
     }
 
     # deteministic
-    points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$catch.det,col=4,
+    points(x <- res00$trace$fmulti,y <- res00$trace$catch.det,col=4,
            type="l",xlim=c(0,2))
     points(fmax4 <- x[which.max(y)],y[which.max(y)],pch=20,col=4)
 
@@ -3484,7 +3520,7 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 
     ## plot CV of yield
     par(new=T)
-    y <- res00$trace[[1]]$catch.CV
+    y <- res00$trace$catch.CV
     plot(x,y,type="l",lwd=3,
          col=rgb(0.8,0.8,0,0.6),axes=F,xlab="",ylab="",
          ylim=c(0,ifelse(max(y,na.rm=T)>1.5,1.5,max(y,na.rm=T))))
@@ -3492,9 +3528,9 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
     mtext(side=4,"CV of catch",line=2.5,col=rgb(0.8,0.8,0,0.6),cex=0.8)    
 
     ### plot SSB
-    plot(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$ssb.mean,type="n",xlim=c(0,max(x)),
+    plot(x <- res00$trace$fmulti,y <- res00$trace$ssb.mean,type="n",xlim=c(0,max(x)),
          xlab="Relative F (to current F)",ylab="SSB")
-    menplot(res00$trace[[1]]$fmulti,cbind(res00$trace[[1]]$ssb.L10,res00$trace[[1]]$ssb.H10),
+    menplot(res00$trace$fmulti,cbind(res00$trace$ssb.L10,res00$trace$ssb.H10),
             col=rgb(40/255,96/255,163/255,0.3),border=NA)        
 
     ## integrate
@@ -3503,19 +3539,19 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
         points(fmax5,y[x==fmax5],pch=20,col="gray")
     }
     
-    points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$ssb.mean,type="l",xlim=c(0,max(x)),
+    points(x <- res00$trace$fmulti,y <- res00$trace$ssb.mean,type="l",xlim=c(0,max(x)),
          xlab="Relative F (to current F)",ylab="SSB")
     points(fmax1,y[x==fmax1],pch=20,col=1)
 
     if(isTRUE(detail.plot)){        
-        points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$ssb.geomean,col=2,type="l",xlim=c(0,2))
+        points(x <- res00$trace$fmulti,y <- res00$trace$ssb.geomean,col=2,type="l",xlim=c(0,2))
         points(fmax2,y[x==fmax2],pch=20,col=2)
     
-        points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$ssb.median,col=3,type="l",xlim=c(0,2))
+        points(x <- res00$trace$fmulti,y <- res00$trace$ssb.median,col=3,type="l",xlim=c(0,2))
         points(fmax3,y[x==fmax3],pch=20,col=3)
     }
 
-    points(x <- res00$trace[[1]]$fmulti,y <- res00$trace[[1]]$ssb.det,
+    points(x <- res00$trace$fmulti,y <- res00$trace$ssb.det,
            col=4,type="l")
     points(fmax4,y[x==fmax4],pch=20,col=4)
     title("SSB vs. F")
@@ -3535,7 +3571,7 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 
     #### CV plot
     par(new=T)
-    y <- res00$trace[[1]]$ssb.CV
+    y <- res00$trace$ssb.CV
     plot(x,y,type="l",lwd=3,
          col=rgb(0.8,0.8,0,0.6),axes=F,xlab="",ylab="",
          ylim=c(0,ifelse(max(y,na.rm=T)>1.5,1.5,max(y,na.rm=T))))
@@ -3640,6 +3676,7 @@ est.MSY <- function(vpares,farg,
                    is.plot=TRUE,
                    PGY=NULL, # PGY管理基準値を計算するかどうか。計算しない場合はNULLを、計算する場合はc(0.8,0.9,0.95)のように割合を入れる
                    B0percent=NULL, # B0_XX%の管理基準値を計算するかどうか
+                   Bempirical=NULL, # 特定の親魚量をターゲットにする場合
                    long.term=20, # 世代時間の何倍年後の状態を平衡状態と仮定するか
                    GT=NULL, # 世代時間を外から与える場合(世代時間の計算は将来予測で使われる年齢別成熟率・自然死亡係数を使っているが、別のパラメータを与えたい場合など、外で計算してここに入れる)
                    mY=5, # 自己相関を考慮して管理基準値を計算する場合、平衡状態から何年進めるか                   
@@ -3825,7 +3862,13 @@ est.MSY <- function(vpares,farg,
                 fout.PGY[[s]] <- do.call(future.vpa,farg.pgy)
                 fout.PGY[[s]]$input$multi <- fout.PGY[[s]]$multi
                 PGYstat <- rbind(PGYstat,get.stat3(fout.PGY[[s]]))
-                s <- s+1
+
+                if(calc.yieldcurve){
+                    trace$table <- rbind(trace$table,trace.func(farg.msy,eyear,hsp=Blimit,trace.N=trace.N,
+                                                                fmulti=fout.PGY[[s]]$multi+c(-0.025,-0.05,-0.075,0,0.025,0.05,0.075))$table)
+                    trace$table <- trace$table[order(trace$table$fmulti),]
+                }
+                s <- s+1                
             }
         }
 #        PGYstat <- as.data.frame(t(sapply(fout.PGY,get.stat3,eyear=eyear,hsp=Blimit)))
@@ -3854,7 +3897,12 @@ est.MSY <- function(vpares,farg,
                                  scenario="ssb.mean",Frange=frange.list)
             fout.B0percent[[j]] <- do.call(future.vpa,farg.b0)
             fout.B0percent[[j]]$input$multi <- fout.B0percent[[j]]$multi
-            B0stat <- rbind(B0stat,get.stat3(fout.B0percent[[j]]))            
+            B0stat <- rbind(B0stat,get.stat3(fout.B0percent[[j]]))
+            if(calc.yieldcurve){
+                trace$table <- rbind(trace$table,trace.func(farg.msy,eyear,hsp=Blimit,trace.N=trace.N,
+                                                            fmulti=fout.B0percent[[j]]$multi+c(-0.025,-0.05,-0.075,0,0.025,0.05,0.075))$table)
+                    trace$table <- trace$table[order(trace$table$fmulti),]
+            }                
         }
         rownames(B0stat) <- names(fout.B0percent) <- paste("B0-",B0percent*100,"%",sep="")
     }
@@ -3863,10 +3911,46 @@ est.MSY <- function(vpares,farg,
         }
 ###
 
-    refvalue <- rbind(MSY,B0,PGYstat,B0stat)
-    sumvalue <- refvalue[,c("ssb.mean","biom.mean","U.mean","catch.mean","Fref2Fcurrent")]
-    colnames(sumvalue) <- c("SSB","B","U","Catch","Fref/Fcur")
-    sumvalue <- cbind(sumvalue,refvalue[,substr(colnames(refvalue),1,1)=="F"])
+    ## 特定のSSBを目指す場合
+    fout.Bempirical <- list()
+    Bempirical.stat <- NULL
+    if(!is.null(Bempirical)){
+        for(j in 1:length(Bempirical)){
+            cat("Estimating B empirical ",Bempirical[j],"\n")            
+            ttmp <- trace$table$ssb.mean-Bempirical[j]
+            ttmp <- which(diff(sign(ttmp))!=0)
+            frange.list <- trace$table$fmulti[ttmp[1]+0:1]
+            farg.ben <- farg.tmp
+            farg.ben$Frec <- list(stochastic=TRUE,
+                                 future.year=rev(rownames(fout0$vssb))[1],
+                                 Blimit=Bempirical[j],
+                                 scenario="ssb.mean",Frange=frange.list)
+            fout.Bempirical[[j]] <- do.call(future.vpa,farg.ben)
+            fout.Bempirical[[j]]$input$multi <- fout.Bempirical[[j]]$multi
+            Bempirical.stat <- rbind(Bempirical.stat,get.stat3(fout.Bempirical[[j]]))
+
+            if(calc.yieldcurve){
+                trace$table <- rbind(trace$table,trace.func(farg.msy,eyear,hsp=Blimit,trace.N=trace.N,
+                                                            fmulti=fout.Bempirical[[j]]$multi+c(-0.025,-0.05,-0.075,0,0.025,0.05,0.075))$table)
+                    trace$table <- trace$table[order(trace$table$fmulti),]
+            }                            
+        }
+        rownames(Bempirical.stat) <- names(fout.Bempirical) <- paste("Ben-",round(Bempirical),"",sep="")
+    }
+    else{
+        Bempirical.stat <-  NULL
+        }
+###
+
+    refvalue <- bind_rows(MSY,B0,PGYstat,B0stat,Bempirical.stat) %>% as_tibble %>%
+        mutate(RP_name=c("MSY","B0",rownames(PGYstat),rownames(B0stat),rownames(Bempirical.stat)),
+               AR=FALSE)
+    refvalue <- refvalue %>%
+                   mutate(SSB2SSB0=refvalue$ssb.mean/refvalue$ssb.mean[2])
+    sumvalue <- refvalue %>% select(RP_name,AR,ssb.mean,biom.mean,U.mean,catch.mean,Fref2Fcurrent,SSB2SSB0)
+    colnames(sumvalue) <- c("RP_name","AR","SSB","B","U","Catch","Fref/Fcur","SSB/SSB0")
+    sumvalue <- bind_cols(sumvalue,refvalue[,substr(colnames(refvalue),1,1)=="F"])
+    
 
 ### ARありの場合の管理基準値の計算（平衡状態から5年分進めたときの値）
 
@@ -3902,26 +3986,41 @@ est.MSY <- function(vpares,farg,
         B0stat2 <- NULL
     }
 
-    refvalue2 <- rbind(MSY2[[1]],B02[[1]],
-                       t(sapply(PGYstat2,function(x) x[[1]])),
-                       t(sapply(B0stat2,function(x) x[[1]])))
-    refvalue2 <- apply(refvalue2,2,as.numeric)
-    sumvalue2 <- refvalue2[,c("ssb.mean","biom.mean","U.mean","catch.mean","Fref2Fcurrent")]
-    colnames(sumvalue2) <- c("SSB","B","U","Catch","Fref/Fcur")
-    sumvalue2 <- cbind(sumvalue2,refvalue2[,substr(colnames(refvalue2),1,1)=="F"])
+    if(!is.null(Bempirical)){
+        Bempirical.stat2 <- lapply(1:length(fout.Bempirical),
+                       function(x) target.func(fout.Bempirical[[x]],mY=mY,seed=seed,N=N,eyear=mY,current.resid=current.resid)
+                       )
+    }
+    else{
+        Bempirical.stat2 <- NULL
+    }    
 
-    dimnames(refvalue2) <- dimnames(refvalue)        
-    dimnames(sumvalue2) <- dimnames(sumvalue)
+    refvalue2 <- bind_rows(MSY2[[1]],B02[[1]],
+                       purrr::map_dfr(PGYstat2,function(x) x[[1]]),
+                       purrr::map_dfr(B0stat2,function(x) x[[1]]),
+                       purrr::map_dfr(Bempirical.stat2,function(x) x[[1]])) %>% as_tibble() %>%
+        mutate(RP_name=refvalue$RP_name,AR=TRUE)
+
+    refvalue2 <-  refvalue2 %>%
+        mutate(SSB2SSB0=refvalue$ssb.mean/refvalue$ssb.mean[2])
+    
+    sumvalue2 <- refvalue2 %>% select(RP_name,AR,ssb.mean,biom.mean,U.mean,catch.mean,Fref2Fcurrent,SSB2SSB0)
+    colnames(sumvalue2) <- c("RP_name","AR","SSB","B","U","Catch","Fref/Fcur","SSB/SSB0")
+    sumvalue2 <- bind_cols(sumvalue2,refvalue2[,substr(colnames(refvalue2),1,1)=="F"])
+
 
     ssb.ar.mean <- cbind(apply(MSY2[[2]]$vssb,1,mean),
                          apply(B02[[2]]$vssb,1,mean),
                          sapply(PGYstat2,function(x) apply(x[[2]]$vssb,1,mean)),
-                         sapply(B0stat2,function(x) apply(x[[2]]$vssb,1,mean)))
+                         sapply(B0stat2,function(x) apply(x[[2]]$vssb,1,mean)),
+                         sapply(Bempirical.stat2,function(x) apply(x[[2]]$vssb,1,mean)))
     ssb.ar.mean <- sweep(matrix(as.numeric(ssb.ar.mean),nrow(ssb.ar.mean),ncol(ssb.ar.mean)),
               2,unlist(sumvalue$SSB),FUN="/")
     colnames(ssb.ar.mean) <- rownames(sumvalue$SSB)
     
-### 結果のプロットなど
+    ### 結果のプロットなど
+
+    trace$table <- subset(trace$table,fmulti>0)
     
     if(isTRUE(is.plot)){
         # plot of yield curve
@@ -3958,8 +4057,10 @@ est.MSY <- function(vpares,farg,
 
     invisible(list(summary=as.data.frame(as.matrix(sumvalue)),
                    summaryAR=as.data.frame(as.matrix(sumvalue2)),
+                   summary_tb=bind_rows(sumvalue,sumvalue2),
                    all.stat=as.data.frame(as.matrix(refvalue)),
                    all.statAR=as.data.frame(as.matrix(refvalue2)),
+                   all.stat_tb=bind_rows(refvalue,refvalue2),                   
                    trace=trace$table,input.list=input.list,
                    ssb.ar.mean=ssb.ar.mean))    
 }
