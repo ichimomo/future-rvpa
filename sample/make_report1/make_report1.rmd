@@ -1,0 +1,354 @@
+---
+title: "ステークホルダー会議1用の計算と結果のアウトプット"
+author: "Momoko Ichinokawa"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+
+```{r, echo=FALSE}
+library(rmdformats)
+library(tidyverse)
+library(knitr)
+library(rmarkdown)
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+#opts_knit$set(width=75)
+par(mar=c(4,4,3,1))
+```
+
+# 事前準備
+詳細は https://ichimomo.github.io/future-rvpa/future-doc-abc.html をご参照ください
+## データの読み込み
+   
+- データの読み込み，RVPA関数の読み込みなど
+```{r data-read}
+# 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません
+source("../../rvpa1.9.2.r")
+source("../../future2.1.r")
+
+# データの読み込み
+caa <- read.csv("caa_pma.csv",row.names=1)
+waa <- read.csv("waa_pma.csv",row.names=1)
+maa <- read.csv("maa_pma.csv",row.names=1)
+dat <- data.handler(caa=caa, waa=waa, maa=maa, M=0.5)
+names(dat)
+```
+
+## VPAによる資源量推定
+
+- 今後はvpa関数の返り値，res.pmaを使って将来予測計算をおこなっていくので，そのためにvpaを実施します．(この辺はあまり詳しく解説しません．)。
+- **設定ポイント:** vpa関数の引数fc.yearで指定した年数が今後current FのFとして扱われます。
+- [VPA結果を外部から読み込む場合](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#vpa%E7%B5%90%E6%9E%9C%E3%82%92%E5%A4%96%E9%83%A8%E3%81%8B%E3%82%89%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E5%A0%B4%E5%90%88)
+- [再生産関係を仮定しない管理基準値の計算](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%86%8D%E7%94%9F%E7%94%A3%E9%96%A2%E4%BF%82%E3%82%92%E4%BB%AE%E5%AE%9A%E3%81%97%E3%81%AA%E3%81%84%E7%AE%A1%E7%90%86%E5%9F%BA%E6%BA%96%E5%80%A4%E3%81%AE%E8%A8%88%E7%AE%97)
+
+```{r vpa}
+# VPAによる資源量推定
+res.pma <- vpa(dat,fc.year=2015:2017,
+               tf.year = 2008:2010,
+               term.F="max",stat.tf="mean",Pope=TRUE,
+               tune=FALSE,p.init=1.0)
+```
+
+```{r}
+res.pma$Fc.at.age # 将来予測やMSY計算で使うcurrent Fを確認してプロットする
+plot(res.pma$Fc.at.age,type="b",xlab="Age",ylab="F",ylim=c(0,max(res.pma$Fc.at.age)))
+
+# 独自のFc.at.ageを使いたい場合は以下のようにここで指定する
+# res.pma$Fc.at.age[] <- c(1,1,2,2)
+```
+
+## 再生産関係の推定
+
+- 詳しい解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%86%8D%E7%94%9F%E7%94%A3%E9%96%A2%E4%BF%82%E3%81%AE%E6%8E%A8%E5%AE%9A)
+- 上記を参考に、AICで比較したあと、フィットした再生産関係のプロットなどをみて、ちゃんと推定できてそうか確かめて下さい
+- [モデル診断](https://ichimomo.github.io/future-rvpa/SRR-guidline.html)も行って下さい。
+- **設定ポイント:** get.SRdata関数のyearsの引数で、再生産関係をフィットさせたい年を指定します。何も指定しないと全年のデータが使われます。
+- **設定ポイント:** ここで、将来予測で使う再生産関係を一つに決めます。
+
+```{r SRdata}
+# VPA結果を使って再生産データを作る
+SRdata <- get.SRdata(res.pma, years=1988:2016) 
+head(SRdata)
+
+## モデルのフィット(網羅的に試しています)
+# 網羅的なパラメータ設定
+SRmodel.list <- expand.grid(SR.rel = c("HS","BH","RI"), AR.type = c(0, 1), L.type = c("L1", "L2"))
+SR.list <- list()
+for (i in 1:nrow(SRmodel.list)) {
+    SR.list[[i]] <- fit.SR(SRdata, SR = SRmodel.list$SR.rel[i], method = SRmodel.list$L.type[i], 
+        AR = SRmodel.list$AR.type[i], hessian = FALSE)
+}
+
+SRmodel.list$AICc <- sapply(SR.list, function(x) x$AICc)
+SRmodel.list$delta.AIC <- SRmodel.list$AICc - min(SRmodel.list$AICc)
+SR.list <- SR.list[order(SRmodel.list$AICc)]  # AICの小さい順に並べたもの
+(SRmodel.list <- SRmodel.list[order(SRmodel.list$AICc), ]) # 結果
+
+SRmodel_base <- SR.list[[1]] # AIC最小モデルを今後使っていく
+```
+
+## 将来予測
+
+- 細かい設定の解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%B0%86%E6%9D%A5%E4%BA%88%E6%B8%AC)
+   - 自己相関を考慮する場合
+   - Frecオプション（目標の年に指定した確率で漁獲する）
+   - 年齢別体重が資源尾数に影響される場合、などのオプションがあります
+- **設定ポイント:**　将来予測やMSY推定で使う生物パラメータをここで指定します（waa.year, maa.year, M.year）。ABC計算年（ABC.year）などの設定もここで。
+- これはFcurrentでうまく計算できるか試してみるための将来予測です
+- 今後の管理基準値計算でもここで指定したオプションを使います
+- 近年の加入の仮定(rec.new)や近年の漁獲量(pre.catch)を設定する場合にはここでちゃんと設定してください
+
+```{r future.vpa, fig.cap="**図：is.plot=TRUEで表示される図．Fcurrentでの将来予測。資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示**"}
+future_Fcurrent <- future.vpa(res.pma,
+                      multi=1,
+                      nyear=50, # 将来予測の年数
+                      start.year=2018, # 将来予測の開始年
+                      N=5000, # 確率的計算の繰り返し回数
+                      ABC.year=2019, # ABCを計算する年
+                      waa.year=2015:2017, # 生物パラメータの参照年
+                      maa.year=2015:2017,
+                      M.year=2015:2017,
+                      is.plot=TRUE, # 結果をプロットするかどうか
+                      seed=1,
+                      silent=FALSE,
+                      recfunc=HS.recAR, # 再生産関係の関数
+                      # recfuncに対する引数
+                      rec.arg=list(a=SRmodel_base$pars$a,b=SRmodel_base$pars$b,
+                                   rho=SRmodel_base$pars$rho, # ここではrho=0なので指定しなくてもOK
+                                   sd=SRmodel_base$pars$sd,resid=SRmodel_base$resid))
+```
+
+## MSY管理基準値の計算
+- MSY管理基準値計算では，上記の将来予測において，Fcurrentの値に様々な乗数を乗じたF一定方策における平衡状態時の（世代時間×20年を```nyear```で指定します）資源量やそれに対応するF等を管理基準値として算出します
+- なので、ここまでのプロセスで、ABC計算のためにきちんとしたオプションを設定したfuture.vpaを実行しておいてください。その返り値```future_Fcurrent_test```をMSY計算では使っていきます
+- 詳細な解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#msy%E7%AE%A1%E7%90%86%E5%9F%BA%E6%BA%96%E5%80%A4%E3%81%AE%E8%A8%88%E7%AE%97)
+- **設定ポイント:** オプションPGYやB0percentで、別の管理基準値も同時に計算できます。ここで計算された結果の中から、何をBtarget, Blimit, Bbanとして用いるかをチョイスし、それをrefs_baseに入れておきます。
+
+
+```{r msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5}
+
+# MSY管理基準値の計算
+MSY_base <- est.MSY(res.pma, # VPAの計算結果
+                 future_Fcurrent$input, # 将来予測で使用した引数
+                 resid.year=0, # ARありの場合、最近何年分の残差を平均するかをここで指定する。ARありの設定を反映させたい場合必ずここを１以上とすること（とりあえず１としておいてください）。
+                 N=100, # 将来予測の年数，繰り返し回数
+                 calc.yieldcurve=TRUE,
+                 PGY=c(0.95,0.9,0.6,0.1), # 計算したいPGYレベル。上限と下限の両方が計算される
+                 onlylower.pgy=FALSE, # TRUEにするとPGYレベルの上限は計算しない（計算時間の節約になる）
+                 B0percent=c(0.2,0.3,0.4),
+                 Bempirical=c(round(tail(colSums(res.pma$ssb),n=1)),
+                              round(max(colSums(res.pma$ssb))),
+                              24000, # 現行Blimit
+                              SRmodel_base$pars$b) # HSの折れ点
+                 ) # 計算したいB0%レベル
+```
+
+```{r summary}
+# 結果の表示(tibbleという形式で表示されます)
+(refs_all <- MSY_base$summary_tb)
+
+# 結果の表示（全データをじっくり見たい場合)
+View(refs_all)
+
+# どの管理基準値をどのように定義するか、ここで指定します
+refs_all$RP_definition <- NA 
+refs_all$RP_definition[refs_all$RP_name=="MSY" & refs_all$AR==FALSE] <- "Btarget0"  # RP_nameがMSYでARがなしのものをBtargetとする
+refs_all$RP_definition[refs_all$RP_name=="B0-20%" & refs_all$AR==FALSE] <- "Btarget1"  # たとえばBtargetの代替値をいちおう示す場合
+refs_all$RP_definition[refs_all$RP_name=="PGY_0.95_lower" & refs_all$AR==FALSE] <- "Btarget2" 
+refs_all$RP_definition[refs_all$RP_name=="PGY_0.9_lower" & refs_all$AR==FALSE] <- "Blow0"
+refs_all$RP_definition[refs_all$RP_name=="PGY_0.6_lower" & refs_all$AR==FALSE] <- "Blimit0"
+refs_all$RP_definition[refs_all$RP_name=="PGY_0.1_lower" & refs_all$AR==FALSE] <- "Bban0"
+refs_all$RP_definition[refs_all$RP_name=="Ben-19431" & refs_all$AR==FALSE] <- "Bcurrent"
+refs_all$RP_definition[refs_all$RP_name=="Ben-63967" & refs_all$AR==FALSE] <- "Bmax"
+refs_all$RP_definition[refs_all$RP_name=="Ben-24000" & refs_all$AR==FALSE] <- "Blimit1"
+refs_all$RP_definition[refs_all$RP_name=="Ben-51882" & refs_all$AR==FALSE] <- "B_HS"
+
+
+refs_base <- refs_all %>% filter(!is.na(RP_definition)) %>%
+    arrange(desc(SSB)) %>%
+    select(RP_definition,RP_name,SSB,Catch,U,Fref2Fcurrent)
+```
+
+# レポート作成
+
+- ここからが本番です。以下のオブジェクトを使って、報告書を作っていきます。
+   - res.pma(VPAの結果)
+   - future_Fcurrent(Fcurrentによる将来予測結果)
+   - MSY_base(MSYの計算結果)
+   - refs_all(計算した管理基準値)
+   - refs_base(選択した管理基準値)
+
+## 1. 再生産関係式
+
+- `r min(SRmodel_base$input$SRdata$year)` 年から `r min(SRmodel_base$input$SRdata$year)`（加入年） までの親子関係データを使って再生産関係を推定した(図1)
+- 図1で仮定された再生産関係を用いて推定した漁獲量曲線と、様々な管理基準値を図2に示した。
+
+```{r,echo=FALSE,eval=TRUE}
+
+source("../../utilities.r",encoding="UTF-8")
+library(ggrepel)
+
+# 再生産関係のプロット
+g1 <- SRplot_gg(SRmodel_base)
+g1 + ggtitle("図1. 再生産関係")
+
+# 再生産関係をもとにしたyield curveのプロット
+g2 <- plot_yield(MSY_base,refs_all,AR=FALSE)
+g2 + ggtitle("図2. 漁獲量曲線とさまざま管理基準値")
+
+```
+
+## 2. 管理基準値
+
+図2より、本系群における管理基準値の候補は以下のようなものが考えられる。それぞれの管理基準値に対応する親魚量、漁獲量、漁獲率(漁獲量/資源量)の平衡状態における平均値と現在の努力量への乗数を下表に示す。
+
+- 目標管理基準値(Btarget0): **Bmsy**。過去最大親魚量の2倍となり、SSB>SSB_maxの範囲における不確実性が大きい懸念がある。
+- 目標管理基準値(Btarget1)(代替値1): **漁獲がないときの親魚資源量の20%に相当する親魚量。**　MSYの90%以上の平均漁獲量を得られる親魚レベルは確保されている。米国では浮魚類のMSY代替値の下限としても利用されている。
+- 目標管理基準値(Btarget2)(代替値2): **MSYの95%の平衡漁獲量を得るときの親魚資源量** MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベルである。
+- 目標資源量の下限となる基準値(Blow): **MSYの90%の平衡漁獲量を得るときの親魚資源量**
+- 限界資源量(Blimit0): **MSYの60%の平衡漁獲量を得るときの親魚資源量**
+- 限界資源量(Blimit1): **今まで利用していたBlimit。**この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。
+- 禁漁資源量(Blow): **MSYの10%の平衡漁獲量を得るときの親魚資源量**
+
+--- 
+
+その他、参考となる指標
+- Bmax: 過去最大親魚量
+- B_HS: HS再生産関係の折れ点
+- B_current: 最近年の親魚量
+
+```{r,echo=FALSE,eval=TRUE}
+library(formattable)
+make_RP_table(refs_base)
+```
+
+## 3. 神戸チャート
+
+- Btargetをベースとした4区分
+```{r, echo=FALSE}
+# Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
+aa <- plot_kobe_gg(res.pma,refs_base)[[1]]
+aa + ggtitle("図3. 神戸チャート（4区分）")
+
+```
+
+- Blimit, Blowをベースとした6区分
+
+```{r, echo=FALSE}
+# Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
+aa <- plot_kobe_gg(res.pma,refs_base)[[2]]
+aa + ggtitle("図4. 神戸チャート（6区分）")
+
+```
+
+## 4. HCRによる将来予測
+
+```{r, echo=FALSE}
+# デフォルトのHCR(Btarget0,Blimit0,Bban0のセット)
+input.abc <- MSY_base$input.list$msy # MSYを使う場合でなくても、ここはmsyで良い
+input.abc$multi <- derive_RP_value(refs_base,"Btarget0")$Fref2Fcurrent
+input.abc$HCR <- list(Blim=derive_RP_value(refs_base,"Blimit0")$SSB,
+                      Bban=derive_RP_value(refs_base,"Bban")$SSB,
+                      beta=0.8)
+input.abc$N <- 1000 # 実際に計算するときは10000以上を使ってください
+input.abc$nyear <- 30 
+input.abc$ABC.year <- 2019 
+input.abc$is.plot <- TRUE
+input.abc$silent <- FALSE
+fres_default <- do.call(future.vpa,input.abc) # デフォルトルールの結果→図示などに使う
+
+# 親魚資源量と漁獲量の時系列の図示
+```
+
+## 4. 代替管理基準値やさまざまなβを用いたときのパフォーマンス指標の比較
+
+- 平均漁獲量
+
+```{r, echo=FALSE}
+kobeII_table <- calc_kobeII_matrix(future_Fcurrent,
+                         refs_base,
+                         Btarget=c("Btarget0","Btarget1"), # HCRの候補として選択したい管理基準値を入れる
+                         Blimit=c("Blimit0","Blimit1"),
+                         beta=seq(from=0.5,to=1,by=0.1)) # betaの区分
+
+catch_table <- kobeII_table %>%
+    filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(catch.mean=round(mean(value),
+                               -floor(log10(min(kobeII_table$value))))) %>%
+    spread(key=year,value=catch.mean) %>% ungroup() %>%
+    arrange(HCR_name,desc(beta))
+
+catch_table %>% 
+    formattable::formattable(list(area(col=-1)~color_bar("steelblue"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+    style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    
+```
+
+- 目標資源量を上回る確率
+
+```{r, echo=FALSE}
+ssb_target_table <- kobeII_table %>%
+    filter(year%in%c(2017:2023,2028,2038),stat=="ssb") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(ssb.over.target=round(100*mean(value>Btarget))) %>%
+    spread(key=year,value=ssb.over.target) %>%
+    ungroup() %>%
+    arrange(HCR_name,desc(beta))
+
+ssb_target_table %>% 
+    formattable::formattable(list(area(col=-1)~color_bar("olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
+```
+
+- Blowを上回る（高位水準になる）確率
+
+```{r, echo=FALSE}
+ssb_low_table <- kobeII_table %>%
+    filter(year%in%c(2017:2023,2028,2038),stat=="ssb") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(ssb.over.target=round(100*mean(value>Blow))) %>%
+    spread(key=year,value=ssb.over.target)%>%
+    ungroup() %>%
+    arrange(HCR_name,desc(beta))
+
+ssb_low_table %>% 
+    formattable::formattable(list(area(col=-1)~color_bar("olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
+```
+
+- Blimitを上回る確率
+
+```{r, echo=FALSE}
+ssb_limit_table <- kobeII_table %>%
+    filter(year%in%c(2017:2023,2028,2038),stat=="ssb") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(ssb.over.target=round(100*mean(value>Blimit))) %>%
+    spread(key=year,value=ssb.over.target)%>%
+    ungroup() %>%
+    arrange(HCR_name,desc(beta))
+
+ssb_limit_table %>% 
+    formattable::formattable(list(area(col=-1)~color_bar("olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+    style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
+```
+            
+
