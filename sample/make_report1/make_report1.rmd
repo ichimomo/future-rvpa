@@ -256,8 +256,7 @@ g2 <- plot_yield(MSY.base,refs.all,AR=FALSE)
 g2 + ggtitle("図2. 漁獲量曲線とさまざま管理基準値")
 
 # 表の出力
-table.RP <- make_RP_table(refs.base)
-
+make_RP_table(refs.base)
 
 ```
 
@@ -297,7 +296,7 @@ g3 <- plot_kobe_gg(res.pma,refs.base)[[1]]
 ```{r, echo=FALSE}
 # Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
 g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[2]]
-(g4 <- ggtitle("図4. 神戸チャート（6区分）"))
+(g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 
 ```
 
@@ -444,8 +443,27 @@ ssblimit.table %>%
     formattable::formattable(list(area(col=-1)~color_bar("olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
-    style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 ```
-            
+
+## 図のまとめ
+
+```{r}
+g1
+g2
+g3
+g4
+g5
+
+```{r}
+
+
+```{r,echo=FALSE, eval=FALSE}
+
+render("make_report1.rmd",output_file="README.md")
+render("make_report1.rmd",output_file="../../docs/make_report.html",
+       output_format="html_document")
+
+```{r}
 

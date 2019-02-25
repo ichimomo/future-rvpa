@@ -511,9 +511,202 @@ g2 + ggtitle("図2. 漁獲量曲線とさまざま管理基準値")
 
 ``` r
 # 表の出力
-table.RP <- make_RP_table(refs.base)
+make_RP_table(refs.base)
 ```
 
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+管理基準値
+</th>
+<th style="text-align:right;">
+親魚資源量
+</th>
+<th style="text-align:right;">
+漁獲量
+</th>
+<th style="text-align:right;">
+漁獲率
+</th>
+<th style="text-align:right;">
+努力量の乗数
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+Btarget0
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 100.00%">125000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 100.00%">72000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 70.21%">0.33</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 45.37%">0.49</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Btarget1
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 78.40%">98000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 98.61%">71000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 78.72%">0.37</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 57.41%">0.62</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Btarget2
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 56.00%">70000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 94.44%">68000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 91.49%">0.43</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 76.85%">0.83</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Bmax
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 51.20%">64000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 93.06%">67000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 93.62%">0.44</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 82.41%">0.89</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Blow0
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 46.40%">58000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 90.28%">65000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 95.74%">0.45</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 86.11%">0.93</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+B\_HS
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 41.60%">52000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 83.33%">60000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 95.74%">0.45</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 88.89%">0.96</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Blimit0
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 28.00%">35000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 59.72%">43000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 97.87%">0.46</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 93.52%">1.01</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Blimit1
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 19.20%">24000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 41.67%">30000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 97.87%">0.46</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 95.37%">1.03</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Bcurrent
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 15.20%">19000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 33.33%">24000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 97.87%">0.46</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 96.30%">1.04</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+Bban0
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 4.80%">6000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 9.72%">7000</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 100.00%">0.47</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 100.00%">1.08</span>
+</td>
+</tr>
+</tbody>
+</table>
 **(レポート記述内容例)**
 
 -   どの管理基準値がどのような意味を示すのか？デフォルト以外に候補がある場合には、その候補を選んだ理由。その管理基準値における利点・欠点を示す。0, 1, 2の数字が小さいほどデフォルトルールにのっとった管理基準値である。
@@ -543,13 +736,7 @@ table.RP <- make_RP_table(refs.base)
 
 -   Blimit, Blowをベースとした6区分
 
-<!-- -->
-
-    $title
-    [1] "図4. 神戸チャート（6区分）"
-
-    attr(,"class")
-    [1] "labels"
+![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ------------------------------------------------------------------------
 
@@ -691,7 +878,7 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0xfd13a80>
+    <bytecode: 0xb22a2a0>
 
     $replace.rec.year
     [1] 2012
@@ -4355,3 +4542,35 @@ stat\_name
 </tr>
 </tbody>
 </table>
+図のまとめ
+----------
+
+``` r
+g1
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-16-1.png)
+
+``` r
+g2
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-16-2.png)
+
+``` r
+g3
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-16-3.png)
+
+``` r
+g4
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-16-4.png)
+
+``` r
+g5
+```
+
+![](README_files/figure-markdown_github/unnamed-chunk-16-5.png)
