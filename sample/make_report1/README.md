@@ -880,7 +880,7 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0x12118bf0>
+    <bytecode: 0x55c71d8>
 
     $replace.rec.year
     [1] 2012
@@ -991,9 +991,11 @@ htmlで出力したい場合
 
 ``` r
 library(formattable)
-catch.table %>% formattable::formattable(list(area(col = -1) ~ color_bar("steelblue"), 
-    beta = color_tile("white", "blue"), HCR_name = formatter("span", style = ~style(color = ifelse(HCR_name == 
-        "Btarget0-Blimit0-Bban0" & beta == 0.8, "red", "black")))))
+catch.table %>% 
+    formattable::formattable(list(#area(col=-1)~color_bar("steelblue"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+    style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 ```
 
 <table class="table table-condensed">
@@ -1043,31 +1045,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">16000 </span>
+16000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">36000 </span>
+36000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">52000 </span>
+52000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
+63000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1078,31 +1080,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">15000 </span>
+15000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">34000 </span>
+34000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">50000 </span>
+50000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">62000 </span>
+62000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1113,31 +1115,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">14000 </span>
+14000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">32000 </span>
+32000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
+48000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">61000 </span>
+61000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1148,31 +1150,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">12000 </span>
+12000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">30000 </span>
+30000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">46000 </span>
+46000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
+59000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">66000 </span>
+66000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+70000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+70000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1183,31 +1185,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">11000 </span>
+11000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">27000 </span>
+27000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">42000 </span>
+42000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">56000 </span>
+56000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
+63000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1218,31 +1220,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue"> 9000 </span>
+9000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">24000 </span>
+24000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">38000 </span>
+38000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">51000 </span>
+51000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
+59000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">65000 </span>
+65000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">65000 </span>
+65000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1253,31 +1255,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">20000 </span>
+20000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">33000 </span>
+33000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
+48000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">61000 </span>
+61000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1288,31 +1290,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">19000 </span>
+19000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+47000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+60000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
+67000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1323,31 +1325,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">17000 </span>
+17000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">30000 </span>
+30000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">46000 </span>
+46000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
+59000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
+67000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1358,31 +1360,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">15000 </span>
+15000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">28000 </span>
+28000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">44000 </span>
+44000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">57000 </span>
+57000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">65000 </span>
+65000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+70000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+70000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1393,31 +1395,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">14000 </span>
+14000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">25000 </span>
+25000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">41000 </span>
+41000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">54000 </span>
+54000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
+63000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1428,31 +1430,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">12000 </span>
+12000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">23000 </span>
+23000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">37000 </span>
+37000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">50000 </span>
+50000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
+59000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">65000 </span>
+65000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">65000 </span>
+65000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1463,31 +1465,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">20000 </span>
+20000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">40000 </span>
+40000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">53000 </span>
+53000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
+63000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+70000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1498,31 +1500,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">18000 </span>
+18000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">38000 </span>
+38000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">53000 </span>
+53000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">64000 </span>
+64000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1533,31 +1535,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">16000 </span>
+16000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">36000 </span>
+36000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">52000 </span>
+52000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
+63000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1568,31 +1570,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">15000 </span>
+15000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">34000 </span>
+34000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">50000 </span>
+50000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">62000 </span>
+62000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1603,31 +1605,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">13000 </span>
+13000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+47000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+60000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
+67000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1638,31 +1640,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">11000 </span>
+11000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">28000 </span>
+28000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">44000 </span>
+44000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">57000 </span>
+57000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">64000 </span>
+64000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1673,31 +1675,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">24000 </span>
+24000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">35000 </span>
+35000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+47000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
+59000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">66000 </span>
+66000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+70000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1708,31 +1710,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">23000 </span>
+23000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">34000 </span>
+34000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
+48000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+60000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
+67000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1743,31 +1745,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">21000 </span>
+21000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">33000 </span>
+33000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
+48000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">61000 </span>
+61000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+68000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1778,31 +1780,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">19000 </span>
+19000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+47000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+60000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
+67000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+72000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1813,31 +1815,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">17000 </span>
+17000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">29000 </span>
+29000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">45000 </span>
+45000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
+59000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">66000 </span>
+66000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+71000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 <tr>
@@ -1848,31 +1850,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+31000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">14000 </span>
+14000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">26000 </span>
+26000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">42000 </span>
+42000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">56000 </span>
+56000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">64000 </span>
+64000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
+69000
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+catch.mean
 </td>
 </tr>
 </tbody>
@@ -1880,9 +1882,11 @@ stat\_name
 ### SSB&gt;SSBtargetとなる確率
 
 ``` r
-ssbtarget.table %>% formattable::formattable(list(area(col = -1) ~ color_bar("olivedrab"), 
-    beta = color_tile("white", "blue"), HCR_name = formatter("span", style = ~style(color = ifelse(HCR_name == 
-        "Btarget0-Blimit0-Bban0" & beta == 0.8, "red", "black")))))
+ssbtarget.table %>% 
+    formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 ```
 
 <table class="table table-condensed">
@@ -1932,31 +1936,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">12 </span>
+12
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 30 </span>
+30
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+47
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+47
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -1967,31 +1971,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+1
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">29 </span>
+29
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 65 </span>
+65
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+72
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+72
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2002,31 +2006,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+1
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">48 </span>
+48
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 79 </span>
+79
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+88
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 93 </span>
+93
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2037,31 +2041,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 3 </span>
+3
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">63 </span>
+63
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 92 </span>
+92
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2072,31 +2076,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 9 </span>
+9
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">88 </span>
+88
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2107,31 +2111,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">24 </span>
+24
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">93 </span>
+93
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2142,31 +2146,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 7 </span>
+7
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 28 </span>
+28
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+47
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+47
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2177,31 +2181,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">25 </span>
+25
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 57 </span>
+57
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+72
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+72
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2212,31 +2216,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+1
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">37 </span>
+37
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 78 </span>
+78
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+88
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 93 </span>
+93
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2247,31 +2251,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">59 </span>
+59
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+90
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2282,31 +2286,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 5 </span>
+5
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">82 </span>
+82
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 96 </span>
+96
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2317,31 +2321,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">16 </span>
+16
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">92 </span>
+92
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2352,31 +2356,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+1
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">17 </span>
+17
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 32 </span>
+32
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+47
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 49 </span>
+49
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2387,31 +2391,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+1
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">35 </span>
+35
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 67 </span>
+67
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+74
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+74
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2422,31 +2426,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 6 </span>
+6
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">60 </span>
+60
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 81 </span>
+81
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+88
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+95
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2457,31 +2461,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">19 </span>
+19
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">86 </span>
+86
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+94
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2492,31 +2496,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">31 </span>
+31
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">93 </span>
+93
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2527,31 +2531,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">52 </span>
+52
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2562,31 +2566,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 9 </span>
+9
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 25 </span>
+25
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+47
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 49 </span>
+49
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2597,31 +2601,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">24 </span>
+24
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 56 </span>
+56
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+74
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+74
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2632,31 +2636,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">44 </span>
+44
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 80 </span>
+80
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+88
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+95
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2667,31 +2671,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 8 </span>
+8
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">71 </span>
+71
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+94
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2702,31 +2706,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">27 </span>
+27
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">90 </span>
+90
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 <tr>
@@ -2737,31 +2741,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">41 </span>
+41
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">96 </span>
+96
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+Pr(SSB&gt;SSBtarget)
 </td>
 </tr>
 </tbody>
@@ -2769,9 +2773,11 @@ stat\_name
 ### Blowを上回る（高位水準になる）確率
 
 ``` r
-ssblow.table %>% formattable::formattable(list(area(col = -1) ~ color_bar("olivedrab"), 
-    beta = color_tile("white", "blue"), HCR_name = formatter("span", style = ~style(color = ifelse(HCR_name == 
-        "Btarget0-Blimit0-Bban0" & beta == 0.8, "red", "black")))))
+ssblow.table %>% 
+    formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 ```
 
 <table class="table table-condensed">
@@ -2821,31 +2827,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">14 </span>
+14
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+90
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -2856,31 +2862,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">20 </span>
+20
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+95
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -2891,31 +2897,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">31 </span>
+31
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -2926,31 +2932,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">45 </span>
+45
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -2961,31 +2967,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">52 </span>
+52
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -2996,31 +3002,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">61 </span>
+61
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3031,31 +3037,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 6 </span>
+6
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 77 </span>
+77
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3066,31 +3072,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 9 </span>
+9
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+88
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3101,31 +3107,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">15 </span>
+15
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 92 </span>
+92
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3136,31 +3142,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">21 </span>
+21
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3171,31 +3177,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">37 </span>
+37
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3206,31 +3212,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">44 </span>
+44
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3241,31 +3247,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 5 </span>
+5
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 59 </span>
+59
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+94
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3276,31 +3282,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 8 </span>
+8
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 80 </span>
+80
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3311,31 +3317,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">13 </span>
+13
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+90
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3346,31 +3352,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">20 </span>
+20
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+95
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3381,31 +3387,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">38 </span>
+38
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3416,31 +3422,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">47 </span>
+47
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3451,31 +3457,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+1
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 36 </span>
+36
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 85 </span>
+85
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 96 </span>
+96
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3486,31 +3492,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 3 </span>
+3
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 53 </span>
+53
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+94
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3521,31 +3527,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 5 </span>
+5
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+74
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+97
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+99
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3556,31 +3562,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">11 </span>
+11
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+90
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3591,31 +3597,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">19 </span>
+19
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+95
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 <tr>
@@ -3626,31 +3632,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">32 </span>
+32
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+Pr(SSB&gt;SSBlow)
 </td>
 </tr>
 </tbody>
@@ -3658,9 +3664,11 @@ stat\_name
 ### Blimitを上回る確率
 
 ``` r
-ssblimit.table %>% formattable::formattable(list(area(col = -1) ~ color_bar("olivedrab"), 
-    beta = color_tile("white", "blue"), HCR_name = formatter("span", style = ~style(color = ifelse(HCR_name == 
-        "Btarget0-Blimit0-Bban0" & beta == 0.8, "red", "black")))))
+ssblimit.table %>% 
+    formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 ```
 
 <table class="table table-condensed">
@@ -3710,31 +3718,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3745,31 +3753,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3780,31 +3788,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3815,31 +3823,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3850,31 +3858,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3885,31 +3893,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3920,31 +3928,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3955,31 +3963,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -3990,31 +3998,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4025,31 +4033,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4060,31 +4068,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4095,31 +4103,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4130,31 +4138,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4165,31 +4173,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+98
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4200,31 +4208,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4235,31 +4243,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4270,31 +4278,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4305,31 +4313,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+0
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+2
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4340,31 +4348,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4375,31 +4383,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4410,31 +4418,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4445,31 +4453,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4480,31 +4488,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 <tr>
@@ -4515,31 +4523,31 @@ stat\_name
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+89
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+100
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+Pr(SSB&gt;SSBlim)
 </td>
 </tr>
 </tbody>
