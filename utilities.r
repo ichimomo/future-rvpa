@@ -124,6 +124,7 @@ trace %>%   ggplot() +
 }
 
 make_RP_table <- function(refs_base){
+    require(formattable)
     table_output <- refs_base %>%
         select(-RP_name) %>% # どの列を表示させるか選択する
         # 各列の有効数字を指定
@@ -141,7 +142,7 @@ make_RP_table <- function(refs_base){
                               漁獲率=color_bar("orange"),
                               努力量の乗数=color_bar("tomato")))
 
-    return(table_output)
+#    return(table_output)
     
 }
 

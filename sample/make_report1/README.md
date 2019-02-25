@@ -539,6 +539,8 @@ table.RP <- make_RP_table(refs.base)
 
 -   Btargetをベースとした4区分
 
+![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
 -   Blimit, Blowをベースとした6区分
 
 <!-- -->
@@ -689,7 +691,7 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0x889cbe0>
+    <bytecode: 0xfd13a80>
 
     $replace.rec.year
     [1] 2012

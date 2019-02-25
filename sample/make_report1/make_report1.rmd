@@ -258,6 +258,7 @@ g2 + ggtitle("図2. 漁獲量曲線とさまざま管理基準値")
 # 表の出力
 table.RP <- make_RP_table(refs.base)
 
+
 ```
 
 **(レポート記述内容例)**
@@ -287,7 +288,7 @@ table.RP <- make_RP_table(refs.base)
 ```{r, echo=FALSE}
 # Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
 g3 <- plot_kobe_gg(res.pma,refs.base)[[1]]
-g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）")
+(g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
 
 ```
 
