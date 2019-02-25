@@ -3,7 +3,7 @@
 Momoko Ichinokawa
 2019-02-25
 
-本マニュアルのhtml版はこちら（表がカラーだったりします） <https://ichimomo.github.io/future-rvpa/make_report1.html>
+本マニュアルのhtml版はこちら（表がカラーだったりします） <https://ichimomo.github.io/future-rvpa/make_report.html>
 
 事前準備
 ========
