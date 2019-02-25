@@ -3,6 +3,8 @@
 Momoko Ichinokawa
 2019-02-25
 
+本マニュアルのhtml版はこちら（表がカラーだったりします） <https://ichimomo.github.io/future-rvpa/make_report1.html>
+
 事前準備
 ========
 
@@ -878,7 +880,7 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0xb22a2a0>
+    <bytecode: 0x12118bf0>
 
     $replace.rec.year
     [1] 2012

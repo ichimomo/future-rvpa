@@ -22,6 +22,9 @@ opts_chunk$set(echo=TRUE,
 par(mar=c(4,4,3,1))
 ```
 
+本マニュアルのhtml版はこちら（表がカラーだったりします）
+https://ichimomo.github.io/future-rvpa/make_report1.html
+
 # 事前準備
 詳細は https://ichimomo.github.io/future-rvpa/future-doc-abc.html をご参照ください
 ## データの読み込み
