@@ -79,9 +79,9 @@ c(HS.par0$AICc,HS.par1$AICc,BH.par0$AICc,BH.par1$AICc,RI.par0$AICc,RI.par1$AICc)
 
 ## ---- fig.cap="図：**観測値（○）に対する再生産関係式．plot=赤がHS，緑と青がBH, RIだが両者はほとんど重なっていて見えない**"----
 plot.SRdata(SRdata)
-points(HS.par0$pred$SSB,HS.par0$pred$R,col=2,type="l",lwd=3)
-points(BH.par0$pred$SSB,BH.par0$pred$R,col=3,type="l",lwd=3)    
-points(RI.par0$pred$SSB,RI.par0$pred$R,col=4,type="l",lwd=3)
+lines(HS.par0$pred,col=2,type="l",lwd=3)
+lines(BH.par0$pred,col=3,type="l",lwd=3)    
+lines(RI.par0$pred,col=4,type="l",lwd=3)
 
 ## ---- eval=FALSE---------------------------------------------------------
 ## # install.packages("TMB")　#TMBがインストールされてなければ
@@ -92,7 +92,7 @@ points(RI.par0$pred$SSB,RI.par0$pred$R,col=4,type="l",lwd=3)
 
 ## ----future.vpa, fig.cap="**図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示**"----
 fres.HS <- future.vpa(res.pma,
-                      multi=1,
+                      multi=1, # res.pma$Fc.at.ageに掛ける乗数
                       nyear=50, # 将来予測の年数
                       start.year=2012, # 将来予測の開始年
                       N=100, # 確率的計算の繰り返し回数
@@ -248,10 +248,11 @@ MSY.HS <- est.MSY(res.pma, # VPAの計算結果
                  B0percent=c(0.3,0.4)) # 計算したいB0%レベル
 
 ## ----summary-------------------------------------------------------------
-# 結果の表示（平衡状態）
-MSY.HS$summary
-# 結果の表示（直近の自己相関を考慮）
-MSY.HS$summaryAR
+# 結果の表示(tibbleという形式で表示され、最初の10行以外は省略されます)
+(refs.all <- MSY.HS$summary_tb)
+
+# 全データをじっくり見たい場合
+View(refs.all)
 
 # のちの使用のために、Bmsy, Blimit, Bban, Fmsyを定義しておく
 refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
@@ -264,17 +265,37 @@ refs <- list(BmsyAR=as.numeric(MSY.HS$summaryAR$SSB[1]),
              MSY=as.numeric(MSY.HS$summary$Catch[1]),
              Umsy=as.numeric(MSY.HS$summary$Catch[1])/as.numeric(MSY.HS$all.stat$biom.mean[1]))
 
-## ----beta-tmp------------------------------------------------------------
-# beta <- calc.beta(MSY.HS$input$msy,Ftar=refs$Fmsy,Btar=refs$Bmsy,Blim=refs$Blim,Bban=refs$Bban,N=1000)
-beta.value <- 0.8
+# また、各管理基準値に対して以下のようなラベルをつける
+# どの管理基準値をどのように定義するか、ここで指定します
+refs.all$RP.definition <- NA 
+refs.all$RP.definition[refs.all$RP_name=="MSY" & refs.all$AR==FALSE] <- "Btarget0"  # RP_nameがMSYでARがなしのものをBtargetとする
+refs.all$RP.definition[refs.all$RP_name=="B0-20%" & refs.all$AR==FALSE] <- "Btarget1"  # たとえばBtargetの代替値をいちおう示す場合
+refs.all$RP.definition[refs.all$RP_name=="PGY_0.95_lower" & refs.all$AR==FALSE] <- "Btarget2" 
+refs.all$RP.definition[refs.all$RP_name=="PGY_0.9_lower" & refs.all$AR==FALSE] <- "Blow0"
+refs.all$RP.definition[refs.all$RP_name=="PGY_0.6_lower" & refs.all$AR==FALSE] <- "Blimit0"
+refs.all$RP.definition[refs.all$RP_name=="PGY_0.1_lower" & refs.all$AR==FALSE] <- "Bban0"
+refs.all$RP.definition[refs.all$RP_name=="Ben-19431" & refs.all$AR==FALSE] <- "Bcurrent"
+refs.all$RP.definition[refs.all$RP_name=="Ben-63967" & refs.all$AR==FALSE] <- "Bmax"
+refs.all$RP.definition[refs.all$RP_name=="Ben-24000" & refs.all$AR==FALSE] <- "Blimit1"
+refs.all$RP.definition[refs.all$RP_name=="Ben-51882" & refs.all$AR==FALSE] <- "B_HS"
+
+# 定義した結果を見る
+refs.all %>% select(RP_name,RP.definition)
+
+# refs.allの中からRP.definitionで指定された行だけを抜き出す
+(refs.base <- refs.all %>%
+    filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
+    arrange(desc(SSB)) %>% # SSBを大きい順に並び替え
+    select(RP.definition,RP_name,SSB,Catch,U,Fref2Fcurrent)) #　列を並び替え
+
 
 ## ----abc-----------------------------------------------------------------
 input.abc <- MSY.HS$input$msy # MSY計算で使った引数を使う
 input.abc$N <- 1000 # 実際に計算するときは10000以上を使ってください
 input.abc$HCR <- list(Blim=refs$Blim,
                       Bban=refs$Bban,
-                      beta=beta.value)
-input.abc$nyear <- 20 # ABC計算時には長期間計算する必要はない
+                      beta=0.8) # 算定ルールのデフォルトは0.8
+input.abc$nyear <- 30 # ABC計算時には長期間計算する必要はない
 input.abc$ABC.year <- 2013 # ここでABC.yearを設定しなおしてください
 input.abc$is.plot <- TRUE
 fres.abc1 <- do.call(future.vpa,input.abc)
@@ -337,9 +358,6 @@ plot.kobe(res.pma,Bmsy=refs$Bmsy,Umsy=refs$Umsy,Blim=refs$Blim)
 ## NA
 
 ## ----ref.label='summary', eval=FALSE-------------------------------------
-## NA
-
-## ----ref.label='beta.tmp', eval=FALSE------------------------------------
 ## NA
 
 ## ----ref.label='abc', eval=FALSE-----------------------------------------
