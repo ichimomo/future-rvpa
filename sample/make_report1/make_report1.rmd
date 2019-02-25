@@ -215,6 +215,8 @@ refs.all %>% select(RP_name,RP.definition)
 
 ```
 
+---
+
 # レポート作成
 
 今まで作ったオブジェクトを使って、報告書の図を作っていきます。使うオブジェクトはこちら。
@@ -224,7 +226,9 @@ refs.all %>% select(RP_name,RP.definition)
    - refs.all(計算したすべての管理基準値)
    - refs.base(選択した管理基準値)
 
-## 1. 再生産関係式
+---
+
+## 再生産関係式
 
 
 ```{r,echo=TRUE,eval=TRUE}
@@ -239,7 +243,7 @@ g1 + ggtitle("図1. 再生産関係")
 - 何年から何年までのデータを使ったか？（また、その判断基準）
 - 詳細な報告書には、モデル診断の結果で重要そうなもの、AICが近い他の再生産関係でフィットしたときの図なども示す。
 
-## 2. 管理基準値
+## 管理基準値
 
 - 漁獲量曲線と表による出力
 - 表では、有効数字が資源量・漁獲量について最小値で有効数字1桁になるように調整しています
@@ -272,7 +276,10 @@ table.RP <- make_RP_table(refs.base)
 	  - B_HS: HS再生産関係の折れ点
 	  - B_current: 最近年の親魚量
 
-## 3. 神戸チャート
+---
+
+## 神戸チャート
+
 4区分図と6区分図のどちらも出力します。
 
 - Btargetをベースとした4区分
@@ -293,8 +300,9 @@ g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[2]]
 
 ```
 
+---
 
-## 4. HCRによる将来予測
+## HCRによる将来予測
 
 - まずデフォルトの管理基準値を使った将来予測を実施します
 
@@ -321,7 +329,9 @@ g5 <- plot_futures(res.pma, # vpaの結果
 
 ```
 
-## 4. 代替管理基準値やさまざまなβを用いたときのパフォーマンス指標の比較
+---
+
+## 代替管理基準値やさまざまなβを用いたときのパフォーマンス指標の比較
 
 - 代替管理基準値やさまざまなβを用いたときの将来予測を実施し、その結果を表にします
 - ```calc_kobeII_matrix```で計算します
@@ -334,6 +344,8 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
                          Blimit=c("Blimit0","Blimit1"),
                          beta=seq(from=0.5,to=1,by=0.1)) # betaの区分
 ```
+
+---
 
 ### 結果の表の出力
 - 関数化しようと思いましたが、どこを見たいなどが系群によって異なりそうなのでとりあえず生のRコードで示します
@@ -380,6 +392,7 @@ ssblimit.table <- kobeII.table %>%
     arrange(HCR_name,desc(beta))%>%
     mutate(stat_name="Pr(SSB>SSBlim)")
 ```
+
 ## csvファイルに一括して出力する場合
 
 ```{r}
@@ -413,7 +426,6 @@ ssbtarget.table %>%
 ```
 
 ### Blowを上回る（高位水準になる）確率
-
 ```{r}
 
 ssblow.table %>% 
@@ -425,7 +437,6 @@ ssblow.table %>%
 ```
 
 ### Blimitを上回る確率
-
 ```{r}
 
 ssblimit.table %>% 
