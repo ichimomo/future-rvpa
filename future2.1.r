@@ -319,15 +319,14 @@ future.vpa <-
            #      scenario="catch.mean" or "blimit" (デフォルトはblimit; "catch.mean"とするとstochastic simulationにおける平均漁獲量がBlimitで指定した値と一致するようになる)
            #      Frange=c(0.01,2*mult)) # Fの探索範囲
            waa=NULL,waa.catch=NULL,maa=NULL,M=NULL, # 季節毎の生物パラメータ、または、生物パラメータを外から与える場合
-           waa.multi="opt", # waa.optyearに対応する年について、暦年漁獲量と一致するようにwaaを最適化するか？ "opt"の場合、内部で最適化。waa.optyearの長さ分のベクトルを与えて指定することもできる（ts>1のときのオプション）
-           waa.optyear=2011:2013, # waa.optyearをするときに、置き換えるwaaの年
            replace.rec.year=2012, # 加入量を暦年の将来予測での加入量に置き換えるか？
            F.sigma=0,
            waa.fun=FALSE, #waaをnaaのfunctionとするか
            naa0=NULL,eaa0=NULL,ssb0=NULL,faa0=NULL,
            add.year=0, # 岡村オプションに対応。=1で1年分余計に計算する
            det.run=TRUE # 1回めのランは決定論的将来予測をする（完璧には対応していない）
-  ){
+           ){
+
     
       argname <- ls()
       arglist <- lapply(argname,function(x) eval(parse(text=x)))
@@ -416,8 +415,19 @@ future.vpa <-
      }}
     
       if(!silent){
-          cat("F multiplier= ", multi,"seed=",seed,"\n")
-          cat("ABC year= ", ABC.year,"\n")
+          arglist.tmp <-  arglist
+          arglist.tmp$res0 <- NULL
+          arglist.tmp$Bban <- arglist.tmp$Bblim <- arglist.tmp$beta <- arglist.tmp$ssb0 <- arglist.tmp$strategy <- NULL
+#          arglist.tmp <- arglist.tmp[sapply(arglist.tmp,!is.null)]
+          print(arglist.tmp)
+#          cat("F multiplier= ", multi,"seed=",seed,"\n")
+#          cat("ABC year= ", ABC.year,"\n")
+#          if(is.null(HCR)) cat("HCR is null")
+#          else{
+#              cat("HCR= ", HCR$Blimit,"(target)\n")
+#              cat("HCR= ", HCR$Bban,"(limit)\n")
+#              cat("HCR= ", HCR$beta,"(beta)\n")
+#          }
       }
     
     # シードの設定
@@ -1743,37 +1753,6 @@ get.stat3 <- function(fout,eyear=0,hsp=NULL,tmp.year=NULL,unit.waa=1){
     return(res.stat)    
 }    
 
-get.stat4 <- function(fout,Brefs,refyear=NULL){
-    col.target <- ifelse(fout$input$N==0,1,-1)
-    years <- as.numeric(rownames(fout$vwcaa))
-
-    if(is.null(catch_refyear)){
-        catch_refyear <- c(seq(from=min(years),to=min(years)+5),
-                           c(min(years)+seq(from=10,to=20,by=5)))
-    }
-
-    catch.mean <- rowMeans(fout$vwcaa[years%in%ref_year,col.target])
-    names(catch.mean) <- str_c("Catch",names(catch.mean)) 
-    catch.mean <- as_tibble(t(catch.mean))
-    
-    Btarget.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]>Brefs$Btarget) %>%
-        t() %>% as_tibble() 
-    names(Btarget.prob) <- str_c("Btarget_prob",names(Btarget.prob))
-
-    Blow.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]>Brefs$Blow) %>%
-        t() %>% as_tibble() 
-    names(Blow.prob) <- str_c("Blow_prob",names(Blow.prob))
-
-    Blimit.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]<Brefs$Blimit) %>%
-        t() %>% as_tibble() 
-    names(Blimit.prob) <- str_c("Blimit_prob",names(Blimit.prob))
-
-    Bban.prob <- rowMeans(fout$vssb[years%in%ref_year,col.target]<Brefs$Bban) %>%
-        t() %>% as_tibble() 
-    names(Bban.prob) <- str_c("Bban_prob",names(Bban.prob))             
-
-    return(bind_cols(catch.mean,Btarget.prob,Blow.prob,Blimit.prob,Bban.prob))
-}
 
 geomean <- function(x)
 {
