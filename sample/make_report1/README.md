@@ -160,7 +160,7 @@ future.Fcurrent <- future.vpa(res.pma,
                       multi=1,
                       nyear=50, # 将来予測の年数
                       start.year=2018, # 将来予測の開始年
-                      N=5000, # 確率的計算の繰り返し回数
+                      N=100, # 確率的計算の繰り返し回数=>実際の計算では1000~5000回くらいやってください
                       ABC.year=2019, # ABCを計算する年
                       waa.year=2015:2017, # 生物パラメータの参照年
                       maa.year=2015:2017,
@@ -197,7 +197,7 @@ future.Fcurrent <- future.vpa(res.pma,
     [1] 2015 2016 2017
 
     $N
-    [1] 5000
+    [1] 100
 
     $Pope
     [1] TRUE
@@ -331,7 +331,7 @@ MSY管理基準値の計算
 MSY.base <- est.MSY(res.pma, # VPAの計算結果
                  future.Fcurrent$input, # 将来予測で使用した引数
                  resid.year=0, # ARありの場合、最近何年分の残差を平均するかをここで指定する。ARありの設定を反映させたい場合必ずここを１以上とすること（とりあえず１としておいてください）。
-                 N=100, # 将来予測の年数，繰り返し回数
+                 N=100, # 確率的計算の繰り返し回数=>実際の計算では1000~5000回くらいやってください
                  calc.yieldcurve=TRUE,
                  PGY=c(0.95,0.9,0.6,0.1), # 計算したいPGYレベル。上限と下限の両方が計算される
                  onlylower.pgy=FALSE, # TRUEにするとPGYレベルの上限は計算しない（計算時間の節約になる）
@@ -535,6 +535,14 @@ table.RP <- make_RP_table(refs.base)
 
 -   Blimit, Blowをベースとした6区分
 
+<!-- -->
+
+    $title
+    [1] "図4. 神戸チャート（6区分）"
+
+    attr(,"class")
+    [1] "labels"
+
 4. HCRによる将来予測
 --------------------
 
@@ -580,7 +588,7 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
     [1] 2015 2016 2017
 
     $N
-    [1] 5000
+    [1] 100
 
     $Pope
     [1] TRUE
@@ -673,7 +681,7 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0x4535f48>
+    <bytecode: 0xd39abc8>
 
     $replace.rec.year
     [1] 2012
@@ -712,14 +720,10 @@ g5 <- plot_futures(res.pma, # vpaの結果
                    Blimit=derive_RP_value(refs.base,"Blimit0")$SSB,
                    Blow=derive_RP_value(refs.base,"Blow0")$SSB,
                    Bban=derive_RP_value(refs.base,"Bban0")$SSB)
-(g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測(実線：平均値、範囲：90パーセント信頼区間)")+ylab("トン"))
+(g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測\n(実線：平均値、範囲：90パーセント信頼区間)")+ylab("トン"))
 ```
 
 ![](README_files/figure-markdown_github/unnamed-chunk-8-2.png)
-
-``` r
-    # 必要であれば管理基準値の線を引く
-```
 
 4. 代替管理基準値やさまざまなβを用いたときのパフォーマンス指標の比較
 --------------------------------------------------------------------
@@ -727,7 +731,14 @@ g5 <- plot_futures(res.pma, # vpaの結果
 -   代替管理基準値やさまざまなβを用いたときの将来予測を実施し、その結果を表にします
 -   `calc_kobeII_matrix`で計算します
 
-<!-- -->
+``` r
+## 網羅的将来予測の実施
+kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
+                         refs.base,
+                         Btarget=c("Btarget0","Btarget1"), # HCRの候補として選択したい管理基準値を入れる
+                         Blimit=c("Blimit0","Blimit1"),
+                         beta=seq(from=0.5,to=1,by=0.1)) # betaの区分
+```
 
     4 HCR is calculated:  Btarget0-Blimit0-Bban0 Btarget0-Blimit1-Bban0 Btarget1-Blimit0-Bban0 Btarget1-Blimit1-Bban0 
 
@@ -744,20 +755,20 @@ catch.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), stat 
 
 # SSB>SSBtargetとなる確率
 ssbtarget.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), 
-    stat == "ssb") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
+    stat == "SSB") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
     mean(value > Btarget))) %>% spread(key = year, value = ssb.over.target) %>% 
     ungroup() %>% arrange(HCR_name, desc(beta)) %>% mutate(stat_name = "Pr(SSB>SSBtarget)")
 
 
 # SSB>SSBlow(=高位水準)となる確率
 ssblow.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), 
-    stat == "ssb") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
+    stat == "SSB") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
     mean(value > Blow))) %>% spread(key = year, value = ssb.over.target) %>% 
     ungroup() %>% arrange(HCR_name, desc(beta)) %>% mutate(stat_name = "Pr(SSB>SSBlow)")
 
 # SSB>SSBlimとなる確率
 ssblimit.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), 
-    stat == "ssb") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
+    stat == "SSB") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
     mean(value > Blimit))) %>% spread(key = year, value = ssb.over.target) %>% 
     ungroup() %>% arrange(HCR_name, desc(beta)) %>% mutate(stat_name = "Pr(SSB>SSBlim)")
 ```
@@ -838,7 +849,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">36000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">51000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">52000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
@@ -847,10 +858,10 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
@@ -873,16 +884,16 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">34000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">49000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">50000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">62000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
@@ -902,7 +913,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">13000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">14000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">32000 </span>
@@ -911,10 +922,10 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">61000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
@@ -940,13 +951,13 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">12000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">29000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">30000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">45000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">46000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">58000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">66000 </span>
@@ -972,7 +983,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">10000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">11000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">27000 </span>
@@ -981,7 +992,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">42000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">55000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">56000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
@@ -1010,7 +1021,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue"> 9000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">23000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">24000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">38000 </span>
@@ -1045,22 +1056,22 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">20000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">32000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">33000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">61000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
@@ -1081,6 +1092,41 @@ stat\_name
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">17000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">30000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">46000 </span>
@@ -1106,41 +1152,6 @@ stat\_name
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
 </td>
 <td style="text-align:right;">
-<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">17000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">29000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">45000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">58000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">66000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
-</td>
-</tr>
-<tr>
-<td style="text-align:right;">
-<span style="color: black">Btarget0-Blimit1-Bban0</span>
-</td>
-<td style="text-align:right;">
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
 </td>
 <td style="text-align:right;">
@@ -1150,10 +1161,10 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">15000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">27000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">28000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">43000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">44000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">57000 </span>
@@ -1182,19 +1193,19 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">13000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">14000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">25000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">40000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">41000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">54000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">62000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
@@ -1217,10 +1228,10 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">11000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">12000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">22000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">23000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">37000 </span>
@@ -1229,7 +1240,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">50000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">58000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">65000 </span>
@@ -1252,13 +1263,13 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">19000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">20000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">39000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">40000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">52000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">53000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
@@ -1270,7 +1281,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
@@ -1293,10 +1304,10 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">38000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">52000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">53000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">64000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
@@ -1328,7 +1339,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">36000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">51000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">52000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
@@ -1337,10 +1348,10 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
@@ -1363,7 +1374,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">34000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">49000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">50000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">62000 </span>
@@ -1372,7 +1383,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
@@ -1407,7 +1418,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
@@ -1433,10 +1444,10 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">28000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">43000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">44000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">56000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">57000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">64000 </span>
@@ -1465,13 +1476,13 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">24000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">34000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">35000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">58000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">66000 </span>
@@ -1480,7 +1491,7 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
@@ -1497,13 +1508,13 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">22000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">23000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">34000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
@@ -1532,25 +1543,25 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">20000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">21000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">32000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">33000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">48000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">61000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
-</td>
-<td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">68000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">catch.mean</span>
@@ -1567,22 +1578,22 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">18000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">19000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">46000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">47000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">60000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">67000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">72000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
@@ -1602,22 +1613,22 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">31000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">16000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">17000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">29000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">44000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">45000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">58000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">59000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">66000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">70000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">71000 </span>
@@ -1643,13 +1654,13 @@ stat\_name
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">26000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">41000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">42000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">55000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">56000 </span>
 </td>
 <td style="text-align:right;">
-<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">63000 </span>
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">64000 </span>
 </td>
 <td style="text-align:right;">
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue">69000 </span>
@@ -1681,12 +1692,874 @@ HCR\_name
 beta
 </th>
 <th style="text-align:right;">
+2018
+</th>
+<th style="text-align:right;">
+2019
+</th>
+<th style="text-align:right;">
+2020
+</th>
+<th style="text-align:right;">
+2021
+</th>
+<th style="text-align:right;">
+2022
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2028
+</th>
+<th style="text-align:right;">
+2038
+</th>
+<th style="text-align:right;">
 stat\_name
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">12 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 30 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">29 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 65 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: red">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">48 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 79 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 93 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 3 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">63 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 92 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 9 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">88 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">24 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">93 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 7 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 28 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">25 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 57 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 72 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">37 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 78 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 93 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">59 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 5 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">82 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 96 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">16 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">92 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">17 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 32 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 49 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">35 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 67 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 6 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">60 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 81 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">19 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">86 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">31 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">93 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">52 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 9 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 25 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 47 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 49 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">24 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 56 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">44 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 80 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 8 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">71 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">27 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">90 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">41 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">96 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBtarget)</span>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1708,12 +2581,874 @@ HCR\_name
 beta
 </th>
 <th style="text-align:right;">
+2018
+</th>
+<th style="text-align:right;">
+2019
+</th>
+<th style="text-align:right;">
+2020
+</th>
+<th style="text-align:right;">
+2021
+</th>
+<th style="text-align:right;">
+2022
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2028
+</th>
+<th style="text-align:right;">
+2038
+</th>
+<th style="text-align:right;">
 stat\_name
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">14 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">20 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: red">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">31 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">45 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">52 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">61 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 6 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 77 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 9 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 88 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">15 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 92 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">21 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">37 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">44 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 5 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 59 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 8 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 80 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">13 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">20 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">38 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">47 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 1 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 36 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 85 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 96 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 3 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 53 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 94 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 5 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 74 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 97 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 99 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">11 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 90 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">19 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 95 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">32 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlow)</span>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1735,12 +3470,874 @@ HCR\_name
 beta
 </th>
 <th style="text-align:right;">
+2018
+</th>
+<th style="text-align:right;">
+2019
+</th>
+<th style="text-align:right;">
+2020
+</th>
+<th style="text-align:right;">
+2021
+</th>
+<th style="text-align:right;">
+2022
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2028
+</th>
+<th style="text-align:right;">
+2038
+</th>
+<th style="text-align:right;">
 stat\_name
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: red">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 98 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 0 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab"> 2 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">89 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">100 </span>
+</td>
+<td style="text-align:right;">
+<span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab">Pr(SSB&gt;SSBlim)</span>
+</td>
 </tr>
 </tbody>
 </table>
