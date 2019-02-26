@@ -1,5 +1,5 @@
-ステークホルダー会議用資料: マアジ太平洋系群のダミーデータの例
-==============================================================
+マアジ太平洋系群 (ダミーデータ)
+===============================
 
 -   レポートの完成例はこちら
 -   こちらではレポートをつくるさいのRコードも一緒に示しています
@@ -43,6 +43,10 @@
 **(レポート記述内容例)**
 (あくまで例です。今の例で、代替基準値を最大限選ぶとしたらどうするか、というものです)
 
+<br> <br>
+
+**表：さまざまな管理基準値**
+
 <table style="width:93%;">
 <colgroup>
 <col width="18%" />
@@ -51,60 +55,60 @@
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">管理基準値</th>
 <th align="left">ラベル</th>
+<th align="left">管理基準値</th>
 <th align="left">説明</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">目標</td>
 <td align="left">Btarget0</td>
+<td align="left">目標</td>
 <td align="left">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
 </tr>
 <tr class="even">
-<td align="left">目標</td>
 <td align="left">Btarget1 (代替値1)</td>
+<td align="left">目標</td>
 <td align="left">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
 </tr>
 <tr class="odd">
-<td align="left">目標</td>
 <td align="left">Btarget2 (代替値2)</td>
+<td align="left">目標</td>
 <td align="left">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベルである。</td>
 </tr>
 <tr class="even">
-<td align="left">高位・中位の境界</td>
 <td align="left">Blow0</td>
+<td align="left">高位・中位の境界</td>
 <td align="left">MSYの90%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="odd">
-<td align="left">限界</td>
 <td align="left">Blimit0</td>
+<td align="left">限界</td>
 <td align="left">MSYの60%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td align="left">限界</td>
 <td align="left">Blimit1</td>
+<td align="left">限界</td>
 <td align="left">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。</td>
 </tr>
 <tr class="odd">
-<td align="left">禁漁</td>
 <td align="left">Bban0</td>
+<td align="left">禁漁</td>
 <td align="left">MSYの10%の平衡漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td align="left">経験値</td>
 <td align="left">Bmax</td>
+<td align="left">経験値</td>
 <td align="left">過去最大親魚量　</td>
 </tr>
 <tr class="odd">
-<td align="left">経験値</td>
 <td align="left">B_HS</td>
+<td align="left">経験値</td>
 <td align="left">HS再生産関係の折れ点　</td>
 </tr>
 <tr class="even">
-<td align="left">経験値</td>
 <td align="left">B_current</td>
+<td align="left">経験値</td>
 <td align="left">最近年の親魚量　</td>
 </tr>
 </tbody>
