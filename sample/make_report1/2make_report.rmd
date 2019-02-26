@@ -11,7 +11,7 @@ output: github_document
 library(rmarkdown)
 library(knitr)
 options(max.print="75")
-opts_chunk$set(echo=FALSE,
+opts_chunk$set(echo=TRUE,
                prompt=FALSE,
                tidy=TRUE,
                comment=NA,
@@ -195,10 +195,7 @@ ssbmin.table %>% select(-stat_name) %>%
                                   HCR_name=formatter("span", 
                                                      style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
-## rmdのコンパイル用のメモ
-# render("2make_report.rmd",output_file="README.md")
-# render("2make_report.rmd",output_file="../../docs/make_report.html",
-#       output_format="html_document")
+
 
 ```{r}
 
