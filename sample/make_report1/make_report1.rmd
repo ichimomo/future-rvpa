@@ -152,7 +152,7 @@ future.Fcurrent <- future.vpa(res.pma,
 - 最近年の親魚量で維持した場合の管理基準値も、比較のためにあとで見るため```Bempirical```で指定しておいてください。また、B_HS(HSの折れ点)や最大親魚量などもここで計算しておいても良いかと。。。
 
 
-```{r msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5}
+```{r msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5, eval=FALSE}
 
 # MSY管理基準値の計算
 MSY.base <- est.MSY(res.pma, # VPAの計算結果
@@ -179,7 +179,7 @@ MSY.base <- est.MSY(res.pma, # VPAの計算結果
 (refs.all <- MSY.base$summary_tb)
 
 # 全データをじっくり見たい場合
-View(refs.all)
+# View(refs.all)
 
 ```
 
@@ -223,11 +223,11 @@ refs.all %>% select(RP_name,RP.definition)
 # レポート作成
 
 今まで作ったオブジェクトを使って、報告書の図を作っていきます。使うオブジェクトはこちら。
-   - res.pma(VPAの結果)
-   - future.Fcurrent(Fcurrentによる将来予測結果)
-   - MSY.base(MSYの計算結果)
-   - refs.all(計算したすべての管理基準値)
-   - refs.base(選択した管理基準値)
+    - res.pma(VPAの結果)
+    - future.Fcurrent(Fcurrentによる将来予測結果)
+    - MSY.base(MSYの計算結果)
+    - refs.all(計算したすべての管理基準値)
+    - refs.base(選択した管理基準値)
 
 ---
 
@@ -292,7 +292,9 @@ make_RP_table(refs.base)
 
 ```{r, echo=TRUE}
 # Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
-g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[1]]
+# roll_meanで各年の値を何年分移動平均するか指定します
+g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
+                   Btarget=="Btarget0") # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
 (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
 
 ```
@@ -301,7 +303,7 @@ g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[1]]
 
 ```{r, echo=TRUE}
 # Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
-g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[2]]
+g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6)
 (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 
 ```

@@ -365,37 +365,6 @@ MSY.base <- est.MSY(res.pma, # VPAの計算結果
                  ) # 計算したいB0%レベル
 ```
 
-    Estimating MSY
-    F multiplier= 0.4903466 
-    Estimating PGY  95 %
-    F multiplier= 0.3006464 
-    F multiplier= 0.8322266 
-    Estimating PGY  90 %
-    F multiplier= 0.2442106 
-    F multiplier= 0.9314554 
-    Estimating PGY  60 %
-    F multiplier= 0.1042389 
-    F multiplier= 1.009078 
-    Estimating PGY  10 %
-    F multiplier= 0.01208144 
-    F multiplier= 1.076094 
-    Estimating B0  20 %
-    F multiplier= 0.622057 
-    Estimating B0  30 %
-    F multiplier= 0.4132039 
-    Estimating B0  40 %
-    F multiplier= 0.289628 
-    Estimating B empirical  19431 
-    F multiplier= 1.037682 
-    Estimating B empirical  63967 
-    F multiplier= 0.8873748 
-    Estimating B empirical  24000 
-    F multiplier= 1.029399 
-    Estimating B empirical  51882.06 
-    F multiplier= 0.9647514 
-
-![**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**](README_files/figure-gfm/msy-1.png)
-
 ### 結果の表示
 
   - `MSY.base$summary_tb`にすべての結果が入っています。
@@ -961,7 +930,9 @@ Bban0
 
 ``` r
 # Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
-g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[1]]
+# roll_meanで各年の値を何年分移動平均するか指定します
+g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
+                   Btarget=="Btarget0") # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
 (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
 ```
 
@@ -973,7 +944,7 @@ g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[1]]
 
 ``` r
 # Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
-g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[2]]
+g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6)
 (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 ```
 

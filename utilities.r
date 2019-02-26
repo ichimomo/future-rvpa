@@ -258,6 +258,7 @@ get.stat4 <- function(fout,Brefs,
 
 
 plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
+                         category=4,# 4区分か、6区分か
                          Btarget=c("Btarget0"),
                          Blimit=c("Blimit0"),
                          Blow=c("Blow0"),
@@ -348,7 +349,8 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                               y=rep(0.1,4),
                               label=c("Bban","Blimit","Blow","Btarget")),
                   aes(x=x,y=y,label=label))
-    list(g4,g6)
+    
+    if(category==4) return(g4) else return(g6)
 }
 
 plot_futures <- function(vpares,
