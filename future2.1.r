@@ -749,7 +749,7 @@ future.vpa <-
                        maa=maa[,,1],vbiom=apply(biom,c(2,3),sum,na.rm=T),
                        waa=waa[,,1],waa.catch=waa.catch[,,1],currentF=currentF,
                        vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
-                       years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,rec.arg=rec.arg,
+                       years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,
                        waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
                        Frec=Frec,rec.new=rec.new,pre.catch=pre.catch,input=arglist)
       }
@@ -2186,6 +2186,8 @@ est.MSY <- function(vpares,farg,
                    resid.year=0, # ARありの場合、最近年何年分の残差を平均するか
                    current.resid=NULL # 残差の値を直接入れる場合。上の年数が設定されていてもこちらが設定されたらこの値を使う
                    ){
+
+    require(tidyverse)
 
 ### 内部で使うための関数定義
     ## 最小化のための関数
