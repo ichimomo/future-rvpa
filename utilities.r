@@ -9,7 +9,6 @@ convert_df <- function(df,name){
 }
 
 convert_future_table <- function(fout,label="tmp"){
-    
     ssb <- fout$vssb %>%
         as_tibble %>%
         mutate(year=rownames(fout$vssb)) %>%
@@ -40,6 +39,7 @@ convert_vector <- function(vector,name){
 } 
 
 convert_vpa_tibble <- function(vpares){
+
     total.catch <- colSums(vpares$input$dat$caa*vpares$input$dat$waa)
     U <- total.catch/colSums(vpares$baa)
     
@@ -55,7 +55,9 @@ convert_vpa_tibble <- function(vpares){
 }
 
 SRplot_gg <- function(SR_result,refs=NULL){
+    require(tidyverse,quietly=TRUE)    
     require(ggrepel)
+    
     SRdata <- as_tibble(SR_result$input$SRdata) %>%
         mutate(type="obs")
     SRdata.pred <- as_tibble(SR_result$pred) %>%
@@ -87,7 +89,7 @@ SRplot_gg <- function(SR_result,refs=NULL){
 
     
 plot_yield <- function(MSY_base,refs_base,AR_select=FALSE){
-    
+    require(tidyverse,quietly=TRUE)        
     trace <- MSY_base$trace  %>% as_tibble() %>%
         select(starts_with("TC-mean"),ssb.mean,fmulti,catch.CV) %>%
         mutate(label=as.character(1:nrow(.)))
@@ -99,7 +101,7 @@ plot_yield <- function(MSY_base,refs_base,AR_select=FALSE){
 
     refs_base <- refs_base %>%
         mutate(RP.definition=ifelse(is.na(RP.definition),"",RP.definition)) %>%
-        filter(AR==AR_select)
+        dplyr::filter(AR==AR_select)
 
     ymax <- trace %>%
         group_by(ssb.mean) %>%
@@ -125,6 +127,7 @@ trace %>%   ggplot() +
 
 make_RP_table <- function(refs_base){
     require(formattable)
+    require(tidyverse,quietly=TRUE)
     table_output <- refs_base %>%
         select(-RP_name) %>% # どの列を表示させるか選択する
         # 各列の有効数字を指定
@@ -160,6 +163,7 @@ calc_kobeII_matrix <- function(fres_base,
                               Blow=c("Blow0"),
                               Bban=c("Bban0"),
                               beta=seq(from=0.5,to=1,by=0.1)){
+    require(tidyverse,quietly=TRUE)    
 # HCRの候補を網羅的に設定
     HCR_candidate1 <- expand.grid(
         Btarget_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Btarget)],
@@ -177,7 +181,7 @@ calc_kobeII_matrix <- function(fres_base,
 
     HCR_candidate <- bind_cols(HCR_candidate1,HCR_candidate2) %>% as_tibble()
     
-    HCR_candidate <- refs_base %>% filter(str_detect(RP.definition,Btarget)) %>%
+    HCR_candidate <- refs_base %>% dplyr::filter(str_detect(RP.definition,Btarget)) %>%
         mutate(Btarget_name=RP.definition,Fmsy=Fref2Fcurrent) %>%
         select(Btarget_name,Fmsy) %>%
         left_join(HCR_candidate) %>%
@@ -258,7 +262,8 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          Blimit=c("Blimit0"),
                          Blow=c("Blow0"),
                          Bban=c("Bban0")){
-
+    
+    require(tidyverse,quietly=TRUE)
     target.RP <- derive_RP_value(refs_base,"Btarget0")
     limit.RP <- derive_RP_value(refs_base,"Blimit0")
     low.RP <- derive_RP_value(refs_base,"Blow0")
@@ -270,7 +275,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     
     require(RcppRoll)
     vpa_tb <- convert_vpa_tibble(vpares)
-    UBdata <- vpa_tb %>% filter(stat=="U" | stat=="SSB") %>%
+    UBdata <- vpa_tb %>% dplyr::filter(stat=="U" | stat=="SSB") %>%
         spread(key=stat,value=value) %>%
         mutate(Uratio=roll_mean(U/target.RP$U,n=roll_mean,fill=NA,align="right"),
                Bratio=roll_mean(SSB/target.RP$SSB,n=roll_mean,fill=NA,align="right")) %>%
@@ -322,7 +327,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
         ylab("U/Umsy") + xlab("SSB/SSBmsy")  +
-        geom_label_repel(data=filter(UBdata,year%%10==0|year==max(year)),
+        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
                          size=3,box.padding=2,segment.color="gray")+
         geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
@@ -335,7 +340,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
         ylab("U/Umsy") + xlab("SSB/SSBmsy")  +
-        geom_label_repel(data=filter(UBdata,year%%10==0|year==max(year)),
+        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
                          size=3,box.padding=2,segment.color="gray")+
         geom_vline(xintercept=c(ban.ratio,limit.ratio,low.ratio,1),linetype=2)+
@@ -352,7 +357,8 @@ plot_futures <- function(vpares,
                          CI_range=c(0.1,0.9),
                          maxyear=NULL,
                          Btarget=0,Blimit=0,Bban=0,Blow=0){
-
+    
+    require(tidyverse,quietly=TRUE)
     if(is.null(future.name)) future.name <- 1:length(future.list)
     names(future.list) <- as.character(future.name)
     
@@ -360,7 +366,7 @@ plot_futures <- function(vpares,
     if(is.null(maxyear)) maxyear <- min(future.table$year)+32
     
     vpa_tb <- convert_vpa_tibble(vpares) %>%
-        filter(stat=="SSB"|stat=="biomass"|stat=="catch") %>%
+        dplyr::filter(stat=="SSB"|stat=="biomass"|stat=="catch") %>%
         mutate(scenario=type,year=as.numeric(year),
                stat=stat,mean=value,sim=0)
 

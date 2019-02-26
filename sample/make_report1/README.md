@@ -1,26 +1,29 @@
 レポート作成用のRコード
 ================
 Momoko Ichinokawa
-2019-02-25
+2019-02-26
 
-本マニュアルのhtml版はこちら（表がカラーだったりします） <https://ichimomo.github.io/future-rvpa/make_report.html>
+本マニュアルのhtml版はこちら（表がカラーだったりします）
+<https://ichimomo.github.io/future-rvpa/make_report.html>
 
-事前準備
-========
+# 事前準備
 
-詳細は <https://ichimomo.github.io/future-rvpa/future-doc-abc.html> をご参照ください \#\# データの読み込み
+詳細は <https://ichimomo.github.io/future-rvpa/future-doc-abc.html>
+をご参照ください \#\#
+    データの読み込み
 
--   以前のRVPAやfuture.vpaではあまり特殊なライブラリは必要としていませんでしたが、新バージョンではggplot2などいろいろライブラリを使います。以下のパッケージをインストールしてください。tidyverseなど、一部のパッケージがうまくインストールできない場合は、Rを最新のものに更新してください。
--   est.MSY以降の計算についてはtidyverseパッケージのdplyrやggplot2ライブラリを多用しています。今のRのコーディングはこれを使ってやるのが主流のようです。
-    -   参考リンク tidyr <https://heavywatal.github.io/rstats/tidyr.html>
-    -   参考リンク ggplot2 <https://heavywatal.github.io/rstats/ggplot2.html>
+  - 以前のRVPAやfuture.vpaではあまり特殊なライブラリは必要としていませんでしたが、新バージョンではggplot2などいろいろライブラリを使います。以下のパッケージをインストールしてください。tidyverseなど、一部のパッケージがうまくインストールできない場合は、Rを最新のものに更新してください。
+  - est.MSY以降の計算についてはtidyverseパッケージのdplyrやggplot2ライブラリを多用しています。今のRのコーディングはこれを使ってやるのが主流のようです。
+      - 参考リンク tidyr <https://heavywatal.github.io/rstats/tidyr.html>
+      - 参考リンク ggplot2 <https://heavywatal.github.io/rstats/ggplot2.html>
+
+<!-- end list -->
 
 ``` r
-# 関数の読み込み →
-# warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません
+# 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません
 source("../../rvpa1.9.2.r")
 source("../../future2.1.r")
-source("../../utilities.r", encoding = "UTF-8")  # ggplotを使ったグラフ作成用の関数
+source("../../utilities.r",encoding="UTF-8") # ggplotを使ったグラフ作成用の関数
 
 # ライブラリの読み込み
 
@@ -34,60 +37,69 @@ library(ggrepel)
 library(formattable)
 
 # データの読み込み
-caa <- read.csv("caa_pma.csv", row.names = 1)
-waa <- read.csv("waa_pma.csv", row.names = 1)
-maa <- read.csv("maa_pma.csv", row.names = 1)
-dat <- data.handler(caa = caa, waa = waa, maa = maa, M = 0.5)
+caa <- read.csv("caa_pma.csv",row.names=1)
+waa <- read.csv("waa_pma.csv",row.names=1)
+maa <- read.csv("maa_pma.csv",row.names=1)
+dat <- data.handler(caa=caa, waa=waa, maa=maa, M=0.5)
 names(dat)
 ```
 
     [1] "caa"        "maa"        "waa"        "index"      "M"         
     [6] "maa.tune"   "waa.catch"  "catch.prop"
 
-VPAによる資源量推定
--------------------
+## VPAによる資源量推定
 
--   **設定ポイント:** vpa関数の引数fc.yearで指定した年数が今後current FのFとして扱われます。
+  - **設定ポイント:** vpa関数の引数fc.yearで指定した年数が今後current
+    FのFとして扱われます。
 
--   [VPA結果を外部から読み込む場合](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#vpa%E7%B5%90%E6%9E%9C%E3%82%92%E5%A4%96%E9%83%A8%E3%81%8B%E3%82%89%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E5%A0%B4%E5%90%88)
--   [再生産関係を仮定しない管理基準値の計算](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%86%8D%E7%94%9F%E7%94%A3%E9%96%A2%E4%BF%82%E3%82%92%E4%BB%AE%E5%AE%9A%E3%81%97%E3%81%AA%E3%81%84%E7%AE%A1%E7%90%86%E5%9F%BA%E6%BA%96%E5%80%A4%E3%81%AE%E8%A8%88%E7%AE%97)
+  - [VPA結果を外部から読み込む場合](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#vpa%E7%B5%90%E6%9E%9C%E3%82%92%E5%A4%96%E9%83%A8%E3%81%8B%E3%82%89%E8%AA%AD%E3%81%BF%E8%BE%BC%E3%82%80%E5%A0%B4%E5%90%88)
+
+  - [再生産関係を仮定しない管理基準値の計算](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%86%8D%E7%94%9F%E7%94%A3%E9%96%A2%E4%BF%82%E3%82%92%E4%BB%AE%E5%AE%9A%E3%81%97%E3%81%AA%E3%81%84%E7%AE%A1%E7%90%86%E5%9F%BA%E6%BA%96%E5%80%A4%E3%81%AE%E8%A8%88%E7%AE%97)
+
+<!-- end list -->
 
 ``` r
 # VPAによる資源量推定
-res.pma <- vpa(dat, fc.year = 2015:2017, tf.year = 2008:2010, term.F = "max", 
-    stat.tf = "mean", Pope = TRUE, tune = FALSE, p.init = 1)
+res.pma <- vpa(dat,fc.year=2015:2017,
+               tf.year = 2008:2010,
+               term.F="max",stat.tf="mean",Pope=TRUE,
+               tune=FALSE,p.init=1.0)
 ```
 
 ``` r
-res.pma$Fc.at.age  # 将来予測やMSY計算で使うcurrent Fを確認してプロットする
+res.pma$Fc.at.age # 将来予測やMSY計算で使うcurrent Fを確認してプロットする
 ```
 
-            0         1         2         3 
-    0.4838556 1.2749150 1.4877701 1.4877698 
+``` 
+        0         1         2         3 
+0.4838556 1.2749150 1.4877701 1.4877698 
+```
 
 ``` r
-plot(res.pma$Fc.at.age, type = "b", xlab = "Age", ylab = "F", ylim = c(0, max(res.pma$Fc.at.age)))
+plot(res.pma$Fc.at.age,type="b",xlab="Age",ylab="F",ylim=c(0,max(res.pma$Fc.at.age)))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-2-1.png)
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
 
 ``` r
 # 独自のFc.at.ageを使いたい場合は以下のようにここで指定する
 # res.pma$Fc.at.age[] <- c(1,1,2,2)
 ```
 
-再生産関係の推定
-----------------
+## 再生産関係の推定
 
--   詳しい解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%86%8D%E7%94%9F%E7%94%A3%E9%96%A2%E4%BF%82%E3%81%AE%E6%8E%A8%E5%AE%9A)
--   上記を参考に、AICで比較したあと、フィットした再生産関係のプロットなどをみて、ちゃんと推定できてそうか確かめて下さい
--   [モデル診断](https://ichimomo.github.io/future-rvpa/SRR-guidline.html)も行って下さい。
--   **設定ポイント:** get.SRdata関数のyearsの引数で、再生産関係をフィットさせたい年を指定します。何も指定しないと全年のデータが使われます。
--   **設定ポイント:** ここで、将来予測で使う再生産関係を一つに決めます(SRmodel.baseに入れる)。
+  - 詳しい解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%86%8D%E7%94%9F%E7%94%A3%E9%96%A2%E4%BF%82%E3%81%AE%E6%8E%A8%E5%AE%9A)
+  - 上記を参考に、AICで比較したあと、フィットした再生産関係のプロットなどをみて、ちゃんと推定できてそうか確かめて下さい
+  - [モデル診断](https://ichimomo.github.io/future-rvpa/SRR-guidline.html)も行って下さい。
+  - **設定ポイント:**
+    get.SRdata関数のyearsの引数で、再生産関係をフィットさせたい年を指定します。何も指定しないと全年のデータが使われます。
+  - **設定ポイント:** ここで、将来予測で使う再生産関係を一つに決めます(SRmodel.baseに入れる)。
+
+<!-- end list -->
 
 ``` r
 # VPA結果を使って再生産データを作る
-SRdata <- get.SRdata(res.pma, years = 1988:2016)
+SRdata <- get.SRdata(res.pma, years=1988:2016) 
 head(SRdata)
 ```
 
@@ -95,14 +107,14 @@ head(SRdata)
      [1] 1988 1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999 2000 2001
     [15] 2002 2003 2004 2005 2006 2007 2008 2009 2010 2011 2012 2013 2014 2015
     [29] 2016
-
+    
     $SSB
      [1] 12199.02 15266.68 15072.03 19114.22 23544.42 28769.36 34764.44
      [8] 38219.49 48535.10 61891.08 63966.56 38839.78 53404.29 47322.39
     [15] 54485.00 54385.04 47917.14 46090.76 59847.97 53370.62 48781.20
     [22] 42719.39 40095.19 39311.04 38332.44 37547.09 27543.26 22881.37
     [29] 22184.28
-
+    
     $R
      [1]  406.0086  498.9652  544.3007  469.6025 1106.8877 1043.4237  696.7049
      [8]  923.9567 1353.1790 1698.8457 1117.5454 2381.1352 1669.1381 1818.3638
@@ -111,9 +123,9 @@ head(SRdata)
     [29]  549.3746
 
 ``` r
-## モデルのフィット(網羅的に試しています) 網羅的なパラメータ設定
-SRmodel.list <- expand.grid(SR.rel = c("HS", "BH", "RI"), AR.type = c(0, 1), 
-    L.type = c("L1", "L2"))
+## モデルのフィット(網羅的に試しています)
+# 網羅的なパラメータ設定
+SRmodel.list <- expand.grid(SR.rel = c("HS","BH","RI"), AR.type = c(0, 1), L.type = c("L1", "L2"))
 SR.list <- list()
 for (i in 1:nrow(SRmodel.list)) {
     SR.list[[i]] <- fit.SR(SRdata, SR = SRmodel.list$SR.rel[i], method = SRmodel.list$L.type[i], 
@@ -123,39 +135,44 @@ for (i in 1:nrow(SRmodel.list)) {
 SRmodel.list$AICc <- sapply(SR.list, function(x) x$AICc)
 SRmodel.list$delta.AIC <- SRmodel.list$AICc - min(SRmodel.list$AICc)
 SR.list <- SR.list[order(SRmodel.list$AICc)]  # AICの小さい順に並べたもの
-(SRmodel.list <- SRmodel.list[order(SRmodel.list$AICc), ])  # 結果
+(SRmodel.list <- SRmodel.list[order(SRmodel.list$AICc), ]) # 結果
 ```
 
-       SR.rel AR.type L.type     AICc delta.AIC
-    7      HS       0     L2 11.68088 0.0000000
-    9      RI       0     L2 12.30980 0.6289293
-    8      BH       0     L2 12.35364 0.6727687
-    2      BH       0     L1 13.79426 2.1133843
-    3      RI       0     L1 13.87867 2.1977984
-    5      BH       1     L1 14.09788 2.4170057
-    6      RI       1     L1 14.10137 2.4204994
-    10     HS       1     L2 14.32407 2.6431965
-    1      HS       0     L1 14.75174 3.0708666
-    12     RI       1     L2 14.99619 3.3153125
-    11     BH       1     L2 15.05006 3.3691864
-    4      HS       1     L1 15.68126 4.0003803
+``` 
+   SR.rel AR.type L.type     AICc delta.AIC
+7      HS       0     L2 11.68088 0.0000000
+9      RI       0     L2 12.30980 0.6289293
+8      BH       0     L2 12.35364 0.6727687
+2      BH       0     L1 13.79426 2.1133843
+3      RI       0     L1 13.87867 2.1977984
+5      BH       1     L1 14.09788 2.4170057
+6      RI       1     L1 14.10137 2.4204994
+10     HS       1     L2 14.32407 2.6431965
+1      HS       0     L1 14.75174 3.0708666
+12     RI       1     L2 14.99619 3.3153125
+11     BH       1     L2 15.05006 3.3691864
+4      HS       1     L1 15.68126 4.0003803
+```
 
 ``` r
-SRmodel.base <- SR.list[[1]]  # AIC最小モデルを今後使っていく
+SRmodel.base <- SR.list[[1]] # AIC最小モデルを今後使っていく
 ```
 
-将来予測
---------
+## 将来予測
 
--   細かい設定の解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%B0%86%E6%9D%A5%E4%BA%88%E6%B8%AC)
-    -   自己相関を考慮する場合
-    -   Frecオプション（目標の年に指定した確率で漁獲する）
-    -   年齢別体重が資源尾数に影響される場合、などのオプションがあります
--   **設定ポイント:**　将来予測やMSY推定で使う生物パラメータをここで指定します（`waa.year`, `maa.year`, `M.year`）。ABC計算年（`ABC.year`）などの設定もここで。
--   **設定ポイント:**　再生産関係の関数型とパラメータも与えます。`rec.fun`に関数名を、`rec.arg`にリスト形式で引数を与えます。
--   これはFcurrentでの将来予測を実施しますが、今後の管理基準値計算でもここで指定したオプションを引き継いで使っていきます
--   近年の加入の仮定(`rec.new`)や近年の漁獲量(`pre.catch`)を設定する場合にはここで設定してください
--   引数 `silent == TRUE` とすると、設定した引数のリストがすべて表示されます。意図しない設定などがないかどうか確認してください。
+  - 細かい設定の解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#%E5%B0%86%E6%9D%A5%E4%BA%88%E6%B8%AC)
+      - 自己相関を考慮する場合
+      - Frecオプション（目標の年に指定した確率で漁獲する）
+      - 年齢別体重が資源尾数に影響される場合、などのオプションがあります
+  - **設定ポイント:**　将来予測やMSY推定で使う生物パラメータをここで指定します（`waa.year`, `maa.year`,
+    `M.year`）。ABC計算年（`ABC.year`）などの設定もここで。
+  - **設定ポイント:**　再生産関係の関数型とパラメータも与えます。`rec.fun`に関数名を、`rec.arg`にリスト形式で引数を与えます。
+  - これはFcurrentでの将来予測を実施しますが、今後の管理基準値計算でもここで指定したオプションを引き継いで使っていきます
+  - 近年の加入の仮定(`rec.new`)や近年の漁獲量(`pre.catch`)を設定する場合にはここで設定してください
+  - 引数 `silent == TRUE`
+    とすると、設定した引数のリストがすべて表示されます。意図しない設定などがないかどうか確認してください。
+
+<!-- end list -->
 
 ``` r
 future.Fcurrent <- future.vpa(res.pma,
@@ -179,95 +196,95 @@ future.Fcurrent <- future.vpa(res.pma,
 
     $ABC.year
     [1] 2019
-
+    
     $Blim
     [1] 0
-
+    
     $F.sigma
     [1] 0
-
+    
     $Frec
     NULL
-
+    
     $HCR
     NULL
-
+    
     $M
     NULL
-
+    
     $M.year
     [1] 2015 2016 2017
-
+    
     $N
     [1] 100
-
+    
     $Pope
     [1] TRUE
-
+    
     $add.year
     [1] 0
-
+    
     $currentF
     NULL
-
+    
     $delta
     NULL
-
+    
     $det.run
     [1] TRUE
-
+    
     $eaa0
     NULL
-
+    
     $faa0
     NULL
-
+    
     $is.plot
     [1] TRUE
-
+    
     $maa
     NULL
-
+    
     $maa.year
     [1] 2015 2016 2017
-
+    
     $multi
     [1] 1
-
+    
     $multi.year
     [1] 1
-
+    
     $naa0
     NULL
-
+    
     $nyear
     [1] 50
-
+    
     $outtype
     [1] "FULL"
-
+    
     $plus.group
     [1] TRUE
-
+    
     $pre.catch
     NULL
-
+    
     $random.select
     NULL
-
+    
     $rec.arg
     $rec.arg$a
     [1] 0.02864499
-
+    
     $rec.arg$b
     [1] 51882.06
-
+    
     $rec.arg$rho
     [1] 0
-
+    
     $rec.arg$sd
     [1] 0.2624895
-
+    
     $rec.arg$resid
      [1]  0.15003999  0.13188525  0.23168312 -0.15352429  0.49544035
      [6]  0.23597319 -0.35721137 -0.16965875 -0.02705374  0.13375295
@@ -275,11 +292,11 @@ future.Fcurrent <- future.vpa(res.pma,
     [16] -0.01847747 -0.02781840 -0.16723995 -0.30046800  0.13088282
     [21] -0.24773256 -0.12321799  0.09662881 -0.09504603 -0.37695727
     [26] -0.34187713  0.10535290 -0.26881174 -0.14558152
-
-
+    
+    
     $rec.new
     NULL
-
+    
     $recfunc
     function (ssb, vpares, rec.resample = NULL, rec.arg = list(a = 1000, 
         b = 1000, sd = 0.1, rho = 0, resid = 0)) 
@@ -292,41 +309,44 @@ future.Fcurrent <- future.vpa(res.pma,
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-
+    
     $replace.rec.year
     [1] 2012
-
+    
     $seed
     [1] 1
-
+    
     $silent
     [1] FALSE
-
+    
     $start.year
     [1] 2018
-
+    
     $waa
     NULL
-
+    
     $waa.catch
     NULL
-
+    
     $waa.fun
     [1] FALSE
-
+    
     $waa.year
     [1] 2015 2016 2017
 
-![図：is.plot=TRUEで表示される図．Fcurrentでの将来予測。資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示](README_files/figure-markdown_github/future.vpa-1.png)
+![図：is.plot=TRUEで表示される図．Fcurrentでの将来予測。資源量(Biomass)，親魚資源量(SSB),
+漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示](README_files/figure-gfm/future.vpa-1.png)
 
-MSY管理基準値の計算
--------------------
+## MSY管理基準値の計算
 
--   MSY管理基準値計算では，上記の将来予測において，Fcurrentの値に様々な乗数を乗じたF一定方策における平衡状態時の（世代時間×20年を`nyear`で指定します）資源量やそれに対応するF等を管理基準値として算出します
--   なので、ここまでのプロセスで、ABC計算のためにきちんとしたオプションを設定したfuture.vpaを実行しておいてください。その返り値`future.Fcurrent`をMSY計算では使っていきます
--   MSY.est関数の引数の詳細な解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#msy%E7%AE%A1%E7%90%86%E5%9F%BA%E6%BA%96%E5%80%A4%E3%81%AE%E8%A8%88%E7%AE%97)
--   オプション`PGY`(MSYに対する比率を指定) や`B0percent`(B0に対する比率を指定)、`Bempirical`(親魚資源量の絶対値で指定)で、別の管理基準値も同時に計算できます。
--   最近年の親魚量で維持した場合の管理基準値も、比較のためにあとで見るため`Bempirical`で指定しておいてください。また、B\_HS(HSの折れ点)や最大親魚量などもここで計算しておいても良いかと。。。
+  - MSY管理基準値計算では，上記の将来予測において，Fcurrentの値に様々な乗数を乗じたF一定方策における平衡状態時の（世代時間×20年を`nyear`で指定します）資源量やそれに対応するF等を管理基準値として算出します
+  - なので、ここまでのプロセスで、ABC計算のためにきちんとしたオプションを設定したfuture.vpaを実行しておいてください。その返り値`future.Fcurrent`をMSY計算では使っていきます
+  - MSY.est関数の引数の詳細な解説は[こちら](https://ichimomo.github.io/future-rvpa/future-doc-abc.html#msy%E7%AE%A1%E7%90%86%E5%9F%BA%E6%BA%96%E5%80%A4%E3%81%AE%E8%A8%88%E7%AE%97)
+  - オプション`PGY`(MSYに対する比率を指定)
+    や`B0percent`(B0に対する比率を指定)、`Bempirical`(親魚資源量の絶対値で指定)で、別の管理基準値も同時に計算できます。
+  - 最近年の親魚量で維持した場合の管理基準値も、比較のためにあとで見るため`Bempirical`で指定しておいてください。また、B\_HS(HSの折れ点)や最大親魚量などもここで計算しておいても良いかと。。。
+
+<!-- end list -->
 
 ``` r
 # MSY管理基準値の計算
@@ -374,11 +394,13 @@ MSY.base <- est.MSY(res.pma, # VPAの計算結果
     Estimating B empirical  51882.06 
     F multiplier= 0.9647514 
 
-![**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**](README_files/figure-markdown_github/msy-1.png)
+![**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**](README_files/figure-gfm/msy-1.png)
 
 ### 結果の表示
 
--   `MSY.base$summary_tb`にすべての結果が入っています。
+  - `MSY.base$summary_tb`にすべての結果が入っています。
+
+<!-- end list -->
 
 ``` r
 # 結果の表示(tibbleという形式で表示され、最初の10行以外は省略されます)
@@ -408,12 +430,16 @@ View(refs.all)
 
 ### 管理基準値の選択
 
--   **設定ポイント** est.MSYで計算された管理基準値から、何をBtarget, Blimit, Bbanとして用いるかをチョイスします。
--   具体的には、refs.allにRP.definitionという新しい列をひとつ作って、その列にそれぞれの管理基準値をどのように使うかを指定します
--   「管理基準値名 + 0」はデフォルト規則による管理基準値
--   代替候補がある場合は「管理基準値名 + 数字」として指定
--   たとえば目標管理基準値の第一候補はBmsyなのでRP\_nameがMSYでARなしの行のRP.definitionには"Btarget0"と入力します
--   Rコードがちょっと汚いですがご容赦ください。いい方法あったら教えてください。
+  - **設定ポイント** est.MSYで計算された管理基準値から、何をBtarget, Blimit,
+    Bbanとして用いるかをチョイスします。
+  - 具体的には、refs.allにRP.definitionという新しい列をひとつ作って、その列にそれぞれの管理基準値をどのように使うかを指定します
+  - 「管理基準値名 + 0」はデフォルト規則による管理基準値
+  - 代替候補がある場合は「管理基準値名 +
+    数字」として指定
+  - たとえば目標管理基準値の第一候補はBmsyなのでRP\_nameがMSYでARなしの行のRP.definitionには“Btarget0”と入力します
+  - Rコードがちょっと汚いですがご容赦ください。いい方法あったら教えてください。
+
+<!-- end list -->
 
 ``` r
 # どの管理基準値をどのように定義するか、ここで指定します
@@ -451,7 +477,7 @@ refs.all %>% select(RP_name,RP.definition)
 ``` r
 # refs.allの中からRP.definitionで指定された行だけを抜き出す
 (refs.base <- refs.all %>%
-    filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
+    dplyr::filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
     arrange(desc(SSB)) %>% # SSBを大きい順に並び替え
     select(RP.definition,RP_name,SSB,Catch,U,Fref2Fcurrent)) #　列を並び替え
 ```
@@ -470,17 +496,17 @@ refs.all %>% select(RP_name,RP.definition)
      9 Bcurrent      Ben-19431       19440. 24340. 0.464         1.04 
     10 Bban0         PGY_0.1_lower    5564.  7175. 0.473         1.08 
 
-------------------------------------------------------------------------
+-----
 
-レポート作成
-============
+# レポート作成
 
-今まで作ったオブジェクトを使って、報告書の図を作っていきます。使うオブジェクトはこちら。 - res.pma(VPAの結果) - future.Fcurrent(Fcurrentによる将来予測結果) - MSY.base(MSYの計算結果) - refs.all(計算したすべての管理基準値) - refs.base(選択した管理基準値)
+今まで作ったオブジェクトを使って、報告書の図を作っていきます。使うオブジェクトはこちら。 - res.pma(VPAの結果) -
+future.Fcurrent(Fcurrentによる将来予測結果) - MSY.base(MSYの計算結果) -
+refs.all(計算したすべての管理基準値) - refs.base(選択した管理基準値)
 
-------------------------------------------------------------------------
+-----
 
-再生産関係式
-------------
+## 再生産関係式
 
 ``` r
 # 再生産関係のプロット
@@ -488,28 +514,29 @@ g1 <- SRplot_gg(SRmodel.base)
 g1 + ggtitle("図1. 再生産関係")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 **(レポート記述内容例)**
 
--   何年から何年までのデータを使ったか？（また、その判断基準）
--   詳細な報告書には、モデル診断の結果で重要そうなもの、AICが近い他の再生産関係でフィットしたときの図なども示す。
+  - 何年から何年までのデータを使ったか？（また、その判断基準）
+  - 詳細な報告書には、モデル診断の結果で重要そうなもの、AICが近い他の再生産関係でフィットしたときの図なども示す。
 
-管理基準値
-----------
+## 管理基準値
 
--   漁獲量曲線と表による出力
--   表では、有効数字が資源量・漁獲量について最小値で有効数字1桁になるように調整しています
+  - 漁獲量曲線と表による出力
+  - 表では、有効数字が資源量・漁獲量について最小値で有効数字1桁になるように調整しています
+
+<!-- end list -->
 
 ``` r
 # 再生産関係をもとにしたyield curveと管理基準値のプロット。
 # 計算した全管理基準値を示す場合にはrefs.allを、厳選したものだけを示す場合にはrefs.baseを引数に使ってください
 # AR==TRUEにするとARありの結果もプロットされます
-g2 <- plot_yield(MSY.base, refs.all, AR = FALSE)
+g2 <- plot_yield(MSY.base,refs.all,AR=FALSE) 
 g2 + ggtitle("図2. 漁獲量曲線とさまざま管理基準値")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
 # 表の出力
@@ -517,235 +544,448 @@ make_RP_table(refs.base)
 ```
 
 <table class="table table-condensed">
+
 <thead>
+
 <tr>
+
 <th style="text-align:right;">
+
 管理基準値
+
 </th>
+
 <th style="text-align:right;">
+
 親魚資源量
+
 </th>
+
 <th style="text-align:right;">
+
 漁獲量
+
 </th>
+
 <th style="text-align:right;">
+
 漁獲率
+
 </th>
+
 <th style="text-align:right;">
+
 努力量の乗数
+
 </th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:right;">
+
 Btarget0
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 100.00%">125000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 100.00%">72000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 70.21%">0.33</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 45.37%">0.49</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Btarget1
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 78.40%">98000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 98.61%">71000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 78.72%">0.37</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 57.41%">0.62</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Btarget2
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 56.00%">70000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 94.44%">68000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 91.49%">0.43</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 76.85%">0.83</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Bmax
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 51.20%">64000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 93.06%">67000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 93.62%">0.44</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 82.41%">0.89</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Blow0
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 46.40%">58000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 90.28%">65000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 95.74%">0.45</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 86.11%">0.93</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 B\_HS
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 41.60%">52000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 83.33%">60000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 95.74%">0.45</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 88.89%">0.96</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Blimit0
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 28.00%">35000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 59.72%">43000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 97.87%">0.46</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 93.52%">1.01</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Blimit1
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 19.20%">24000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 41.67%">30000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 97.87%">0.46</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 95.37%">1.03</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Bcurrent
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 15.20%">19000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 33.33%">24000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 97.87%">0.46</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 96.30%">1.04</span>
+
 </td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 Bban0
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 4.80%">6000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 9.72%">7000</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: orange; width: 100.00%">0.47</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: tomato; width: 100.00%">1.08</span>
+
 </td>
+
 </tr>
+
 </tbody>
+
 </table>
+
 **(レポート記述内容例)**
 
--   どの管理基準値がどのような意味を示すのか？デフォルト以外に候補がある場合には、その候補を選んだ理由。その管理基準値における利点・欠点を示す。0, 1, 2の数字が小さいほどデフォルトルールにのっとった管理基準値である。
-    -   **記述例(あくまで例です。今の例で、代替基準値を最大限選ぶとしたらどうするか、というものです)**
-    -   目標管理基準値(Btarget0): **Bmsy**。過去最大親魚量の2倍となり、SSB&gt;SSB\_maxの範囲における不確実性が大きい懸念がある。
-    -   目標管理基準値(Btarget1)(代替値1): **漁獲がないときの親魚資源量の20%に相当する親魚量。**　MSYの90%以上の平均漁獲量を得られる親魚レベルは確保されている。米国では浮魚類のMSY代替値の下限としても利用されている。
-    -   目標管理基準値(Btarget2)(代替値2): **MSYの95%の平衡漁獲量を得るときの親魚資源量** MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベルである。
-    -   目標資源量の下限となる基準値(Blow): **MSYの90%の平衡漁獲量を得るときの親魚資源量**
-    -   限界資源量(Blimit0): **MSYの60%の平衡漁獲量を得るときの親魚資源量**
-    -   限界資源量(Blimit1): **今まで利用していたBlimit。**この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。
-    -   禁漁資源量(Blow): **MSYの10%の平衡漁獲量を得るときの親魚資源量**
-    -   その他、参考となる経験的な指標として以下のものも示した
-    -   Bmax: 過去最大親魚量
-    -   B\_HS: HS再生産関係の折れ点
-    -   B\_current: 最近年の親魚量
+  - どの管理基準値がどのような意味を示すのか？デフォルト以外に候補がある場合には、その候補を選んだ理由。その管理基準値における利点・欠点を示す。0,
+    1,
+2の数字が小さいほどデフォルトルールにのっとった管理基準値である。
+  - **記述例(あくまで例です。今の例で、代替基準値を最大限選ぶとしたらどうするか、というものです)**
 
-------------------------------------------------------------------------
+| 管理基準値    | ラベル             | 説明                                                                                                                                                 |
+| :------- | :-------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 目標       | Btarget0        | 最大の平均漁獲量を得る時の親魚量(**Bmsy**)。過去最大親魚量の2倍となり、SSB\>SSB\_maxの範囲における不確実性が大きい懸念がある。                                                                        |
+| 目標       | Btarget1 (代替値1) | 漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。 |
+| 目標       | Btarget2 (代替値2) | MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベルである。                                                                                    |
+| 高位・中位の境界 | Blow0           | MSYの90%の平均漁獲量を得るときの親魚資源量                                                                                                                           |
+| 限界       | Blimit0         | MSYの60%の平均漁獲量を得るときの親魚資源量                                                                                                                           |
+| 限界       | Blimit1         | 今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。                                                                                       |
+| 禁漁       | Bban0           | MSYの10%の平衡漁獲量を得るときの親魚資源量                                                                                                                           |
+| 経験値      | Bmax            | 過去最大親魚量                                                                                                                                            |
+| 経験値      | B\_HS           | HS再生産関係の折れ点                                                                                                                                        |
+| 経験値      | B\_current      | 最近年の親魚量                                                                                                                                            |
 
-神戸チャート
-------------
+-----
+
+## 神戸チャート
 
 4区分図と6区分図のどちらも出力します。
 
--   Btargetをベースとした4区分
+  - Btargetをベースとした4区分
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+<!-- end list -->
 
--   Blimit, Blowをベースとした6区分
+``` r
+# Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
+g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[1]]
+(g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
+```
 
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
-------------------------------------------------------------------------
+  - Blimit, Blowをベースとした6区分
 
-HCRによる将来予測
------------------
+<!-- end list -->
 
--   まずデフォルトの管理基準値を使った将来予測を実施します
+``` r
+# Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
+g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[2]]
+(g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
+```
+
+![](README_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+-----
+
+## HCRによる将来予測
+
+  - まずデフォルトの管理基準値を使った将来予測を実施します
+
+<!-- end list -->
 
 ``` r
 # デフォルトのHCR(Btarget0,Blimit0,Bban0のセット)
@@ -759,103 +999,103 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
 
     $ABC.year
     [1] 2019
-
+    
     $Blim
     [1] 0
-
+    
     $F.sigma
     [1] 0
-
+    
     $Frec
     NULL
-
+    
     $HCR
     $HCR$Blim
     [1] 35489.95
-
+    
     $HCR$Bban
     [1] 5564.275
-
+    
     $HCR$beta
     [1] 0.8
-
-
+    
+    
     $M
     NULL
-
+    
     $M.year
     [1] 2015 2016 2017
-
+    
     $N
     [1] 100
-
+    
     $Pope
     [1] TRUE
-
+    
     $add.year
     [1] 0
-
+    
     $currentF
     NULL
-
+    
     $delta
     NULL
-
+    
     $det.run
     [1] TRUE
-
+    
     $eaa0
     NULL
-
+    
     $faa0
     NULL
-
+    
     $is.plot
     [1] TRUE
-
+    
     $maa
     NULL
-
+    
     $maa.year
     [1] 2015 2016 2017
-
+    
     $multi
     [1] 0.4903466
-
+    
     $multi.year
     [1] 1
-
+    
     $naa0
     NULL
-
+    
     $nyear
     [1] 50
-
+    
     $outtype
     [1] "FULL"
-
+    
     $plus.group
     [1] TRUE
-
+    
     $pre.catch
     NULL
-
+    
     $random.select
     NULL
-
+    
     $rec.arg
     $rec.arg$a
     [1] 0.02864499
-
+    
     $rec.arg$b
     [1] 51882.06
-
+    
     $rec.arg$rho
     [1] 0
-
+    
     $rec.arg$sd
     [1] 0.2624895
-
+    
     $rec.arg$resid
      [1]  0.15003999  0.13188525  0.23168312 -0.15352429  0.49544035
      [6]  0.23597319 -0.35721137 -0.16965875 -0.02705374  0.13375295
@@ -863,11 +1103,11 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
     [16] -0.01847747 -0.02781840 -0.16723995 -0.30046800  0.13088282
     [21] -0.24773256 -0.12321799  0.09662881 -0.09504603 -0.37695727
     [26] -0.34187713  0.10535290 -0.26881174 -0.14558152
-
-
+    
+    
     $rec.new
     NULL
-
+    
     $recfunc
     function (ssb, vpares, rec.resample = NULL, rec.arg = list(a = 1000, 
         b = 1000, sd = 0.1, rho = 0, resid = 0)) 
@@ -880,33 +1120,32 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0x55c71d8>
-
+    
     $replace.rec.year
     [1] 2012
-
+    
     $seed
     [1] 1
-
+    
     $silent
     [1] FALSE
-
+    
     $start.year
     [1] 2018
-
+    
     $waa
     NULL
-
+    
     $waa.catch
     NULL
-
+    
     $waa.fun
     [1] FALSE
-
+    
     $waa.year
     [1] 2015 2016 2017
 
-![](README_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](README_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 # 親魚資源量と漁獲量の時系列の図示
@@ -922,15 +1161,16 @@ g5 <- plot_futures(res.pma, # vpaの結果
 (g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測\n(実線：平均値、範囲：90パーセント信頼区間)")+ylab("トン"))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-8-2.png)
+![](README_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
-------------------------------------------------------------------------
+-----
 
-代替管理基準値やさまざまなβを用いたときのパフォーマンス指標の比較
------------------------------------------------------------------
+## 代替管理基準値やさまざまなβを用いたときのパフォーマンス指標の比較
 
--   代替管理基準値やさまざまなβを用いたときの将来予測を実施し、その結果を表にします
--   `calc_kobeII_matrix`で計算します
+  - 代替管理基準値やさまざまなβを用いたときの将来予測を実施し、その結果を表にします
+  - `calc_kobeII_matrix`で計算します
+
+<!-- end list -->
 
 ``` r
 ## 網羅的将来予測の実施
@@ -943,55 +1183,74 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
 
     4 HCR is calculated:  Btarget0-Blimit0-Bban0 Btarget0-Blimit1-Bban0 Btarget1-Blimit0-Bban0 Btarget1-Blimit1-Bban0 
 
-------------------------------------------------------------------------
+-----
 
 ### 結果の表の出力
 
--   関数化しようと思いましたが、どこを見たいなどが系群によって異なりそうなのでとりあえず生のRコードで示します
+  - 関数化しようと思いましたが、どこを見たいなどが系群によって異なりそうなのでとりあえず生のRコードで示します
+
+<!-- end list -->
 
 ``` r
 # 平均漁獲量の表
-catch.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), stat == 
-    "catch") %>% group_by(HCR_name, beta, year) %>% summarise(catch.mean = round(mean(value), 
-    -floor(log10(min(kobeII.table$value))))) %>% spread(key = year, value = round(catch.mean)) %>% 
-    ungroup() %>% arrange(HCR_name, desc(beta)) %>% mutate(stat_name = "catch.mean")
+catch.table <- kobeII.table %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(catch.mean=round(mean(value),
+                               -floor(log10(min(kobeII.table$value))))) %>%
+    spread(key=year,value=round(catch.mean)) %>% ungroup() %>%
+    arrange(HCR_name,desc(beta)) %>%
+    mutate(stat_name="catch.mean")
 
 # SSB>SSBtargetとなる確率
-ssbtarget.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), 
-    stat == "SSB") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
-    mean(value > Btarget))) %>% spread(key = year, value = ssb.over.target) %>% 
-    ungroup() %>% arrange(HCR_name, desc(beta)) %>% mutate(stat_name = "Pr(SSB>SSBtarget)")
+ssbtarget.table <- kobeII.table %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(ssb.over.target=round(100*mean(value>Btarget))) %>%
+    spread(key=year,value=ssb.over.target) %>%
+    ungroup() %>%
+    arrange(HCR_name,desc(beta))%>%
+    mutate(stat_name="Pr(SSB>SSBtarget)")
 
 
 # SSB>SSBlow(=高位水準)となる確率
-ssblow.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), 
-    stat == "SSB") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
-    mean(value > Blow))) %>% spread(key = year, value = ssb.over.target) %>% 
-    ungroup() %>% arrange(HCR_name, desc(beta)) %>% mutate(stat_name = "Pr(SSB>SSBlow)")
+ssblow.table <- kobeII.table %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(ssb.over.target=round(100*mean(value>Blow))) %>%
+    spread(key=year,value=ssb.over.target)%>%
+    ungroup() %>%
+    arrange(HCR_name,desc(beta))%>%
+    mutate(stat_name="Pr(SSB>SSBlow)")
 
 # SSB>SSBlimとなる確率
-ssblimit.table <- kobeII.table %>% filter(year %in% c(2017:2023, 2028, 2038), 
-    stat == "SSB") %>% group_by(HCR_name, beta, year) %>% summarise(ssb.over.target = round(100 * 
-    mean(value > Blimit))) %>% spread(key = year, value = ssb.over.target) %>% 
-    ungroup() %>% arrange(HCR_name, desc(beta)) %>% mutate(stat_name = "Pr(SSB>SSBlim)")
+ssblimit.table <- kobeII.table %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(ssb.over.target=round(100*mean(value>Blimit))) %>%
+    spread(key=year,value=ssb.over.target)%>%
+    ungroup() %>%
+    arrange(HCR_name,desc(beta))%>%
+    mutate(stat_name="Pr(SSB>SSBlim)")
 ```
 
-csvファイルに一括して出力する場合
----------------------------------
+## csvファイルに一括して出力する場合
 
 ``` r
-all.table <- bind_rows(catch.table, ssbtarget.table, ssblow.table, ssblimit.table)
-write.csv(all.table, file = "all.table.csv")
+all.table <- bind_rows(catch.table,
+                       ssbtarget.table,
+                       ssblow.table,
+                       ssblimit.table)
+write.csv(all.table,file="all.table.csv")
 ```
 
-htmlで出力したい場合
---------------------
+## htmlで出力したい場合
 
 ### 平均漁獲量
 
 ``` r
 library(formattable)
-catch.table %>% 
+catch.table %>%  select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("steelblue"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
@@ -999,890 +1258,1621 @@ catch.table %>%
 ```
 
 <table class="table table-condensed">
+
 <thead>
+
 <tr>
+
 <th style="text-align:right;">
+
 HCR\_name
+
 </th>
+
 <th style="text-align:right;">
+
 beta
+
 </th>
+
 <th style="text-align:right;">
+
 2018
+
 </th>
+
 <th style="text-align:right;">
+
 2019
+
 </th>
+
 <th style="text-align:right;">
+
 2020
+
 </th>
+
 <th style="text-align:right;">
+
 2021
+
 </th>
+
 <th style="text-align:right;">
+
 2022
+
 </th>
+
 <th style="text-align:right;">
+
 2023
+
 </th>
+
 <th style="text-align:right;">
+
 2028
+
 </th>
+
 <th style="text-align:right;">
+
 2038
+
 </th>
-<th style="text-align:right;">
-stat\_name
-</th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 16000
+
 </td>
+
 <td style="text-align:right;">
+
 36000
+
 </td>
+
 <td style="text-align:right;">
+
 52000
+
 </td>
+
 <td style="text-align:right;">
+
 63000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 15000
+
 </td>
+
 <td style="text-align:right;">
+
 34000
+
 </td>
+
 <td style="text-align:right;">
+
 50000
+
 </td>
+
 <td style="text-align:right;">
+
 62000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: red">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 14000
+
 </td>
+
 <td style="text-align:right;">
+
 32000
+
 </td>
+
 <td style="text-align:right;">
+
 48000
+
 </td>
+
 <td style="text-align:right;">
+
 61000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 12000
+
 </td>
+
 <td style="text-align:right;">
+
 30000
+
 </td>
+
 <td style="text-align:right;">
+
 46000
+
 </td>
+
 <td style="text-align:right;">
+
 59000
+
 </td>
+
 <td style="text-align:right;">
+
 66000
+
 </td>
+
 <td style="text-align:right;">
+
 70000
+
 </td>
+
 <td style="text-align:right;">
+
 70000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 11000
+
 </td>
+
 <td style="text-align:right;">
+
 27000
+
 </td>
+
 <td style="text-align:right;">
+
 42000
+
 </td>
+
 <td style="text-align:right;">
+
 56000
+
 </td>
+
 <td style="text-align:right;">
+
 63000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 9000
+
 </td>
+
 <td style="text-align:right;">
+
 24000
+
 </td>
+
 <td style="text-align:right;">
+
 38000
+
 </td>
+
 <td style="text-align:right;">
+
 51000
+
 </td>
+
 <td style="text-align:right;">
+
 59000
+
 </td>
+
 <td style="text-align:right;">
+
 65000
+
 </td>
+
 <td style="text-align:right;">
+
 65000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 20000
+
 </td>
+
 <td style="text-align:right;">
+
 33000
+
 </td>
+
 <td style="text-align:right;">
+
 48000
+
 </td>
+
 <td style="text-align:right;">
+
 61000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 19000
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 47000
+
 </td>
+
 <td style="text-align:right;">
+
 60000
+
 </td>
+
 <td style="text-align:right;">
+
 67000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 17000
+
 </td>
+
 <td style="text-align:right;">
+
 30000
+
 </td>
+
 <td style="text-align:right;">
+
 46000
+
 </td>
+
 <td style="text-align:right;">
+
 59000
+
 </td>
+
 <td style="text-align:right;">
+
 67000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 15000
+
 </td>
+
 <td style="text-align:right;">
+
 28000
+
 </td>
+
 <td style="text-align:right;">
+
 44000
+
 </td>
+
 <td style="text-align:right;">
+
 57000
+
 </td>
+
 <td style="text-align:right;">
+
 65000
+
 </td>
+
 <td style="text-align:right;">
+
 70000
+
 </td>
+
 <td style="text-align:right;">
+
 70000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 14000
+
 </td>
+
 <td style="text-align:right;">
+
 25000
+
 </td>
+
 <td style="text-align:right;">
+
 41000
+
 </td>
+
 <td style="text-align:right;">
+
 54000
+
 </td>
+
 <td style="text-align:right;">
+
 63000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 12000
+
 </td>
+
 <td style="text-align:right;">
+
 23000
+
 </td>
+
 <td style="text-align:right;">
+
 37000
+
 </td>
+
 <td style="text-align:right;">
+
 50000
+
 </td>
+
 <td style="text-align:right;">
+
 59000
+
 </td>
+
 <td style="text-align:right;">
+
 65000
+
 </td>
+
 <td style="text-align:right;">
+
 65000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 20000
+
 </td>
+
 <td style="text-align:right;">
+
 40000
+
 </td>
+
 <td style="text-align:right;">
+
 53000
+
 </td>
+
 <td style="text-align:right;">
+
 63000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 70000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 18000
+
 </td>
+
 <td style="text-align:right;">
+
 38000
+
 </td>
+
 <td style="text-align:right;">
+
 53000
+
 </td>
+
 <td style="text-align:right;">
+
 64000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 16000
+
 </td>
+
 <td style="text-align:right;">
+
 36000
+
 </td>
+
 <td style="text-align:right;">
+
 52000
+
 </td>
+
 <td style="text-align:right;">
+
 63000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 15000
+
 </td>
+
 <td style="text-align:right;">
+
 34000
+
 </td>
+
 <td style="text-align:right;">
+
 50000
+
 </td>
+
 <td style="text-align:right;">
+
 62000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 13000
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 47000
+
 </td>
+
 <td style="text-align:right;">
+
 60000
+
 </td>
+
 <td style="text-align:right;">
+
 67000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 11000
+
 </td>
+
 <td style="text-align:right;">
+
 28000
+
 </td>
+
 <td style="text-align:right;">
+
 44000
+
 </td>
+
 <td style="text-align:right;">
+
 57000
+
 </td>
+
 <td style="text-align:right;">
+
 64000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 24000
+
 </td>
+
 <td style="text-align:right;">
+
 35000
+
 </td>
+
 <td style="text-align:right;">
+
 47000
+
 </td>
+
 <td style="text-align:right;">
+
 59000
+
 </td>
+
 <td style="text-align:right;">
+
 66000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 70000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 23000
+
 </td>
+
 <td style="text-align:right;">
+
 34000
+
 </td>
+
 <td style="text-align:right;">
+
 48000
+
 </td>
+
 <td style="text-align:right;">
+
 60000
+
 </td>
+
 <td style="text-align:right;">
+
 67000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 21000
+
 </td>
+
 <td style="text-align:right;">
+
 33000
+
 </td>
+
 <td style="text-align:right;">
+
 48000
+
 </td>
+
 <td style="text-align:right;">
+
 61000
+
 </td>
+
 <td style="text-align:right;">
+
 68000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 19000
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 47000
+
 </td>
+
 <td style="text-align:right;">
+
 60000
+
 </td>
+
 <td style="text-align:right;">
+
 67000
+
 </td>
+
 <td style="text-align:right;">
+
 72000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 17000
+
 </td>
+
 <td style="text-align:right;">
+
 29000
+
 </td>
+
 <td style="text-align:right;">
+
 45000
+
 </td>
+
 <td style="text-align:right;">
+
 59000
+
 </td>
+
 <td style="text-align:right;">
+
 66000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
+
 <td style="text-align:right;">
+
 71000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 31000
+
 </td>
+
 <td style="text-align:right;">
+
 14000
+
 </td>
+
 <td style="text-align:right;">
+
 26000
+
 </td>
+
 <td style="text-align:right;">
+
 42000
+
 </td>
+
 <td style="text-align:right;">
+
 56000
+
 </td>
+
 <td style="text-align:right;">
+
 64000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
+
 <td style="text-align:right;">
+
 69000
+
 </td>
-<td style="text-align:right;">
-catch.mean
-</td>
+
 </tr>
+
 </tbody>
+
 </table>
-### SSB&gt;SSBtargetとなる確率
+
+### SSB\>SSBtargetとなる確率
 
 ``` r
-ssbtarget.table %>% 
+ssbtarget.table %>% select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
@@ -1890,890 +2880,1621 @@ ssbtarget.table %>%
 ```
 
 <table class="table table-condensed">
+
 <thead>
+
 <tr>
+
 <th style="text-align:right;">
+
 HCR\_name
+
 </th>
+
 <th style="text-align:right;">
+
 beta
+
 </th>
+
 <th style="text-align:right;">
+
 2018
+
 </th>
+
 <th style="text-align:right;">
+
 2019
+
 </th>
+
 <th style="text-align:right;">
+
 2020
+
 </th>
+
 <th style="text-align:right;">
+
 2021
+
 </th>
+
 <th style="text-align:right;">
+
 2022
+
 </th>
+
 <th style="text-align:right;">
+
 2023
+
 </th>
+
 <th style="text-align:right;">
+
 2028
+
 </th>
+
 <th style="text-align:right;">
+
 2038
+
 </th>
-<th style="text-align:right;">
-stat\_name
-</th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 12
+
 </td>
+
 <td style="text-align:right;">
+
 30
+
 </td>
+
 <td style="text-align:right;">
+
 47
+
 </td>
+
 <td style="text-align:right;">
+
 47
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 1
+
 </td>
+
 <td style="text-align:right;">
+
 29
+
 </td>
+
 <td style="text-align:right;">
+
 65
+
 </td>
+
 <td style="text-align:right;">
+
 72
+
 </td>
+
 <td style="text-align:right;">
+
 72
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: red">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 1
+
 </td>
+
 <td style="text-align:right;">
+
 48
+
 </td>
+
 <td style="text-align:right;">
+
 79
+
 </td>
+
 <td style="text-align:right;">
+
 88
+
 </td>
+
 <td style="text-align:right;">
+
 93
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 3
+
 </td>
+
 <td style="text-align:right;">
+
 63
+
 </td>
+
 <td style="text-align:right;">
+
 92
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 9
+
 </td>
+
 <td style="text-align:right;">
+
 88
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 24
+
 </td>
+
 <td style="text-align:right;">
+
 93
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 7
+
 </td>
+
 <td style="text-align:right;">
+
 28
+
 </td>
+
 <td style="text-align:right;">
+
 47
+
 </td>
+
 <td style="text-align:right;">
+
 47
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 25
+
 </td>
+
 <td style="text-align:right;">
+
 57
+
 </td>
+
 <td style="text-align:right;">
+
 72
+
 </td>
+
 <td style="text-align:right;">
+
 72
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 1
+
 </td>
+
 <td style="text-align:right;">
+
 37
+
 </td>
+
 <td style="text-align:right;">
+
 78
+
 </td>
+
 <td style="text-align:right;">
+
 88
+
 </td>
+
 <td style="text-align:right;">
+
 93
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 59
+
 </td>
+
 <td style="text-align:right;">
+
 90
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 5
+
 </td>
+
 <td style="text-align:right;">
+
 82
+
 </td>
+
 <td style="text-align:right;">
+
 96
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 16
+
 </td>
+
 <td style="text-align:right;">
+
 92
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 1
+
 </td>
+
 <td style="text-align:right;">
+
 17
+
 </td>
+
 <td style="text-align:right;">
+
 32
+
 </td>
+
 <td style="text-align:right;">
+
 47
+
 </td>
+
 <td style="text-align:right;">
+
 49
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 1
+
 </td>
+
 <td style="text-align:right;">
+
 35
+
 </td>
+
 <td style="text-align:right;">
+
 67
+
 </td>
+
 <td style="text-align:right;">
+
 74
+
 </td>
+
 <td style="text-align:right;">
+
 74
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 6
+
 </td>
+
 <td style="text-align:right;">
+
 60
+
 </td>
+
 <td style="text-align:right;">
+
 81
+
 </td>
+
 <td style="text-align:right;">
+
 88
+
 </td>
+
 <td style="text-align:right;">
+
 95
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 19
+
 </td>
+
 <td style="text-align:right;">
+
 86
+
 </td>
+
 <td style="text-align:right;">
+
 94
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 31
+
 </td>
+
 <td style="text-align:right;">
+
 93
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 52
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 9
+
 </td>
+
 <td style="text-align:right;">
+
 25
+
 </td>
+
 <td style="text-align:right;">
+
 47
+
 </td>
+
 <td style="text-align:right;">
+
 49
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 24
+
 </td>
+
 <td style="text-align:right;">
+
 56
+
 </td>
+
 <td style="text-align:right;">
+
 74
+
 </td>
+
 <td style="text-align:right;">
+
 74
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 44
+
 </td>
+
 <td style="text-align:right;">
+
 80
+
 </td>
+
 <td style="text-align:right;">
+
 88
+
 </td>
+
 <td style="text-align:right;">
+
 95
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 8
+
 </td>
+
 <td style="text-align:right;">
+
 71
+
 </td>
+
 <td style="text-align:right;">
+
 94
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 27
+
 </td>
+
 <td style="text-align:right;">
+
 90
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 41
+
 </td>
+
 <td style="text-align:right;">
+
 96
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBtarget)
-</td>
+
 </tr>
+
 </tbody>
+
 </table>
+
 ### Blowを上回る（高位水準になる）確率
 
 ``` r
-ssblow.table %>% 
+ssblow.table %>% select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
@@ -2781,890 +4502,1621 @@ ssblow.table %>%
 ```
 
 <table class="table table-condensed">
+
 <thead>
+
 <tr>
+
 <th style="text-align:right;">
+
 HCR\_name
+
 </th>
+
 <th style="text-align:right;">
+
 beta
+
 </th>
+
 <th style="text-align:right;">
+
 2018
+
 </th>
+
 <th style="text-align:right;">
+
 2019
+
 </th>
+
 <th style="text-align:right;">
+
 2020
+
 </th>
+
 <th style="text-align:right;">
+
 2021
+
 </th>
+
 <th style="text-align:right;">
+
 2022
+
 </th>
+
 <th style="text-align:right;">
+
 2023
+
 </th>
+
 <th style="text-align:right;">
+
 2028
+
 </th>
+
 <th style="text-align:right;">
+
 2038
+
 </th>
-<th style="text-align:right;">
-stat\_name
-</th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 14
+
 </td>
+
 <td style="text-align:right;">
+
 90
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 20
+
 </td>
+
 <td style="text-align:right;">
+
 95
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: red">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 31
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 45
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 52
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 61
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 6
+
 </td>
+
 <td style="text-align:right;">
+
 77
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 9
+
 </td>
+
 <td style="text-align:right;">
+
 88
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 15
+
 </td>
+
 <td style="text-align:right;">
+
 92
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 21
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 37
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 44
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 5
+
 </td>
+
 <td style="text-align:right;">
+
 59
+
 </td>
+
 <td style="text-align:right;">
+
 94
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 8
+
 </td>
+
 <td style="text-align:right;">
+
 80
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 13
+
 </td>
+
 <td style="text-align:right;">
+
 90
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 20
+
 </td>
+
 <td style="text-align:right;">
+
 95
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 38
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 47
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 1
+
 </td>
+
 <td style="text-align:right;">
+
 36
+
 </td>
+
 <td style="text-align:right;">
+
 85
+
 </td>
+
 <td style="text-align:right;">
+
 96
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 3
+
 </td>
+
 <td style="text-align:right;">
+
 53
+
 </td>
+
 <td style="text-align:right;">
+
 94
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 5
+
 </td>
+
 <td style="text-align:right;">
+
 74
+
 </td>
+
 <td style="text-align:right;">
+
 97
+
 </td>
+
 <td style="text-align:right;">
+
 99
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 11
+
 </td>
+
 <td style="text-align:right;">
+
 90
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 19
+
 </td>
+
 <td style="text-align:right;">
+
 95
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 32
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlow)
-</td>
+
 </tr>
+
 </tbody>
+
 </table>
+
 ### Blimitを上回る確率
 
 ``` r
-ssblimit.table %>% 
+ssblimit.table %>% select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
@@ -3672,915 +6124,1645 @@ ssblimit.table %>%
 ```
 
 <table class="table table-condensed">
+
 <thead>
+
 <tr>
+
 <th style="text-align:right;">
+
 HCR\_name
+
 </th>
+
 <th style="text-align:right;">
+
 beta
+
 </th>
+
 <th style="text-align:right;">
+
 2018
+
 </th>
+
 <th style="text-align:right;">
+
 2019
+
 </th>
+
 <th style="text-align:right;">
+
 2020
+
 </th>
+
 <th style="text-align:right;">
+
 2021
+
 </th>
+
 <th style="text-align:right;">
+
 2022
+
 </th>
+
 <th style="text-align:right;">
+
 2023
+
 </th>
+
 <th style="text-align:right;">
+
 2028
+
 </th>
+
 <th style="text-align:right;">
+
 2038
+
 </th>
-<th style="text-align:right;">
-stat\_name
-</th>
+
 </tr>
+
 </thead>
+
 <tbody>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: red">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget0-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 98
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit0-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 0
+
 </td>
+
 <td style="text-align:right;">
+
 2
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 <tr>
+
 <td style="text-align:right;">
+
 <span style="color: black">Btarget1-Blimit1-Bban0</span>
+
 </td>
+
 <td style="text-align:right;">
+
 <span style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 89
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
+
 <td style="text-align:right;">
+
 100
+
 </td>
-<td style="text-align:right;">
-Pr(SSB&gt;SSBlim)
-</td>
+
 </tr>
+
 </tbody>
+
 </table>
-図のまとめ
-----------
+
+## 図のまとめ
 
 ``` r
 g1
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![](README_files/figure-gfm/unnamed-chunk-16-1.png)<!-- -->
 
 ``` r
 g2
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-16-2.png)
+![](README_files/figure-gfm/unnamed-chunk-16-2.png)<!-- -->
 
 ``` r
 g3
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-16-3.png)
+![](README_files/figure-gfm/unnamed-chunk-16-3.png)<!-- -->
 
 ``` r
 g4
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-16-4.png)
+![](README_files/figure-gfm/unnamed-chunk-16-4.png)<!-- -->
 
 ``` r
 g5
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-16-5.png)
+![](README_files/figure-gfm/unnamed-chunk-16-5.png)<!-- -->

@@ -23,7 +23,7 @@ par(mar=c(4,4,3,1))
 ```
 
 本マニュアルのhtml版はこちら（表がカラーだったりします）
-https://ichimomo.github.io/future-rvpa/make_report1.html
+https://ichimomo.github.io/future-rvpa/make_report.html
 
 # 事前準備
 詳細は https://ichimomo.github.io/future-rvpa/future-doc-abc.html をご参照ください
@@ -212,7 +212,7 @@ refs.all %>% select(RP_name,RP.definition)
 
 # refs.allの中からRP.definitionで指定された行だけを抜き出す
 (refs.base <- refs.all %>%
-    filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
+    dplyr::filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
     arrange(desc(SSB)) %>% # SSBを大きい順に並び替え
     select(RP.definition,RP_name,SSB,Catch,U,Fref2Fcurrent)) #　列を並び替え
 
@@ -266,18 +266,21 @@ make_RP_table(refs.base)
 **(レポート記述内容例)**
 
 - どの管理基準値がどのような意味を示すのか？デフォルト以外に候補がある場合には、その候補を選んだ理由。その管理基準値における利点・欠点を示す。0, 1, 2の数字が小さいほどデフォルトルールにのっとった管理基準値である。
-	- **記述例(あくまで例です。今の例で、代替基準値を最大限選ぶとしたらどうするか、というものです)**
-	- 目標管理基準値(Btarget0): **Bmsy**。過去最大親魚量の2倍となり、SSB>SSB_maxの範囲における不確実性が大きい懸念がある。
-	- 目標管理基準値(Btarget1)(代替値1): **漁獲がないときの親魚資源量の20%に相当する親魚量。**　MSYの90%以上の平均漁獲量を得られる親魚レベルは確保されている。米国では浮魚類のMSY代替値の下限としても利用されている。
-	- 目標管理基準値(Btarget2)(代替値2): **MSYの95%の平衡漁獲量を得るときの親魚資源量** MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベルである。
-	- 目標資源量の下限となる基準値(Blow): **MSYの90%の平衡漁獲量を得るときの親魚資源量**
-	- 限界資源量(Blimit0): **MSYの60%の平衡漁獲量を得るときの親魚資源量**
-	- 限界資源量(Blimit1): **今まで利用していたBlimit。**この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。
-	- 禁漁資源量(Blow): **MSYの10%の平衡漁獲量を得るときの親魚資源量**
-	- その他、参考となる経験的な指標として以下のものも示した
-	  - Bmax: 過去最大親魚量
-	  - B_HS: HS再生産関係の折れ点
-	  - B_current: 最近年の親魚量
+- **記述例(あくまで例です。今の例で、代替基準値を最大限選ぶとしたらどうするか、というものです)**
+
+|管理基準値    | ラベル           | 説明                              |
+|:-----------|:-----------------|:---------------------------------|
+|目標 | Btarget0 | 最大の平均漁獲量を得る時の親魚量(**Bmsy**)。過去最大親魚量の2倍となり、SSB>SSB_maxの範囲における不確実性が大きい懸念がある。 |
+|目標 | Btarget1 (代替値1) | 漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。 |
+|目標 | Btarget2 (代替値2)|MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベルである。|
+|高位・中位の境界 | Blow0 |MSYの90%の平均漁獲量を得るときの親魚資源量 |
+|限界 | Blimit0 |MSYの60%の平均漁獲量を得るときの親魚資源量 |
+|限界 | Blimit1 |今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。|
+| 禁漁 | Bban0 | MSYの10%の平衡漁獲量を得るときの親魚資源量|
+| 経験値 | Bmax | 過去最大親魚量　|
+| 経験値 | B_HS | HS再生産関係の折れ点　|
+| 経験値 | B_current | 最近年の親魚量　|
+
 
 ---
 
@@ -287,7 +290,7 @@ make_RP_table(refs.base)
 
 - Btargetをベースとした4区分
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 # Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
 g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[1]]
 (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
@@ -296,7 +299,7 @@ g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[1]]
 
 - Blimit, Blowをベースとした6区分
 
-```{r, echo=FALSE}
+```{r, echo=TRUE}
 # Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
 g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3)[[2]]
 (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
@@ -356,7 +359,7 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
 ```{r}
 # 平均漁獲量の表
 catch.table <- kobeII.table %>%
-    filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>%
     group_by(HCR_name,beta,year) %>%
     summarise(catch.mean=round(mean(value),
                                -floor(log10(min(kobeII.table$value))))) %>%
@@ -366,7 +369,7 @@ catch.table <- kobeII.table %>%
 
 # SSB>SSBtargetとなる確率
 ssbtarget.table <- kobeII.table %>%
-    filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
     group_by(HCR_name,beta,year) %>%
     summarise(ssb.over.target=round(100*mean(value>Btarget))) %>%
     spread(key=year,value=ssb.over.target) %>%
@@ -377,7 +380,7 @@ ssbtarget.table <- kobeII.table %>%
 
 # SSB>SSBlow(=高位水準)となる確率
 ssblow.table <- kobeII.table %>%
-    filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
     group_by(HCR_name,beta,year) %>%
     summarise(ssb.over.target=round(100*mean(value>Blow))) %>%
     spread(key=year,value=ssb.over.target)%>%
@@ -387,7 +390,7 @@ ssblow.table <- kobeII.table %>%
 
 # SSB>SSBlimとなる確率
 ssblimit.table <- kobeII.table %>%
-    filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
     group_by(HCR_name,beta,year) %>%
     summarise(ssb.over.target=round(100*mean(value>Blimit))) %>%
     spread(key=year,value=ssb.over.target)%>%
@@ -411,7 +414,7 @@ write.csv(all.table,file="all.table.csv")
 ### 平均漁獲量
 ```{r}
 library(formattable)
-catch.table %>% 
+catch.table %>%  select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("steelblue"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
@@ -420,7 +423,7 @@ catch.table %>%
 
 ### SSB>SSBtargetとなる確率
 ```{r}
-ssbtarget.table %>% 
+ssbtarget.table %>% select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
@@ -431,7 +434,7 @@ ssbtarget.table %>%
 ### Blowを上回る（高位水準になる）確率
 ```{r}
 
-ssblow.table %>% 
+ssblow.table %>% select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
@@ -442,7 +445,7 @@ ssblow.table %>%
 ### Blimitを上回る確率
 ```{r}
 
-ssblimit.table %>% 
+ssblimit.table %>% select(-stat_name) %>%
     formattable::formattable(list(#area(col=-1)~color_bar("olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
