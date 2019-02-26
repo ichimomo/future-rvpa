@@ -12,13 +12,14 @@ output: github_document
 library(rmarkdown)
 library(knitr)
 options(max.print="75")
-opts_chunk$set(echo=FALSE,
+opts_chunk$set(echo=TRUE,
                prompt=FALSE,
                tidy=TRUE,
                comment=NA,
                message=FALSE,
                warning=FALSE)
-
+#opts_knit$set(width=75)
+par(mar=c(4,4,3,1))
 ```
 
 本マニュアルのhtml版はこちら（表がカラーだったりします）
@@ -42,7 +43,6 @@ source("../../utilities.r",encoding="UTF-8") # ggplotを使ったグラフ作成
 # ライブラリの読み込み
 
 library(rmdformats)
-library(knitr)
 library(tidyverse)
 library(rmarkdown)
 library(RcppRoll)
