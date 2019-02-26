@@ -67,13 +67,13 @@
 <td align="left">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
 </tr>
 <tr class="even">
-<td align="left">Btarget1 (代替値1)</td>
-<td align="left">目標</td>
+<td align="left">Btarget1</td>
+<td align="left">目標(代替値候補1)</td>
 <td align="left">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
 </tr>
 <tr class="odd">
-<td align="left">Btarget2 (代替値2)</td>
-<td align="left">目標</td>
+<td align="left">Btarget2</td>
+<td align="left">目標(代替値候補2)</td>
 <td align="left">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベルである。</td>
 </tr>
 <tr class="even">
@@ -88,8 +88,8 @@
 </tr>
 <tr class="even">
 <td align="left">Blimit1</td>
-<td align="left">限界</td>
-<td align="left">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。</td>
+<td align="left">限界(代替値候補1)</td>
+<td align="left">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できないが、Blimitで代替値候補がある場合の例として、ここではこれも代替値候補とする。</td>
 </tr>
 <tr class="odd">
 <td align="left">Bban0</td>
