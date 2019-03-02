@@ -150,9 +150,13 @@ make_RP_table <- function(refs_base){
 }
 
 derive_RP_value <- function(refs_base,RP_name){
-    tmp1 <- str_detect(refs_base$RP.definition,RP_name)
-    tmp2 <- str_detect(refs_base$RP_name,RP_name)    
-    refs_base[tmp1|tmp2,]
+    tmp <- FALSE
+    for(i in 1:length(RP_name)){
+        tmp1 <- str_detect(refs_base$RP.definition,RP_name[i])
+#        tmp2 <- str_detect(refs_base$RP_name,RP_name[i])
+        tmp <- tmp|tmp1#|tmp2
+    }
+    refs_base[tmp,]
 }
 
 
@@ -165,23 +169,38 @@ calc_kobeII_matrix <- function(fres_base,
                               beta=seq(from=0.5,to=1,by=0.1)){
     require(tidyverse,quietly=TRUE)    
 # HCRの候補を網羅的に設定
+#    HCR_candidate1 <- expand.grid(
+#        Btarget_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Btarget)],
+#        Blow_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Blow)],    
+#        Blimit_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Blimit)],
+#        Bban_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Bban)],
+    #        beta=beta)
+
     HCR_candidate1 <- expand.grid(
-        Btarget_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Btarget)],
-        Blow_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Blow)],    
-        Blimit_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Blimit)],
-        Bban_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Bban)],
-        beta=beta)
+        Btarget_name=Btarget,
+        Blow_name=Blow,    
+        Blimit_name=Blimit,
+        Bban_name=Bban,
+        beta=beta)    
+
+#    HCR_candidate2 <- expand.grid(
+#        Btarget=refs_base$SSB[str_detect(refs_base$RP.definition,Btarget)],
+#        Blow=refs_base$SSB[str_detect(refs_base$RP.definition,Blow)],    
+#        Blimit=refs_base$SSB[str_detect(refs_base$RP.definition,Blimit)],
+#        Bban=refs_base$SSB[str_detect(refs_base$RP.definition,Bban)],
+#        beta=beta) %>% select(-beta)
 
     HCR_candidate2 <- expand.grid(
-        Btarget=refs_base$SSB[str_detect(refs_base$RP.definition,Btarget)],
-        Blow=refs_base$SSB[str_detect(refs_base$RP.definition,Blow)],    
-        Blimit=refs_base$SSB[str_detect(refs_base$RP.definition,Blimit)],
-        Bban=refs_base$SSB[str_detect(refs_base$RP.definition,Bban)],
-        beta=beta) %>% select(-beta)
+        Btarget=derive_RP_value(refs_base,Btarget)$SSB,
+        Blow=derive_RP_value(refs_base,Blow)$SSB,    
+        Blimit=derive_RP_value(refs_base,Blimit)$SSB,    
+        Bban=derive_RP_value(refs_base,Bban)$SSB,   
+        beta=beta) %>% select(-beta)    
 
     HCR_candidate <- bind_cols(HCR_candidate1,HCR_candidate2) %>% as_tibble()
     
-    HCR_candidate <- refs_base %>% dplyr::filter(str_detect(RP.definition,Btarget)) %>%
+    HCR_candidate <- refs_base %>% #dplyr::filter(str_detect(RP.definition,Btarget)) %>%
+        dplyr::filter(RP.definition%in%Btarget) %>%
         mutate(Btarget_name=RP.definition,Fmsy=Fref2Fcurrent) %>%
         select(Btarget_name,Fmsy) %>%
         left_join(HCR_candidate) %>%
@@ -202,8 +221,9 @@ calc_kobeII_matrix <- function(fres_base,
 
 
 HCR.simulation <- function(finput,HCRtable){
-
+    
     tb <- NULL
+    
     for(i in 1:nrow(HCRtable)){
         HCR_base <- HCRtable[i,]
         finput$multi <- HCR_base$Fmsy
