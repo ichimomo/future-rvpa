@@ -150,13 +150,9 @@ make_RP_table <- function(refs_base){
 }
 
 derive_RP_value <- function(refs_base,RP_name){
-    tmp <- FALSE
-    for(i in 1:length(RP_name)){
-        tmp1 <- str_detect(refs_base$RP.definition,RP_name[i])
-#        tmp2 <- str_detect(refs_base$RP_name,RP_name[i])
-        tmp <- tmp|tmp1#|tmp2
-    }
-    refs_base[tmp,]
+#    refs_base %>% dplyr::filter(RP.definition%in%RP_name)
+#    subset(refs_base,RP.definition%in%RP_name)
+    refs_base[refs_base$RP.definition%in%RP_name,]    
 }
 
 
@@ -175,6 +171,10 @@ calc_kobeII_matrix <- function(fres_base,
 #        Blimit_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Blimit)],
 #        Bban_name=refs_base$RP.definition[str_detect(refs_base$RP.definition,Bban)],
     #        beta=beta)
+
+    refs.unique <- unique(c(Btarget,Blimit,Blow,Bban))
+    tmp <- !refs.unique%in%refs.base$RP.definition    
+    if(sum(tmp)>0) stop(refs.unique[tmp]," does not appear in column of RP.definition\n")
 
     HCR_candidate1 <- expand.grid(
         Btarget_name=Btarget,
