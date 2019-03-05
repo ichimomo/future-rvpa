@@ -224,13 +224,14 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
 
 # 例えば2017~2023,28,38年の漁獲量の表を作成する
 (catch.table <- kobeII.table %>%
-    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>% # 取り出す年とラベル("catch")を選ぶ
     group_by(HCR_name,beta,year) %>%
-    summarise(catch.mean=round(mean(value),
+    summarise(catch.mean=round(mean(value),  # 値の計算方法を指定（漁獲量の平均ならmean(value)）
                                -floor(log10(min(kobeII.table$value))))) %>%
     spread(key=year,value=round(catch.mean)) %>% ungroup() %>%
-    arrange(HCR_name,desc(beta)) %>%
+    arrange(HCR_name,desc(beta)) %>% # HCR_nameとbetaの順に並び替え
     mutate(stat_name="catch.mean"))
+
 # SSB>SSBtargetとなる確率
 ssbtarget.table <- kobeII.table %>%
     dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%

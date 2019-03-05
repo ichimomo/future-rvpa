@@ -24,6 +24,13 @@
 -   何年から何年までのデータを使ったか？（また、その判断基準）
 -   詳細な報告書には、モデル診断の結果で重要そうなもの、AICが近い他の再生産関係でフィットしたときの図なども示す。
 
+<!-- -->
+
+    library(tidyverse)
+    # 再生産関係のプロット
+    g1 <- SRplot_gg(SRmodel.base)
+    g1 + ggtitle("図1. 再生産関係")
+
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-2-1.png)
 
 管理基準値
@@ -107,6 +114,9 @@
 </tr>
 </tbody>
 </table>
+
+    # 管理基準値表
+    make_RP_table(refs.base)
 
 <table class="table table-condensed">
 <thead>
@@ -341,7 +351,30 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
 </tr>
 </tbody>
 </table>
-![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-1.png)![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-2.png)![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
+    # 漁獲量曲線 再生産関係をもとにしたyield curveと管理基準値のプロット。
+    # 計算した全管理基準値を示す場合にはrefs.allを、厳選したものだけを示す場合にはrefs.baseを引数に使ってください
+    # AR==TRUEにするとARありの結果もプロットされます
+    g2 <- plot_yield(MSY.base, refs.all, AR = FALSE)
+    g2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
+
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+
+    # 神戸チャート
+
+    # Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
+    # roll_meanで各年の値を何年分移動平均するか指定します
+    g3 <- plot_kobe_gg(res.pma, refs.base, roll_mean = 3, category = 4, Btarget == 
+        "Btarget0")  # <- どの管理基準値を軸に使うのか指定。指定しなければ'0'マークがついた管理基準値が使われます
+    (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
+
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-2.png)
+
+    # Btarget0, Blow0,
+    # Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
+    g4 <- plot_kobe_gg(res.pma, refs.base, roll_mean = 3, category = 6)
+    (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
+
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
 
 HCRによる将来予測
 -----------------
@@ -351,6 +384,18 @@ HCRによる将来予測
 **(レポート記述内容例)** -
 現状のFは2015年から2017年の年齢別Fの単純平均を用いた（など、どのようにcurrent
 Fを定義したかを書く)
+
+    # 親魚資源量と漁獲量の時系列の図示
+    g5 <- plot_futures(res.pma, # vpaの結果
+                       list(future.Fcurrent,future.default), # 将来予測結果
+                       future.name=c("現行のF","HCRによるF"),
+                       CI_range=c(0.1,0.9),
+                       maxyear=2045,
+                       Btarget=derive_RP_value(refs.base,"Btarget0")$SSB,
+                       Blimit=derive_RP_value(refs.base,"Blimit0")$SSB,
+                       Blow=derive_RP_value(refs.base,"Blow0")$SSB,
+                       Bban=derive_RP_value(refs.base,"Bban0")$SSB)
+    (g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測\n(実線：平均値、範囲：90パーセント信頼区間)")+ylab("トン"))
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-4-1.png)
 
@@ -370,6 +415,12 @@ Fを定義したかを書く)
 -   Blimitや過去最低親魚量を下回るリスク：どのHCRを使っても2021年以降は親魚資源量がSSBlimit(Blimit0とBlimit1では別の基準を使っているため単純には比較できないことに注意）や過去最低親魚量を下回る確率はほぼゼロである。
 
 ### 平均漁獲量
+
+    library(formattable)
+    catch.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "steelblue"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -1395,6 +1446,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d
 </table>
 ### SSB&gt;SSBtargetとなる確率
 
+    ssbtarget.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
+
 <table class="table table-condensed">
 <thead>
 <tr>
@@ -2418,6 +2474,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </tbody>
 </table>
 ### Blowを上回る（高位水準になる）確率
+
+    ssblow.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -3443,6 +3504,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blimitを上回る確率
 
+    ssblimit.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
+
 <table class="table table-condensed">
 <thead>
 <tr>
@@ -4467,6 +4533,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blimitを上回る確率
 
+    ssblimit.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
+
 <table class="table table-condensed">
 <thead>
 <tr>
@@ -5490,6 +5561,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </tbody>
 </table>
 ### 過去最低親魚量を上回る確率
+
+    ssbmin.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>

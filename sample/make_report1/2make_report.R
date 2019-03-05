@@ -4,8 +4,7 @@
 library(rmarkdown)
 library(knitr)
 options(max.print="75")
-opts_chunk$set(echo=FALSE,
-               prompt=FALSE,
+opts_chunk$set(prompt=FALSE,
                tidy=TRUE,
                comment=NA,
                message=FALSE,
@@ -13,6 +12,7 @@ opts_chunk$set(echo=FALSE,
 
 
 ## ------------------------------------------------------------------------
+library(tidyverse)
 # 再生産関係のプロット
 g1 <- SRplot_gg(SRmodel.base)
 g1 + ggtitle("図1. 再生産関係")
@@ -26,7 +26,7 @@ make_RP_table(refs.base)
 # 計算した全管理基準値を示す場合にはrefs.allを、厳選したものだけを示す場合にはrefs.baseを引数に使ってください
 # AR==TRUEにするとARありの結果もプロットされます
 g2 <- plot_yield(MSY.base,refs.all,AR=FALSE) 
-g2 + ggtitle("図2. 漁獲量曲線とさまざま管理基準値")
+g2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
 
 # 神戸チャート
 

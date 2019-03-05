@@ -1,7 +1,7 @@
 MSY推定用のRコード（ダイジェスト版）
 ================
 Momoko Ichinokawa
-2019-02-27
+2019-03-05
 
 本マニュアルの完全版(細かいオプションの説明などがあります)はこちら <https://ichimomo.github.io/future-rvpa/future-doc-abc.html>
 
@@ -426,7 +426,7 @@ MSY管理基準値の計算
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0xc897d90>
+    <bytecode: 0x51445e0>
 
     $replace.rec.year
     [1] 2012
