@@ -443,7 +443,7 @@ plot_Fcurrent <- function(vpares,
         mutate(color=c("gray","tomato")[as.numeric(year=="currentF")+1]) %>%
         group_by(year)
     
-    fc_at_age %>% ggplot() +
+    g <- fc_at_age %>% ggplot() +
         geom_line(aes(x=age,y=as.numeric(F),alpha=year,
                       color=color),lwd=1.5) +
         scale_colour_identity()+
@@ -460,5 +460,6 @@ plot_Fcurrent <- function(vpares,
 #            col1  = "gray",
 #            col2  = "tomato",
 #            col3  = "blue3",
-#            col4  = "yellow3")    )
+    #            col4  = "yellow3")    )
+    return(g)
 }

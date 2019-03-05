@@ -137,7 +137,7 @@ future.Fcurrent <- future.vpa(res.pma,
 - 最近年の親魚量で維持した場合の管理基準値も、比較のためにあとで見るため```Bempirical```で指定しておいてください。また、B_HS(HSの折れ点)や最大親魚量などもここで計算しておいても良いかと。。。
 
 
-```{r msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5, eval=FALSE}
+```{r msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5, eval=TRUE}
 
 # MSY管理基準値の計算
 MSY.base <- est.MSY(res.pma, # VPAの計算結果

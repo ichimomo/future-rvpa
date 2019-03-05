@@ -399,6 +399,11 @@ Fを定義したかを書く)
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-4-1.png)
 
+    g6 <- plot_Fcurrent(res.pma,year.range=2000:2017)
+    (g6 <- g6+ggtitle("図6. MSY計算とHCRで仮定されたcurrent Fの定義（赤線)"))
+
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-4-2.png)
+
 パフォーマンス指標の比較
 ------------------------
 
