@@ -1,10 +1,10 @@
 convert_df <- function(df,name){
     df %>%
         as_tibble %>%  
-        mutate(age = rownames(.)) %>% 
+        mutate(age = as.numeric(rownames(df))) %>% 
         gather(key=year, value=value, -age, convert=TRUE) %>%
         group_by(year) %>%
-        summarise(value=sum(value)) %>%
+#        summarise(value=sum(value)) %>%
         mutate(type="vpa",sim="s0",stat=name)    
 }
 
@@ -177,25 +177,18 @@ calc_kobeII_matrix <- function(fres_base,
     if(sum(tmp)>0) stop(refs.unique[tmp]," does not appear in column of RP.definition\n")
 
     HCR_candidate1 <- expand.grid(
-        Btarget_name=Btarget,
-        Blow_name=Blow,    
-        Blimit_name=Blimit,
-        Bban_name=Bban,
+        Btarget_name=derive_RP_value(refs_base,Btarget)$RP.definition,
+        Blow_name=derive_RP_value(refs_base,Blow)$RP.definition,    
+        Blimit_name=derive_RP_value(refs_base,Blimit)$RP.definition,
+        Bban_name=derive_RP_value(refs_base,Bban)$RP.definition,
         beta=beta)    
-
-#    HCR_candidate2 <- expand.grid(
-#        Btarget=refs_base$SSB[str_detect(refs_base$RP.definition,Btarget)],
-#        Blow=refs_base$SSB[str_detect(refs_base$RP.definition,Blow)],    
-#        Blimit=refs_base$SSB[str_detect(refs_base$RP.definition,Blimit)],
-#        Bban=refs_base$SSB[str_detect(refs_base$RP.definition,Bban)],
-#        beta=beta) %>% select(-beta)
 
     HCR_candidate2 <- expand.grid(
         Btarget=derive_RP_value(refs_base,Btarget)$SSB,
         Blow=derive_RP_value(refs_base,Blow)$SSB,    
         Blimit=derive_RP_value(refs_base,Blimit)$SSB,    
         Bban=derive_RP_value(refs_base,Bban)$SSB,   
-        beta=beta) %>% select(-beta)    
+        beta=beta) %>% select(-beta)
 
     HCR_candidate <- bind_cols(HCR_candidate1,HCR_candidate2) %>% as_tibble()
     
@@ -432,4 +425,40 @@ plot_futures <- function(vpares,
         xlab("年")+
         geom_hline(data=dummy3,aes(yintercept=value),linetype=2)
                          
+}
+
+plot_Fcurrent <- function(vpares,
+                          year.range=NULL){
+
+    if(is.null(year.range)) year.range <- min(as.numeric(colnames(vpares$naa))):max(as.numeric(colnames(vpares$naa)))
+    vpares_tb <- convert_vpa_tibble(vpares)
+
+    fc_at_age <- vpares_tb %>%
+        dplyr::filter(stat=="fishing_mortality", year%in%year.range) %>%
+        mutate(F=value,year=as.character(year)) %>%
+        select(-stat,-sim,-type,-value)
+    fc_at_age_current <- tibble(F=vpares$Fc.at.age,age=as.numeric(rownames(vpares$naa)),
+                                year="currentF")
+    fc_at_age <- bind_rows(fc_at_age,fc_at_age_current) %>%
+        mutate(color=c("gray","tomato")[as.numeric(year=="currentF")+1]) %>%
+        group_by(year)
+    
+    fc_at_age %>% ggplot() +
+        geom_line(aes(x=age,y=as.numeric(F),alpha=year,
+                      color=color),lwd=1.5) +
+        scale_colour_identity()+
+#        geom_line(data=fc_at_age_current,
+#                  mapping=aes(x=age,y=F),
+#                  alpha=0.5,lwd=2) +    
+        theme_bw()+
+        coord_cartesian(expand=0,ylim=c(0,max(fc_at_age$F)*1.1),xlim=range(fc_at_age$age)+c(-0.5,0.5))+
+#        theme(#legend.position="bottom",
+#            panel.grid = element_blank())+
+    xlab("Ages")+ylab("Fishing mortality")#+
+#    scale_colour_manual(
+#        values = c(
+#            col1  = "gray",
+#            col2  = "tomato",
+#            col3  = "blue3",
+#            col4  = "yellow3")    )
 }
