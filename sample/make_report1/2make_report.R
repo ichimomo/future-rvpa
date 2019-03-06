@@ -33,11 +33,13 @@ g2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
 # Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
 # roll_meanで各年の値を何年分移動平均するか指定します
 g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
-                   Btarget=="Btarget0") # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
+                   Blow="Btarget0",# <- Blowが重要な管理基準値になるのか不明。とりあえずBtargeと同じ値を入れておいてください
+                   Btarget="Btarget0") # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
 (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
 
-# Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
-g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6)
+# Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート6区分
+# Blowを使うかどうかは不明。とりあえず6区分の一番上の境界(Blowのオプション)は"Btarget0"と、targetで使う管理基準値の名前を入れて下さい
+g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6,Blow="Btarget0")
 (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 
 

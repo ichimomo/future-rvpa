@@ -48,69 +48,69 @@
 
 **表：さまざまな管理基準値**
 
-<table style="width:93%;">
+<table>
 <colgroup>
-<col width="18%" />
-<col width="26%" />
-<col width="48%" />
+<col style="width: 18%" />
+<col style="width: 28%" />
+<col style="width: 53%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">ラベル</th>
-<th align="left">管理基準値</th>
-<th align="left">説明</th>
+<th style="text-align: left;">ラベル</th>
+<th style="text-align: left;">管理基準値</th>
+<th style="text-align: left;">説明</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Btarget0</td>
-<td align="left">目標</td>
-<td align="left">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
+<td style="text-align: left;">Btarget0</td>
+<td style="text-align: left;">目標</td>
+<td style="text-align: left;">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
 </tr>
 <tr class="even">
-<td align="left">Btarget1</td>
-<td align="left">目標(代替値候補1)</td>
-<td align="left">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
+<td style="text-align: left;">Btarget1</td>
+<td style="text-align: left;">目標(代替値候補1)</td>
+<td style="text-align: left;">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
 </tr>
 <tr class="odd">
-<td align="left">Btarget2</td>
-<td align="left">目標(代替値候補2)</td>
-<td align="left">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベル。(あくまで例であり、ABCルールでこういう管理基準値が選べるということではないです。)</td>
+<td style="text-align: left;">Btarget2</td>
+<td style="text-align: left;">目標(代替値候補2)</td>
+<td style="text-align: left;">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベル。(あくまで例であり、ABCルールでこういう管理基準値が選べるということではないです。)</td>
 </tr>
 <tr class="even">
-<td align="left">Blow0</td>
-<td align="left">高位・中位の境界</td>
-<td align="left">MSYの90%の平均漁獲量を得るときの親魚資源量</td>
+<td style="text-align: left;">Blow0</td>
+<td style="text-align: left;">高位・中位の境界</td>
+<td style="text-align: left;">MSYの90%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="odd">
-<td align="left">Blimit0</td>
-<td align="left">限界</td>
-<td align="left">MSYの60%の平均漁獲量を得るときの親魚資源量</td>
+<td style="text-align: left;">Blimit0</td>
+<td style="text-align: left;">限界</td>
+<td style="text-align: left;">MSYの60%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td align="left">Blimit1</td>
-<td align="left">限界(代替値候補1)</td>
-<td align="left">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。（が、Blimitで代替値候補がある場合の例として、ここではこれも代替値候補としてみる）</td>
+<td style="text-align: left;">Blimit1</td>
+<td style="text-align: left;">限界(代替値候補1)</td>
+<td style="text-align: left;">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。（が、Blimitで代替値候補がある場合の例として、ここではこれも代替値候補としてみる）</td>
 </tr>
 <tr class="odd">
-<td align="left">Bban0</td>
-<td align="left">禁漁</td>
-<td align="left">MSYの10%の平衡漁獲量を得るときの親魚資源量</td>
+<td style="text-align: left;">Bban0</td>
+<td style="text-align: left;">禁漁</td>
+<td style="text-align: left;">MSYの10%の平衡漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td align="left">Bmax</td>
-<td align="left">経験値</td>
-<td align="left">過去最大親魚量　</td>
+<td style="text-align: left;">Bmax</td>
+<td style="text-align: left;">経験値</td>
+<td style="text-align: left;">過去最大親魚量　</td>
 </tr>
 <tr class="odd">
-<td align="left">B_HS</td>
-<td align="left">経験値</td>
-<td align="left">HS再生産関係の折れ点　</td>
+<td style="text-align: left;">B_HS</td>
+<td style="text-align: left;">経験値</td>
+<td style="text-align: left;">HS再生産関係の折れ点　</td>
 </tr>
 <tr class="even">
-<td align="left">B_current</td>
-<td align="left">経験値</td>
-<td align="left">最近年の親魚量　</td>
+<td style="text-align: left;">B_current</td>
+<td style="text-align: left;">経験値</td>
+<td style="text-align: left;">最近年の親魚量　</td>
 </tr>
 </tbody>
 </table>
@@ -351,10 +351,11 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
 </tr>
 </tbody>
 </table>
-    # 漁獲量曲線 再生産関係をもとにしたyield curveと管理基準値のプロット。
+    # 漁獲量曲線
+    # 再生産関係をもとにしたyield curveと管理基準値のプロット。
     # 計算した全管理基準値を示す場合にはrefs.allを、厳選したものだけを示す場合にはrefs.baseを引数に使ってください
     # AR==TRUEにするとARありの結果もプロットされます
-    g2 <- plot_yield(MSY.base, refs.all, AR = FALSE)
+    g2 <- plot_yield(MSY.base,refs.all,AR=FALSE) 
     g2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-1.png)
@@ -363,15 +364,16 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
 
     # Btarget0として選ばれた管理基準値をベースにした神戸チャート4区分
     # roll_meanで各年の値を何年分移動平均するか指定します
-    g3 <- plot_kobe_gg(res.pma, refs.base, roll_mean = 3, category = 4, Btarget == 
-        "Btarget0")  # <- どの管理基準値を軸に使うのか指定。指定しなければ'0'マークがついた管理基準値が使われます
+    g3 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
+                       Blow="Btarget0",# <- Blowが重要な管理基準値になるのか不明。とりあえずBtargeと同じ値を入れておいてください
+                       Btarget="Btarget0") # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
     (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-2.png)
 
-    # Btarget0, Blow0,
-    # Blimit0として選ばれた管理基準値をベースにした神戸チャート4区分
-    g4 <- plot_kobe_gg(res.pma, refs.base, roll_mean = 3, category = 6)
+    # Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート6区分
+    # Blowを使うかどうかは不明。とりあえず6区分の一番上の境界(Blowのオプション)は"Btarget0"と、targetで使う管理基準値の名前を入れて下さい
+    g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6,Blow="Btarget0")
     (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
@@ -422,10 +424,11 @@ Fを定義したかを書く)
 ### 平均漁獲量
 
     library(formattable)
-    catch.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
-        color_tile("white", "steelblue"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
-        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
-            0.8, "red", "black")))))
+    catch.table %>%  select(-stat_name) %>%
+        formattable::formattable(list(area(col=-1)~color_tile("white","steelblue"),
+                                      beta=color_tile("white","blue"),
+                                      HCR_name=formatter("span", 
+        style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -1451,10 +1454,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d
 </table>
 ### SSB&gt;SSBtargetとなる確率
 
-    ssbtarget.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
-        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
-        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
-            0.8, "red", "black")))))
+    ssbtarget.table %>% select(-stat_name) %>%
+        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
+                                      beta=color_tile("white","blue"),
+                                      HCR_name=formatter("span", 
+                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -2480,10 +2484,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blowを上回る（高位水準になる）確率
 
-    ssblow.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
-        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
-        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
-            0.8, "red", "black")))))
+    ssblow.table %>% select(-stat_name) %>%
+        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
+                                      beta=color_tile("white","blue"),
+                                      HCR_name=formatter("span", 
+                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -3509,10 +3514,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blimitを上回る確率
 
-    ssblimit.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
-        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
-        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
-            0.8, "red", "black")))))
+    ssblimit.table %>% select(-stat_name) %>%
+        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
+                                      beta=color_tile("white","blue"),
+                                      HCR_name=formatter("span", 
+                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -4538,10 +4544,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blimitを上回る確率
 
-    ssblimit.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
-        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
-        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
-            0.8, "red", "black")))))
+    ssblimit.table %>% select(-stat_name) %>%
+        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
+                                      beta=color_tile("white","blue"),
+                                      HCR_name=formatter("span", 
+                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -5567,10 +5574,11 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### 過去最低親魚量を上回る確率
 
-    ssbmin.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
-        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
-        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
-            0.8, "red", "black")))))
+    ssbmin.table %>% select(-stat_name) %>%
+        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
+                                      beta=color_tile("white","blue"),
+                                      HCR_name=formatter("span", 
+                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>

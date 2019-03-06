@@ -278,10 +278,12 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          Bban=c("Bban0")){
     
     require(tidyverse,quietly=TRUE)
-    target.RP <- derive_RP_value(refs_base,"Btarget0")
-    limit.RP <- derive_RP_value(refs_base,"Blimit0")
-    low.RP <- derive_RP_value(refs_base,"Blow0")
-    ban.RP <- derive_RP_value(refs_base,"Bban0")
+    require(ggrepel,quietly=TRUE)    
+
+    target.RP <- derive_RP_value(refs_base,Btarget)
+    limit.RP <- derive_RP_value(refs_base,Blimit)
+    low.RP <- derive_RP_value(refs_base,Blow) 
+    ban.RP <- derive_RP_value(refs_base,Bban)
 
     low.ratio <- low.RP$SSB/target.RP$SSB
     limit.ratio <- limit.RP$SSB/target.RP$SSB
@@ -343,11 +345,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         ylab("U/Umsy") + xlab("SSB/SSBmsy")  +
         geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
-                         size=3,box.padding=2,segment.color="gray")+
-        geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
-                              y=rep(0.1,4),
-                              label=c("Bban","Blimit","Blow","Btarget")),
-                  aes(x=x,y=y,label=label))
+                         size=3,box.padding=2,segment.color="gray")
 
     g4 <- kobe.4area +
         geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
@@ -356,12 +354,30 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         ylab("U/Umsy") + xlab("SSB/SSBmsy")  +
         geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
-                         size=3,box.padding=2,segment.color="gray")+
-        geom_vline(xintercept=c(ban.ratio,limit.ratio,low.ratio,1),linetype=2)+
+                         size=3,box.padding=2,segment.color="gray")
+
+
+    if(low.ratio<1){
+        g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
+                              y=rep(0.1,4),
+                              label=c("Bban","Blimit","Blow","Btarget")),
+                             aes(x=x,y=y,label=label))
+        g4 <- g4 + geom_vline(xintercept=c(ban.ratio,limit.ratio,low.ratio,1),linetype=2)+
         geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
                               y=rep(0.1,4),
                               label=c("Bban","Blimit","Blow","Btarget")),
                   aes(x=x,y=y,label=label))
+    }else{
+        g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
+                              y=rep(0.1,3),
+                              label=c("Bban","Blimit","Btarget")),
+                             aes(x=x,y=y,label=label))
+        g4 <- g4 + geom_vline(xintercept=c(ban.ratio,limit.ratio,1),linetype=2)+
+            geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
+                                  y=rep(0.1,3),
+                                  label=c("Bban","Blimit","Btarget")),
+                      aes(x=x,y=y,label=label))        
+    }    
     
     if(category==4) return(g4) else return(g6)
 }
