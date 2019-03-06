@@ -40,18 +40,25 @@ convert_vector <- function(vector,name){
 
 convert_vpa_tibble <- function(vpares){
 
-    total.catch <- colSums(vpares$input$dat$caa*vpares$input$dat$waa)
+    total.catch <- colSums(vpares$input$dat$caa*vpares$input$dat$waa,na.rm=T)
     U <- total.catch/colSums(vpares$baa)
+
+    SSB <- convert_vector(colSums(vpares$ssb,na.rm=T),"SSB") %>%
+        dplyr::filter(value>0&!is.na(value))
+    Biomass <- convert_vector(colSums(vpares$baa,na.rm=T),"biomass") %>%
+        dplyr::filter(value>0&!is.na(value))
+    FAA <- convert_df(vpares$faa,"fishing_mortality") %>%
+        dplyr::filter(value>0&!is.na(value))
     
-    bind_rows(convert_vector(colSums(vpares$ssb),"SSB"),
-              convert_vector(colSums(vpares$baa),"biomass"),
-              convert_vector(U,"U"),
-              convert_vector(total.catch,"catch"),
-              convert_df(vpares$naa,"fish_number"),
-              convert_df(vpares$faa,"fishing_mortality"),              
-              convert_df(vpares$input$dat$waa,"weight"),
-              convert_df(vpares$input$dat$maa,"maturity"),
-              convert_df(vpares$input$dat$caa,"catch_number"))
+    all_table <- bind_rows(SSB,
+                           Biomass,
+                           convert_vector(U[U>0],"U"),
+                           convert_vector(total.catch[total.catch>0],"catch"),
+                           convert_df(vpares$naa,"fish_number"),
+                           FAA, 
+                           convert_df(vpares$input$dat$waa,"weight"),
+                           convert_df(vpares$input$dat$maa,"maturity"),
+                           convert_df(vpares$input$dat$caa,"catch_number"))
 }
 
 SRplot_gg <- function(SR_result,refs=NULL){
