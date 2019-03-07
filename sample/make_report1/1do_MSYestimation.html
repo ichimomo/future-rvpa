@@ -1019,13 +1019,12 @@ F multiplier= 0.9647514
 </code></pre>
 <h3 id="デフォルトルールを使った将来予測">デフォルトルールを使った将来予測</h3>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" data-line-number="1"><span class="co"># デフォルトのHCRはBtarget0,Blimit0,Bban0のセットになるので、それを使って将来予測する</span></a>
-<a class="sourceLine" id="cb24-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb24-3" data-line-number="3">input.abc &lt;-<span class="st"> </span>future.Fcurrent<span class="op">$</span>input <span class="co"># Fcurrentにおける将来予測の引数をベースに将来予測します</span></a>
-<a class="sourceLine" id="cb24-4" data-line-number="4">input.abc<span class="op">$</span>multi &lt;-<span class="st"> </span><span class="kw">derive_RP_value</span>(refs.base,<span class="st">&quot;Btarget0&quot;</span>)<span class="op">$</span>Fref2Fcurrent <span class="co"># currentFへの乗数を&quot;Btarget0&quot;で指定した値に</span></a>
-<a class="sourceLine" id="cb24-5" data-line-number="5">input.abc<span class="op">$</span>HCR &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Blim=</span><span class="kw">derive_RP_value</span>(refs.base,<span class="st">&quot;Blimit0&quot;</span>)<span class="op">$</span>SSB,</a>
-<a class="sourceLine" id="cb24-6" data-line-number="6">                      <span class="dt">Bban=</span><span class="kw">derive_RP_value</span>(refs.base,<span class="st">&quot;Bban0&quot;</span>)<span class="op">$</span>SSB,</a>
-<a class="sourceLine" id="cb24-7" data-line-number="7">                      <span class="dt">beta=</span><span class="fl">0.8</span>,<span class="dt">year.lag=</span><span class="dv">0</span>) <span class="co"># BlimitはBlimit0, BbanはBban0の値</span></a>
-<a class="sourceLine" id="cb24-8" data-line-number="8">future.default &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.abc) <span class="co"># デフォルトルールの結果→図示などに使う</span></a></code></pre></div>
+<a class="sourceLine" id="cb24-2" data-line-number="2">input.abc &lt;-<span class="st"> </span>future.Fcurrent<span class="op">$</span>input <span class="co"># Fcurrentにおける将来予測の引数をベースに将来予測します</span></a>
+<a class="sourceLine" id="cb24-3" data-line-number="3">input.abc<span class="op">$</span>multi &lt;-<span class="st"> </span><span class="kw">derive_RP_value</span>(refs.base,<span class="st">&quot;Btarget0&quot;</span>)<span class="op">$</span>Fref2Fcurrent <span class="co"># currentFへの乗数を&quot;Btarget0&quot;で指定した値に</span></a>
+<a class="sourceLine" id="cb24-4" data-line-number="4">input.abc<span class="op">$</span>HCR &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">Blim=</span><span class="kw">derive_RP_value</span>(refs.base,<span class="st">&quot;Blimit0&quot;</span>)<span class="op">$</span>SSB,</a>
+<a class="sourceLine" id="cb24-5" data-line-number="5">                      <span class="dt">Bban=</span><span class="kw">derive_RP_value</span>(refs.base,<span class="st">&quot;Bban0&quot;</span>)<span class="op">$</span>SSB,</a>
+<a class="sourceLine" id="cb24-6" data-line-number="6">                      <span class="dt">beta=</span><span class="fl">0.8</span>,<span class="dt">year.lag=</span><span class="dv">0</span>) <span class="co"># BlimitはBlimit0, BbanはBban0の値</span></a>
+<a class="sourceLine" id="cb24-7" data-line-number="7">future.default &lt;-<span class="st"> </span><span class="kw">do.call</span>(future.vpa,input.abc) <span class="co"># デフォルトルールの結果→図示などに使う</span></a></code></pre></div>
 <pre><code>$ABC.year
 [1] 2019
 
@@ -1191,24 +1190,24 @@ $waa.year
 <a class="sourceLine" id="cb28-2" data-line-number="2">(catch.table &lt;-<span class="st"> </span>kobeII.table <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb28-3" data-line-number="3"><span class="st">    </span>dplyr<span class="op">::</span><span class="kw">filter</span>(year<span class="op">%in%</span><span class="kw">c</span>(<span class="dv">2017</span><span class="op">:</span><span class="dv">2023</span>,<span class="dv">2028</span>,<span class="dv">2038</span>),stat<span class="op">==</span><span class="st">&quot;catch&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># 取り出す年とラベル(&quot;catch&quot;)を選ぶ</span></a>
 <a class="sourceLine" id="cb28-4" data-line-number="4"><span class="st">    </span><span class="kw">group_by</span>(HCR_name,beta,year) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">catch.mean=</span><span class="kw">round</span>(<span class="kw">mean</span>(value),  <span class="co"># 値の計算方法を指定（漁獲量の平均ならmean(value)）</span></a>
-<a class="sourceLine" id="cb28-6" data-line-number="6">                               <span class="op">-</span><span class="kw">floor</span>(<span class="kw">log10</span>(<span class="kw">min</span>(kobeII.table<span class="op">$</span>value))))) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb28-7" data-line-number="7"><span class="st">    </span><span class="kw">spread</span>(<span class="dt">key=</span>year,<span class="dt">value=</span><span class="kw">round</span>(catch.mean)) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb28-5" data-line-number="5"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">catch.mean=</span><span class="kw">round</span>(<span class="kw">mean</span>(value),<span class="op">-</span><span class="dv">3</span>)) <span class="op">%&gt;%</span><span class="st">  </span><span class="co"># 値の計算方法を指定（漁獲量の平均ならmean(value)）</span></a>
+<a class="sourceLine" id="cb28-6" data-line-number="6"><span class="st">                                                     </span><span class="co"># &quot;-3&quot;とかの値で桁数を指定</span></a>
+<a class="sourceLine" id="cb28-7" data-line-number="7"><span class="st">    </span><span class="kw">spread</span>(<span class="dt">key=</span>year,<span class="dt">value=</span>catch.mean) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">ungroup</span>() <span class="op">%&gt;%</span></a>
 <a class="sourceLine" id="cb28-8" data-line-number="8"><span class="st">    </span><span class="kw">arrange</span>(HCR_name,<span class="kw">desc</span>(beta)) <span class="op">%&gt;%</span><span class="st"> </span><span class="co"># HCR_nameとbetaの順に並び替え</span></a>
 <a class="sourceLine" id="cb28-9" data-line-number="9"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">stat_name=</span><span class="st">&quot;catch.mean&quot;</span>))</a></code></pre></div>
 <pre><code># A tibble: 24 x 11
    HCR_name  beta `2018` `2019` `2020` `2021` `2022` `2023` `2028` `2038`
    &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;
- 1 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 2 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 3 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 4 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 5 Btarget…   0.6    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 6 Btarget…   0.5    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 7 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 8 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
- 9 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-10 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+ 1 Btarget…   1    31000  16000  36000  52000  63000  69000  72000  71000
+ 2 Btarget…   0.9  31000  15000  34000  50000  62000  69000  72000  71000
+ 3 Btarget…   0.8  31000  14000  32000  48000  61000  68000  71000  71000
+ 4 Btarget…   0.7  31000  12000  30000  46000  59000  66000  70000  70000
+ 5 Btarget…   0.6  31000  11000  27000  42000  56000  63000  68000  68000
+ 6 Btarget…   0.5  31000   9000  24000  38000  51000  59000  65000  65000
+ 7 Btarget…   1    31000  20000  33000  48000  61000  68000  72000  71000
+ 8 Btarget…   0.9  31000  19000  31000  47000  60000  67000  72000  71000
+ 9 Btarget…   0.8  31000  17000  30000  46000  59000  67000  71000  71000
+10 Btarget…   0.7  31000  15000  28000  44000  57000  65000  70000  70000
 # ... with 14 more rows, and 1 more variable: stat_name &lt;chr&gt;
 </code></pre>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1"><span class="co"># 1-currentFに乗じる値=currentFからの努力量の削減率の平均値（実際には確率分布になっている）</span></a>

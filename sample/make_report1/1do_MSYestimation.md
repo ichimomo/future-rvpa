@@ -483,7 +483,6 @@ refs.all %>% select(RP_name,RP.definition)
 
 ``` r
 # デフォルトのHCRはBtarget0,Blimit0,Bban0のセットになるので、それを使って将来予測する
-
 input.abc <- future.Fcurrent$input # Fcurrentにおける将来予測の引数をベースに将来予測します
 input.abc$multi <- derive_RP_value(refs.base,"Btarget0")$Fref2Fcurrent # currentFへの乗数を"Btarget0"で指定した値に
 input.abc$HCR <- list(Blim=derive_RP_value(refs.base,"Blimit0")$SSB,
@@ -662,9 +661,9 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
 (catch.table <- kobeII.table %>%
     dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>% # 取り出す年とラベル("catch")を選ぶ
     group_by(HCR_name,beta,year) %>%
-    summarise(catch.mean=round(mean(value),  # 値の計算方法を指定（漁獲量の平均ならmean(value)）
-                               -floor(log10(min(kobeII.table$value))))) %>%
-    spread(key=year,value=round(catch.mean)) %>% ungroup() %>%
+    summarise(catch.mean=round(mean(value),-3)) %>%  # 値の計算方法を指定（漁獲量の平均ならmean(value)）
+                                                     # "-3"とかの値で桁数を指定
+    spread(key=year,value=catch.mean) %>% ungroup() %>%
     arrange(HCR_name,desc(beta)) %>% # HCR_nameとbetaの順に並び替え
     mutate(stat_name="catch.mean"))
 ```
@@ -672,16 +671,16 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
     # A tibble: 24 x 11
        HCR_name  beta `2018` `2019` `2020` `2021` `2022` `2023` `2028` `2038`
        <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
-     1 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     2 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     3 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     4 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     5 Btarget…   0.6    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     6 Btarget…   0.5    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     7 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     8 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-     9 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
-    10 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     1 Btarget…   1    31000  16000  36000  52000  63000  69000  72000  71000
+     2 Btarget…   0.9  31000  15000  34000  50000  62000  69000  72000  71000
+     3 Btarget…   0.8  31000  14000  32000  48000  61000  68000  71000  71000
+     4 Btarget…   0.7  31000  12000  30000  46000  59000  66000  70000  70000
+     5 Btarget…   0.6  31000  11000  27000  42000  56000  63000  68000  68000
+     6 Btarget…   0.5  31000   9000  24000  38000  51000  59000  65000  65000
+     7 Btarget…   1    31000  20000  33000  48000  61000  68000  72000  71000
+     8 Btarget…   0.9  31000  19000  31000  47000  60000  67000  72000  71000
+     9 Btarget…   0.8  31000  17000  30000  46000  59000  67000  71000  71000
+    10 Btarget…   0.7  31000  15000  28000  44000  57000  65000  70000  70000
     # ... with 14 more rows, and 1 more variable: stat_name <chr>
 
 ``` r

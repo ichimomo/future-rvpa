@@ -207,7 +207,6 @@ refs.all %>% select(RP_name,RP.definition)
 
 ```{r}
 # デフォルトのHCRはBtarget0,Blimit0,Bban0のセットになるので、それを使って将来予測する
-
 input.abc <- future.Fcurrent$input # Fcurrentにおける将来予測の引数をベースに将来予測します
 input.abc$multi <- derive_RP_value(refs.base,"Btarget0")$Fref2Fcurrent # currentFへの乗数を"Btarget0"で指定した値に
 input.abc$HCR <- list(Blim=derive_RP_value(refs.base,"Blimit0")$SSB,
@@ -227,9 +226,9 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
 (catch.table <- kobeII.table %>%
     dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>% # 取り出す年とラベル("catch")を選ぶ
     group_by(HCR_name,beta,year) %>%
-    summarise(catch.mean=round(mean(value),  # 値の計算方法を指定（漁獲量の平均ならmean(value)）
-                               -floor(log10(min(kobeII.table$value))))) %>%
-    spread(key=year,value=round(catch.mean)) %>% ungroup() %>%
+    summarise(catch.mean=round(mean(value),-3)) %>%  # 値の計算方法を指定（漁獲量の平均ならmean(value)）
+                                                     # "-3"とかの値で桁数を指定
+    spread(key=year,value=catch.mean) %>% ungroup() %>%
     arrange(HCR_name,desc(beta)) %>% # HCR_nameとbetaの順に並び替え
     mutate(stat_name="catch.mean"))
 
