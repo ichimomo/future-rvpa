@@ -291,7 +291,7 @@ future.vpa <-
            M.year=NULL, # VPA結果から生物パラメータをもってきて平均する期間
            seed=NULL,
            strategy="F", # F: 漁獲係数一定, E: 漁獲割合一定、C: 漁獲量一定（pre.catchで漁獲量を指定）
-           HCR=NULL,# HCRを使う場合、list(Blim=154500, Bban=49400,beta=1)のように指定するか、以下の引数をセットする,
+           HCR=NULL,# HCRを使う場合、list(Blim=154500, Bban=49400,beta=1,year.lag=0)のように指定するか、以下の引数をセットする,year.lag=0で将来予測年の予測SSBを使う。-2の場合は２年遅れのSSBを使う
            beta=NULL,delta=NULL,Blim=0,Bban=0,
            plus.group=res0$input$plus.group,
            N=1000,# 確率的なシミュレーションをする場合の繰り返し回数。
@@ -390,6 +390,7 @@ future.vpa <-
       
       if(!is.null(rec.arg$sd)) rec.arg$sd <- c(0,rep(rec.arg$sd,N-1))
       if(!is.null(rec.arg$sd2)) rec.arg$sd2 <- c(0,rep(rec.arg$sd2,N-1))
+      if(!is.null(HCR$year.lag) && is.null(HCR$year.lag)) HCR$year.lag <- 0
       ##---------------------------------
 
       if(!is.null(beta)){
@@ -494,7 +495,9 @@ future.vpa <-
     if(strategy=="C"|strategy=="E") multi.catch <- multi else multi.catch <- 1
     
     faa <- naa <- waa <- waa.catch <- maa <- M <- caa <- 
-      array(NA,dim=c(length(ages),ntime,N),dimnames=list(ages,fyears,1:N))
+        array(NA,dim=c(length(ages),ntime,N),dimnames=list(age=ages,year=fyears,nsim=1:N))
+    alpha <- array(1,dim=c(ntime,N),dimnames=list(year=fyears,nsim=1:N))
+      
     # future biological patameter
     if(!is.null(M.org))  M[] <- M.org  else M[] <- apply(as.matrix(res0$input$dat$M[,years %in% M.year]),1,mean)
     if(!is.null(waa.org))  waa[] <- waa.org  else waa[] <- apply(as.matrix(res0$input$dat$waa[,years %in% waa.year]),1,mean)
@@ -663,10 +666,17 @@ future.vpa <-
           
           ## HCRを使う場合(当年の資源量から当年のFを変更する)
           if(!is.null(HCR)&&fyears[i]>=ABC.year){
-              ssb.tmp <- colSums(naa[,i,]*waa[,i,]*maa[,i,],na.rm=T)*
-                                               res0$input$unit.waa/res0$input$unit.biom                        
-              alpha <- ifelse(ssb.tmp<HCR$Blim,HCR$beta*(ssb.tmp-HCR$Bban)/(HCR$Blim-HCR$Bban),HCR$beta)
-              faa[,i,] <- sweep(faa[,i,],2,alpha,FUN="*")
+              tmp <- i+HCR$year.lag
+              if(tmp>0){
+                  ssb.tmp <- colSums(naa[,tmp,]*waa[,tmp,]*maa[,tmp,],na.rm=T)*
+                      res0$input$unit.waa/res0$input$unit.biom
+              }
+              else{
+                  vpayear <- fyears[i]+HCR$year.lag
+                  ssb.tmp <- sum(res0$ssb[as.character(vpayear)])
+              }
+              alpha[i,] <- ifelse(ssb.tmp<HCR$Blim,HCR$beta*(ssb.tmp-HCR$Bban)/(HCR$Blim-HCR$Bban),HCR$beta)
+              faa[,i,] <- sweep(faa[,i,],2,alpha[i,],FUN="*")
               faa[,i,] <- ifelse(faa[,i,]<0,0,faa[,i,])
           }          
        
@@ -721,6 +731,7 @@ future.vpa <-
       maa <- maa[,-ntime,,drop=F]                
       naa <- naa[,-ntime,,drop=F]
       faa <- faa[,-ntime,,drop=F]
+      alpha <- alpha[-ntime,,drop=F]      
       M <- M[,-ntime,,drop=F]
       fyears <- fyears[-ntime]
     
@@ -737,7 +748,7 @@ future.vpa <-
       if(outtype=="FULL"){
           fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,
                        maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
-                       eaa=eaa,
+                       eaa=eaa,alpha=alpha,
                        waa=waa,waa.catch=waa.catch,currentF=currentF,
                        vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
                        years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,rec.arg=rec.arg,
@@ -748,7 +759,7 @@ future.vpa <-
           fres <- list(faa=faa[,,1],M=M[,,1],recruit=naa[1,,],eaa=eaa,baa=biom,
                        maa=maa[,,1],vbiom=apply(biom,c(2,3),sum,na.rm=T),
                        waa=waa[,,1],waa.catch=waa.catch[,,1],currentF=currentF,
-                       vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
+                       vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,alpha=alpha,
                        years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,
                        waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
                        Frec=Frec,rec.new=rec.new,pre.catch=pre.catch,input=arglist)
@@ -2224,7 +2235,7 @@ est.MSY <- function(vpares,farg,
         max(which(min(x)==x))
     }
 
-    target.func <- function(fout,faa0=NULL,mY=5,N=2,seed=1,eyear=4,p=1,beta=1,delta=0,Blim=0,Bban=0,sd0=NULL,current.resid=NULL){
+    target.func <- function(fout,faa0=NULL,mY=5,N=2,seed=1,eyear=4,p=1,beta=NULL,delta=NULL,Blim=0,Bban=0,sd0=NULL,current.resid=NULL){
         
         farg <- fout$input
         last.year <- dim(fout$naa)[[2]]

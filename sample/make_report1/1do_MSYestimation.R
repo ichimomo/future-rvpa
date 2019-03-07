@@ -82,22 +82,22 @@ future.Fcurrent <- future.vpa(res.pma,
                                    rho=SRmodel.base$pars$rho, # ここではrho=0なので指定しなくてもOK
                                    sd=SRmodel.base$pars$sd,resid=SRmodel.base$resid))
 
-## ----msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5, eval=FALSE----
-## 
-## # MSY管理基準値の計算
-## MSY.base <- est.MSY(res.pma, # VPAの計算結果
-##                  future.Fcurrent$input, # 将来予測で使用した引数
-##                  resid.year=0, # ARありの場合、最近何年分の残差を平均するかをここで指定する。ARありの設定を反映させたい場合必ずここを１以上とすること（とりあえず１としておいてください）。
-##                  N=100, # 確率的計算の繰り返し回数=>実際の計算では1000~5000回くらいやってください
-##                  calc.yieldcurve=TRUE,
-##                  PGY=c(0.95,0.9,0.6,0.1), # 計算したいPGYレベル。上限と下限の両方が計算される
-##                  onlylower.pgy=FALSE, # TRUEにするとPGYレベルの上限は計算しない（計算時間の節約になる）
-##                  B0percent=c(0.2,0.3,0.4),
-##                  Bempirical=c(round(tail(colSums(res.pma$ssb),n=1)),
-##                               round(max(colSums(res.pma$ssb))),
-##                               24000, # 現行Blimit
-##                               SRmodel.base$pars$b) # HSの折れ点
-##                  ) # 計算したいB0%レベル
+## ----msy, fig.cap="**図：est.MSYのis.plot=TRUEで計算完了時に表示される図．Fの強さに対する平衡状態の親魚資源量（左）と漁獲量（右）．推定された管理基準値も表示．**", fig.height=5, eval=TRUE----
+
+# MSY管理基準値の計算
+MSY.base <- est.MSY(res.pma, # VPAの計算結果
+                 future.Fcurrent$input, # 将来予測で使用した引数
+                 resid.year=0, # ARありの場合、最近何年分の残差を平均するかをここで指定する。ARありの設定を反映させたい場合必ずここを１以上とすること（とりあえず１としておいてください）。
+                 N=100, # 確率的計算の繰り返し回数=>実際の計算では1000~5000回くらいやってください
+                 calc.yieldcurve=TRUE,
+                 PGY=c(0.95,0.9,0.6,0.1), # 計算したいPGYレベル。上限と下限の両方が計算される
+                 onlylower.pgy=FALSE, # TRUEにするとPGYレベルの上限は計算しない（計算時間の節約になる）
+                 B0percent=c(0.2,0.3,0.4),
+                 Bempirical=c(round(tail(colSums(res.pma$ssb),n=1)),
+                              round(max(colSums(res.pma$ssb))),
+                              24000, # 現行Blimit
+                              SRmodel.base$pars$b) # HSの折れ点
+                 ) # 計算したいB0%レベル
 
 ## ----summary-------------------------------------------------------------
 # 結果の表示(tibbleという形式で表示され、最初の10行以外は省略されます)
@@ -139,10 +139,11 @@ input.abc <- future.Fcurrent$input # Fcurrentにおける将来予測の引数�
 input.abc$multi <- derive_RP_value(refs.base,"Btarget0")$Fref2Fcurrent # currentFへの乗数を"Btarget0"で指定した値に
 input.abc$HCR <- list(Blim=derive_RP_value(refs.base,"Blimit0")$SSB,
                       Bban=derive_RP_value(refs.base,"Bban0")$SSB,
-                      beta=0.8) # BlimitはBlimit0, BbanはBban0の値
+                      beta=0.8,year.lag=0) # BlimitはBlimit0, BbanはBban0の値
 future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結果→図示などに使う
 
 ## 網羅的将来予測の実施
+# default
 kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
                          refs.base,
                          Btarget=c("Btarget0","Btarget1"), # HCRの候補として選択したい管理基準値を入れる
@@ -207,5 +208,61 @@ all.table <- bind_rows(catch.table,
                        ssblimit.table,
                        ssbmin.table)
 write.csv(all.table,file="all.table.csv")
+
+## ------------------------------------------------------------------------
+# future.default/calc_kobeII_matrixの計算時に以下のように指定する
+
+# 将来予測
+input.abc.yearlag <- input.abc
+input.abc.yearlag$HCR <- list(Blim=derive_RP_value(refs.base,"Blimit0")$SSB,
+                      Bban=derive_RP_value(refs.base,"Bban0")$SSB,
+                      beta=0.8,year.lag=-2) # year.lag=-2と設定してSSB参照年を調整する
+future.default.yearlag <- do.call(future.vpa,input.abc.yearlag)
+
+# alpha(=beta * (B-Bban)/(Blim-Bban))の値の比較
+# lagありの場合は2019, 2020年のαは一意に決まるが、lagなしに比べてalphaの値は小さくなる（漁獲量制限によって資源が回復する、という将来予測になっているため）。
+alpha_lag <- convert_future_table(future.default.yearlag) %>% dplyr::filter(stat=="alpha") %>% mutate(lag="lagあり")
+alpha_nolag <- convert_future_table(future.default)       %>% dplyr::filter(stat=="alpha") %>% mutate(lag="lagなし")
+alpha_result <- bind_rows(alpha_lag,alpha_nolag)
+alpha_result %>% dplyr::filter(year<2025) %>% group_by(year) %>%
+    ggplot() +
+    geom_boxplot(aes(x=factor(year),y=value)) +
+    facet_wrap(.~lag) + theme_bw() + ylab("alpha") + xlab("Year")
+
+# kobeII計算; year.lagというオプションをつけてください
+kobeII.table.yearlag <- calc_kobeII_matrix(future.Fcurrent,
+                         refs.base,
+                         Btarget=c("Btarget0","Btarget1"), 
+                         Blimit=c("Blimit0","Blimit1"),year.lag=-2,
+                         beta=seq(from=0.5,to=1,by=0.1)) # betaの区分
+
+# パフォーマンスの比較
+# 漁獲量
+(catch.table.yearlag <- kobeII.table.yearlag %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="catch") %>% # 取り出す年とラベル("catch")を選ぶ
+    group_by(HCR_name,beta,year) %>%
+    summarise(catch.mean=round(mean(value),  # 値の計算方法を指定（漁獲量の平均ならmean(value)）
+                               -floor(log10(min(kobeII.table$value))))) %>%
+    spread(key=year,value=round(catch.mean)) %>% ungroup() %>%
+    arrange(HCR_name,desc(beta)) %>% # HCR_nameとbetaの順に並び替え
+    mutate(stat_name="catch.mean"))
+
+# デフォルトオプションの場合の漁獲量の比較(lagあり/lagなし)
+catch.table.yearlag[3,3:10]/catch.table[3,3:10]
+
+# targetを超す確率
+ssbtarget.table.yearlag <- kobeII.table.yearlag %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
+    group_by(HCR_name,beta,year) %>%
+    summarise(ssb.over.target=round(100*mean(value>Btarget))) %>%
+    spread(key=year,value=ssb.over.target) %>%
+    ungroup() %>%
+    arrange(HCR_name,desc(beta))%>%
+    mutate(stat_name="Pr(SSB>SSBtarget)")
+
+# デフォルトオプションの場合の漁獲量の比較(lagあり/lagなし) => lagありのほうが回復が１年早い
+rbind(ssbtarget.table.yearlag[3,3:10],ssbtarget.table[3,3:10])
+
+
 
 

@@ -26,8 +26,14 @@ convert_future_table <- function(fout,label="tmp"){
         mutate(year=rownames(fout$vbiom)) %>%
         gather(key=sim, value=value, -year, convert=TRUE) %>%
         mutate(year=as.numeric(year),stat="biomass",label=label)
+
+    alpha <- fout$alpha %>%
+        as_tibble %>%
+        mutate(year=rownames(fout$alpha)) %>%
+        gather(key=sim, value=value, -year, convert=TRUE) %>%
+        mutate(year=as.numeric(year),stat="alpha",label=label)    
     
-    bind_rows(ssb,catch,biomass)
+    bind_rows(ssb,catch,biomass,alpha)
 }
         
     
@@ -169,6 +175,7 @@ calc_kobeII_matrix <- function(fres_base,
                               Blimit=c("Blimit0"),
                               Blow=c("Blow0"),
                               Bban=c("Bban0"),
+                              year.lag=0,
                               beta=seq(from=0.5,to=1,by=0.1)){
     require(tidyverse,quietly=TRUE)    
 # HCRの候補を網羅的に設定
@@ -210,7 +217,7 @@ calc_kobeII_matrix <- function(fres_base,
                                     HCR_candidate$Blimit_name,
                                     HCR_candidate$Bban_name,sep="-")
     
-    kobeII_table <- HCR.simulation(fres_base$input,HCR_candidate)
+    kobeII_table <- HCR.simulation(fres_base$input,HCR_candidate,year.lag=year.lag)
 
     cat(length(unique(HCR_candidate$HCR_name)), "HCR is calculated: ",
         unique(HCR_candidate$HCR_name),"\n")
@@ -220,7 +227,7 @@ calc_kobeII_matrix <- function(fres_base,
 }
 
 
-HCR.simulation <- function(finput,HCRtable){
+HCR.simulation <- function(finput,HCRtable,year.lag=year.lag){
     
     tb <- NULL
     
@@ -228,7 +235,7 @@ HCR.simulation <- function(finput,HCRtable){
         HCR_base <- HCRtable[i,]
         finput$multi <- HCR_base$Fmsy
         finput$HCR <- list(Blim=HCR_base$Blimit,Bban=HCR_base$Bban,
-                           beta=HCR_base$beta)
+                           beta=HCR_base$beta,year.lag=year.lag)
         finput$is.plot <- FALSE
         finput$silent <- TRUE
         fres_base <- do.call(future.vpa,finput) # デフォルトルールの結果→図示などに使う
