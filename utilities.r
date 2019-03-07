@@ -109,7 +109,8 @@ SRplot_gg <- function(SR_result,refs=NULL){
 
     
 plot_yield <- function(MSY_base,refs_base,AR_select=FALSE){
-    require(tidyverse,quietly=TRUE)        
+    require(tidyverse,quietly=TRUE)
+    require(ggrepel)    
     trace <- MSY_base$trace  %>% as_tibble() %>%
         select(starts_with("TC-mean"),ssb.mean,fmulti,catch.CV) %>%
         mutate(label=as.character(1:nrow(.)))
@@ -129,7 +130,7 @@ plot_yield <- function(MSY_base,refs_base,AR_select=FALSE){
     ymax <- max(ymax$catch.mean)
 
 trace %>%   ggplot() +
-    geom_area(aes(x=ssb.mean,y=value,fill=age)) +
+    geom_area(aes(x=ssb.mean,y=value,fill=age),col="gray") +
 #    geom_line(aes(x=ssb.mean,y=catch.CV,fill=age)) +
 #    scale_y_continuous(sec.axis = sec_axis(~.*5, name = "CV catch"))+
     scale_fill_brewer() + theme_bw() +
