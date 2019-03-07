@@ -233,6 +233,15 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
     arrange(HCR_name,desc(beta)) %>% # HCR_nameとbetaの順に並び替え
     mutate(stat_name="catch.mean"))
 
+# 1-currentFに乗じる値=currentFからの努力量の削減率の平均値（実際には確率分布になっている）
+(Fsakugen.table <- kobeII.table %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="Fsakugen") %>% # 取り出す年とラベル("catch")を選ぶ
+    group_by(HCR_name,beta,year) %>%
+    summarise(Fsakugen=round(mean(value),2)) %>%
+    spread(key=year,value=Fsakugen) %>% ungroup() %>%
+    arrange(HCR_name,desc(beta)) %>% # HCR_nameとbetaの順に並び替え
+    mutate(stat_name="Fsakugen"))
+
 # SSB>SSBtargetとなる確率
 ssbtarget.table <- kobeII.table %>%
     dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%

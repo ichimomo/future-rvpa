@@ -27,13 +27,20 @@ convert_future_table <- function(fout,label="tmp"){
         gather(key=sim, value=value, -year, convert=TRUE) %>%
         mutate(year=as.numeric(year),stat="biomass",label=label)
 
-    alpha <- fout$alpha %>%
+    alpha_value <- fout$alpha %>%
         as_tibble %>%
         mutate(year=rownames(fout$alpha)) %>%
         gather(key=sim, value=value, -year, convert=TRUE) %>%
-        mutate(year=as.numeric(year),stat="alpha",label=label)    
+        mutate(year=as.numeric(year),stat="alpha",label=label)
+
+    Fsakugen <- -(1-fout$faa[1,,]/fout$input$res0$Fc.at.age[1])
+    Fsakugen <- Fsakugen %>%
+        as_tibble %>%
+        mutate(year=rownames(Fsakugen)) %>%
+        gather(key=sim, value=value, -year, convert=TRUE) %>%
+        mutate(year=as.numeric(year),stat="Fsakugen",label=label)
     
-    bind_rows(ssb,catch,biomass,alpha)
+    bind_rows(ssb,catch,biomass,alpha_value,Fsakugen)
 }
         
     

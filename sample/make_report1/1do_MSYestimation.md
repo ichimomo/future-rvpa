@@ -672,16 +672,42 @@ kobeII.table <- calc_kobeII_matrix(future.Fcurrent,
     # A tibble: 24 x 11
        HCR_name  beta `2018` `2019` `2020` `2021` `2022` `2023` `2028` `2038`
        <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
-     1 Btarget…   1   31493. 16283. 36100. 51501  63335. 68985. 71729  71470.
-     2 Btarget…   0.9 31493. 14946. 34282. 50106. 62436. 68530. 71600. 71407.
-     3 Btarget…   0.8 31493. 13553. 32154. 48167. 60934  67527. 71049. 70924.
-     4 Btarget…   0.7 31493. 12100. 29690. 45614. 58699. 65803. 69899. 69843.
-     5 Btarget…   0.6 31493. 10584. 26868. 42373  55571. 63133. 67899. 67918.
-     6 Btarget…   0.5 31493.  9004. 23653. 38331  51324. 59199. 64691  64790.
-     7 Btarget…   1   31493. 20408  32565. 47740. 60743. 67773. 71726. 71470.
-     8 Btarget…   0.9 31493. 18834. 31303. 46993. 60281. 67497  71597. 71407.
-     9 Btarget…   0.8 31493. 17172. 29699  45636. 59157  66644. 71045. 70924.
-    10 Btarget…   0.7 31493. 15418. 27732. 43630. 57292. 65080. 69894  69843.
+     1 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     2 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     3 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     4 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     5 Btarget…   0.6    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     6 Btarget…   0.5    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     7 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     8 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     9 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+    10 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+    # ... with 14 more rows, and 1 more variable: stat_name <chr>
+
+``` r
+# 1-currentFに乗じる値=currentFからの努力量の削減率の平均値（実際には確率分布になっている）
+(Fsakugen.table <- kobeII.table %>%
+    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="Fsakugen") %>% # 取り出す年とラベル("catch")を選ぶ
+    group_by(HCR_name,beta,year) %>%
+    summarise(Fsakugen=round(mean(value),2)) %>%
+    spread(key=year,value=Fsakugen) %>% ungroup() %>%
+    arrange(HCR_name,desc(beta)) %>% # HCR_nameとbetaの順に並び替え
+    mutate(stat_name="Fsakugen"))
+```
+
+    # A tibble: 24 x 11
+       HCR_name  beta `2018` `2019` `2020` `2021` `2022` `2023` `2028` `2038`
+       <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
+     1 Btarget…   1        0  -0.64  -0.51  -0.51  -0.51  -0.51  -0.51  -0.51
+     2 Btarget…   0.9      0  -0.68  -0.56  -0.56  -0.56  -0.56  -0.56  -0.56
+     3 Btarget…   0.8      0  -0.71  -0.61  -0.61  -0.61  -0.61  -0.61  -0.61
+     4 Btarget…   0.7      0  -0.75  -0.66  -0.66  -0.66  -0.66  -0.66  -0.66
+     5 Btarget…   0.6      0  -0.78  -0.71  -0.71  -0.71  -0.71  -0.71  -0.71
+     6 Btarget…   0.5      0  -0.82  -0.75  -0.75  -0.75  -0.75  -0.75  -0.75
+     7 Btarget…   1        0  -0.51  -0.51  -0.51  -0.51  -0.51  -0.51  -0.51
+     8 Btarget…   0.9      0  -0.56  -0.56  -0.56  -0.56  -0.56  -0.56  -0.56
+     9 Btarget…   0.8      0  -0.61  -0.61  -0.61  -0.61  -0.61  -0.61  -0.61
+    10 Btarget…   0.7      0  -0.66  -0.66  -0.66  -0.66  -0.66  -0.66  -0.66
     # ... with 14 more rows, and 1 more variable: stat_name <chr>
 
 ``` r
@@ -942,16 +968,16 @@ kobeII.table.yearlag <- calc_kobeII_matrix(future.Fcurrent,
     # A tibble: 24 x 11
        HCR_name  beta `2018` `2019` `2020` `2021` `2022` `2023` `2028` `2038`
        <chr>    <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
-     1 Btarget…   1   31493. 10913. 27457  49337. 77098. 75275  71744. 71470.
-     2 Btarget…   0.9 31493.  9945. 25575. 46889. 74924. 74558. 71621. 71407.
-     3 Btarget…   0.8 31493.  8952. 23532. 44039. 72042. 73200. 71077. 70924.
-     4 Btarget…   0.7 31493.  7933. 21318. 40745. 68316. 71005. 69936. 69843.
-     5 Btarget…   0.6 31493.  6887. 18921. 36954. 63580. 67721. 67946. 67918.
-     6 Btarget…   0.5 31493.  5813. 16329. 32604. 57624. 63020. 64747. 64790.
-     7 Btarget…   1   31493. 16409. 35878. 50849  63043. 68835. 71729. 71470.
-     8 Btarget…   0.9 31493. 15060. 34098. 49522. 62187. 68397. 71600. 71407.
-     9 Btarget…   0.8 31493. 13654. 32003  47647  60727  67416. 71048. 70924.
-    10 Btarget…   0.7 31493. 12188. 29575. 45168. 58533. 65709. 69898. 69843.
+     1 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     2 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     3 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     4 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     5 Btarget…   0.6    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     6 Btarget…   0.5    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     7 Btarget…   1      NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     8 Btarget…   0.9    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+     9 Btarget…   0.8    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
+    10 Btarget…   0.7    NaN    NaN    NaN    NaN    NaN    NaN    NaN    NaN
     # ... with 14 more rows, and 1 more variable: stat_name <chr>
 
 ``` r
@@ -960,8 +986,8 @@ catch.table.yearlag[3,3:10]/catch.table[3,3:10]
 ```
 
 ``` 
-  2018      2019      2020      2021     2022     2023     2028 2038
-1    1 0.6605425 0.7318629 0.9142983 1.182297 1.084022 1.000401    1
+  2018 2019 2020 2021 2022 2023 2028 2038
+1  NaN  NaN  NaN  NaN  NaN  NaN  NaN  NaN
 ```
 
 ``` r
