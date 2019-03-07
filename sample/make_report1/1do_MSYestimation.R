@@ -4,7 +4,7 @@
 library(rmarkdown)
 library(knitr)
 options(max.print="75")
-opts_chunk$set(echo=FALSE,
+opts_chunk$set(#echo=FALSE,
                prompt=FALSE,
                tidy=TRUE,
                comment=NA,
