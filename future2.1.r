@@ -664,9 +664,14 @@ future.vpa <-
           caa[,i,] <- sapply(tmp,function(x) x$caa)
           faa[,i,] <- faa.new
         }
+        else{
+            faa.new <- NULL
+        }
           
           ## HCRを使う場合(当年の資源量から当年のFを変更する)
-          if(!is.null(HCR)&&fyears[i]>=ABC.year){
+          if(!is.null(HCR) && fyears[i]>=ABC.year
+             && is.null(faa.new)) # <- pre.catchで漁獲量をセットしていない
+          {
               tmp <- i+HCR$year.lag
               if(tmp>0){
                   ssb.tmp <- colSums(naa[,tmp,]*waa[,tmp,]*maa[,tmp,],na.rm=T)*
