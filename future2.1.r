@@ -390,7 +390,7 @@ future.vpa <-
       
       if(!is.null(rec.arg$sd)) rec.arg$sd <- c(0,rep(rec.arg$sd,N-1))
       if(!is.null(rec.arg$sd2)) rec.arg$sd2 <- c(0,rep(rec.arg$sd2,N-1))
-      if(!is.null(HCR$year.lag) && is.null(HCR$year.lag)) HCR$year.lag <- 0
+      if(!is.null(HCR) && is.null(HCR$year.lag)) HCR$year.lag <- 0
       ##---------------------------------
 
       if(!is.null(beta)){
