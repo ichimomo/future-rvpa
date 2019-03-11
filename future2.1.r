@@ -657,9 +657,10 @@ future.vpa <-
           # 選択率をランダムサンプリングする場合
 #          if(!is.null(random.select)) saa.tmp <- as.numeric(res0$saa[,colnames(res0$saa)==sample(random.select,1)])
           saa.tmp <- sweep(faa[,i,],2,apply(faa[,i,],2,max),FUN="/")
-          tmp <- lapply(1:dim(naa)[[3]],function(x) caa.est.mat(naa[,i,x],saa.tmp[,x],
-                                                                waa.catch[,i,x],M[,i,x],tmpcatch,Pope=Pope))
-          faa.new <- sapply(tmp,function(x) x$x) * saa.tmp
+          tmp <- lapply(1:dim(naa)[[3]],
+                        function(x) caa.est.mat(naa[,i,x],saa.tmp[,x],
+                                                waa.catch[,i,x],M[,i,x],tmpcatch,Pope=Pope))
+          faa.new <- sweep(saa.tmp,2,sapply(tmp,function(x) x$x),FUN="*")
           caa[,i,] <- sapply(tmp,function(x) x$caa)
           faa[,i,] <- faa.new
         }
@@ -713,10 +714,10 @@ future.vpa <-
           rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb
           eaa[i+1,] <- rec.tmp$rec.resample[1:N]
           rec.arg$resid <- rec.tmp$rec.resample # ARオプションに対応
+
       }
       
       if (!is.null(rec.arg$rho)) rec.tmp$rec.resample <- NULL
-
 
       if(Pope){
           caa[] <- naa*(1-exp(-faa))*exp(-M/2)
@@ -805,24 +806,25 @@ forward.calc.mat2 <- function(fav,nav,Mv,plus.group=TRUE){
 
 caa.est.mat <- function(naa,saa,waa,M,catch.obs,Pope){
   saa <- saa/max(saa)
-  tmpfunc <- function(x,catch.obs=catch.obs,naa=naa,saa=saa,waa=waa,M=M,out=FALSE,Pope=Pope){
-    if(isTRUE(Pope)){
-      caa <- naa*(1-exp(-saa*x))*exp(-M/2)
-    }
-    else{
-      caa <- naa*(1-exp(-saa*x-M))*saa*x/(saa*x+M)
-    }
-    wcaa <- caa*waa
-    if(out==FALSE){
-      return((sum(wcaa,na.rm=T)-catch.obs)^2)
-    }
-    else{
-      return(caa)
-    }
+  tmpfunc <- function(logx,catch.obs=catch.obs,naa=naa,saa=saa,waa=waa,M=M,out=FALSE,Pope=Pope){
+      x <- exp(logx)
+      if(isTRUE(Pope)){
+          caa <- naa*(1-exp(-saa*x))*exp(-M/2)
+      }
+      else{
+          caa <- naa*(1-exp(-saa*x-M))*saa*x/(saa*x+M)
+      }
+      wcaa <- caa*waa
+      if(out==FALSE){
+          return(log((sum(wcaa,na.rm=T)-catch.obs)^2))
+      }
+      else{
+          return(caa)
+      }
   }
-  tmp <- optimize(tmpfunc,c(0,5),catch.obs=catch.obs,naa=naa,saa=saa,waa=waa,M=M,Pope=Pope,out=FALSE)
-  tmp2 <- tmpfunc(x=tmp$minimum,catch.obs=catch.obs,naa=naa,saa=saa,waa=waa,M=M,Pope=Pope,out=TRUE)
-  return(list(x=tmp$minimum,caa=tmp2))
+  tmp <- optimize(tmpfunc,log(c(0.000001,10)),catch.obs=catch.obs,naa=naa,saa=saa,waa=waa,M=M,Pope=Pope,out=FALSE)#,tol=.Machine$double.eps)
+  tmp2 <- tmpfunc(logx=tmp$minimum,catch.obs=catch.obs,naa=naa,saa=saa,waa=waa,M=M,Pope=Pope,out=TRUE)
+  return(list(x=exp(tmp$minimum),caa=tmp2))
 }
 
 # HS用; ARには対応していないが、残差リサンプリングには対応している
