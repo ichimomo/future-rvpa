@@ -906,6 +906,37 @@ BH.rec <- function(ssb,vpares,#deterministic=FALSE,
     }
     else{
         if(isTRUE(rec.arg$bias.correction)){
+            rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)/mean(exp(rec.arg$resid))))
+        }
+        else{
+            rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)))
+        }
+    }
+  return(list(rec=rec,rec.resample=rec.arg$resid)) # 暫定的変更
+}
+
+# リサンプリング用(HS.rec, BH.rec, RI.recと同等)
+resample.rec <- function(ssb,vpares,#deterministic=FALSE,
+                   rec.resample=NULL,
+                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
+                                resid=0, # 残差リサンプリングする場合、resample=TRUEにして、residにリサンプリングする残差（対数）を入れる
+                                SR="HS",# or "BH","RI"
+                                bias.correction=TRUE)){
+
+    if(rec.arg$SR=="HS") rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb)
+    if(rec.arg$SR=="BH") rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
+    if(rec.arg$SR=="RI") rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb)
+    
+    if(!isTRUE(rec.arg$resample)){
+        if(isTRUE(rec.arg$bias.correction)){
+            rec <- rec0*exp(rnorm(length(ssb),-0.5*(rec.arg$sd)^2,rec.arg$sd))
+        }
+        else{
+            rec <- rec0*exp(rnorm(length(ssb),0,rec.arg$sd))
+        }
+    }
+    else{
+        if(isTRUE(rec.arg$bias.correction)){
             rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE))/mean(exp(rec.arg$resid)))
         }
         else{
@@ -914,6 +945,59 @@ BH.rec <- function(ssb,vpares,#deterministic=FALSE,
     }
   return(list(rec=rec,rec.resample=rec.arg$resid)) # 暫定的変更
 }
+
+# しきい値を設定し、その境界前後でリサンプリングする残差を変える
+resample_2block.rec <- function(ssb,vpares,#deterministic=FALSE,
+                   rec.resample=NULL,
+                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
+                                resid.lower=0, # しきい値よりも小さいときの残差のセット
+                                resid.higher=0, # しきい値よりも大きいときの残差のセット
+                                ssb.threshold=0, # しきい値
+                                SR="HS", # or "BH", "RI"
+                                bias.correction=TRUE)){
+
+    if(rec.arg$SR=="HS") rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb)
+    if(rec.arg$SR=="BH") rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
+    if(rec.arg$SR=="RI") rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb) 
+    
+    mean.bias.lower <- 1/mean(exp(rec.arg$resid.lower))
+    mean.bias.higher <- 1/mean(exp(rec.arg$resid.higher))
+    
+    resid.set <- rep(0,length(ssb[-1]))
+    tmp <- ssb[-1]<rec.arg$ssb.threshold
+    if(isTRUE(rec.arg$bias.correction)){
+        
+        mean.bias <- rep(1,length(ssb[-1]))
+        mean.bias[tmp] <- mean.bias.lower
+        mean.bias[!tmp] <- mean.bias.higher
+        
+        resid.set[tmp] <- sample(rec.arg$resid.lower,sum(tmp),replace=TRUE)
+        resid.set[!tmp] <- sample(rec.arg$resid.higher,sum(!tmp),replace=TRUE)
+        
+        det.bias <- ifelse(ssb[1]<rec.arg$ssb.threshold,
+                           mean.bias.lower,mean.bias.higher)
+#        cat(det.bias,"\n")
+#        cat(mean(mean.bias),"\n")
+        rec <- c(rec0[1],#*det.bias,
+                 exp(log(rec0[-1])+resid.set)*mean.bias)
+#        if(det.bias<1) browser()
+    }
+    else{
+        resid.set[tmp] <- sample(rec.arg$resid.lower,sum(tmp),replace=TRUE)
+        resid.set[!tmp] <- sample(rec.arg$resid.higher,sum(!tmp),replace=TRUE)
+        rec <- c(rec0[1],exp(log(rec0[-1])+resid.set))
+    }
+    
+#    if(isTRUE(rec.arg$bias.correction)){
+#        mean.bias <- mean(exp(c(rec.arg$resid.lower,rec.arg$resid.higher)))
+#        rec <- c(rec0[1],exp(log(rec0[-1])+resid.set))/mean.bias
+#    }
+#    else{
+#        rec <- c(rec0[1],exp(log(rec0[-1])+resid.set))
+#    }
+    return(list(rec=rec,rec.resample=rec.arg$resid)) # 暫定的変更
+}
+
 
 
 # Hockey-stick(bias.correctionのオプションは削除。どうせするので）
@@ -947,7 +1031,7 @@ BH.recAR <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
 # Ricker 
 RI.recAR <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
                    rec.arg=list(a=1000,b=1000,sd=0.1,bias.correction=TRUE)){                   
-    rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb) # rec.arg$a*ssb/(1+rec.arg$b*ssb)
+    rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb) 
     rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # 自己相関込みの予測値
     rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
     new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
