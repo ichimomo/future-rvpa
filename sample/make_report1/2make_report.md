@@ -441,7 +441,10 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
     # 将来予測と過去の漁獲量を追記する場合
     g2.3 <- plot_yield(MSY.base$trace,refs.base,
                        future=list(future.Fcurrent,future.default),
-                       past=res.pma,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3) 
+                       past=res.pma,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3)
+    g2.3 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値 (with 将来予測)")
+
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
 
     # 神戸チャート
 
@@ -452,14 +455,14 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
                        Btarget="Btarget0") # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
     (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
 
-![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-4.png)
 
     # Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート6区分
     # Blowを使うかどうかは不明。とりあえず6区分の一番上の境界(Blowのオプション)は"Btarget0"と、targetで使う管理基準値の名前を入れて下さい
     g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6,Blow="Btarget0")
     (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 
-![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-4.png)
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-5.png)
 
 HCRによる将来予測
 -----------------

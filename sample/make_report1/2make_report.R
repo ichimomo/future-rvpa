@@ -41,7 +41,8 @@ yield.table <- yield.table %>% mutate(age=as.character(age)) %>% spread(key=age,
 # 将来予測と過去の漁獲量を追記する場合
 g2.3 <- plot_yield(MSY.base$trace,refs.base,
                    future=list(future.Fcurrent,future.default),
-                   past=res.pma,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3) 
+                   past=res.pma,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3)
+g2.3 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値 (with 将来予測)")
 
 # 神戸チャート
 
