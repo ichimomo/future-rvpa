@@ -105,13 +105,8 @@ SRplot_gg <- function(SR_result,refs=NULL){
     g1
 }
 
-
-
-    
-plot_yield <- function(MSY_base,refs_base,AR_select=FALSE){
-    require(tidyverse,quietly=TRUE)
-    require(ggrepel)    
-    trace <- MSY_base$trace  %>% as_tibble() %>%
+get.trace <- function(trace){
+    trace <- trace  %>% as_tibble() %>%
         select(starts_with("TC-mean"),ssb.mean,fmulti,catch.CV) %>%
         mutate(label=as.character(1:nrow(.)))
 
@@ -119,31 +114,81 @@ plot_yield <- function(MSY_base,refs_base,AR_select=FALSE){
         mutate(age=str_extract(age, "[0-9]")) %>%
         mutate(age=factor(age)) %>%
         mutate(age=fct_reorder(age,length(age):1))
+    return(trace)
+}
+    
+plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
+    
+    if("trace" %in% names(MSY_obj)) trace.msy <- MSY_obj$trace
+    else trace.msy <- MSY_obj
+        
+    require(tidyverse,quietly=TRUE)
+    require(ggrepel)    
+
+    trace <- get.trace(trace.msy)
 
     refs_base <- refs_base %>%
-        mutate(RP.definition=ifelse(is.na(RP.definition),"",RP.definition)) %>%
-        dplyr::filter(AR==AR_select)
+        mutate(RP.definition=ifelse(is.na(RP.definition),"",RP.definition))
+    if("AR"%in%names(refs_base)) refs_base <- refs_base %>% dplyr::filter(AR==AR_select)
 
     ymax <- trace %>%
         group_by(ssb.mean) %>%
         summarise(catch.mean=sum(value))
     ymax <- max(ymax$catch.mean)
 
-trace %>%   ggplot() +
-    geom_area(aes(x=ssb.mean,y=value,fill=age),col="gray") +
+    g1 <- trace %>%   ggplot()
+
+    if(is.null(future.name)) future.name <- 1:length(future)
+    
+    if(!is.null(future)){
+        tmpdata <- NULL
+        for(j in 1:length(future)){
+            tmpdata <- bind_rows(tmpdata,
+                tibble(
+                year        =as.numeric(rownames(future[[j]]$vssb)),
+                ssb.future  =apply(future[[j]]$vssb[,-1],1,mean),
+                catch.future=apply(future[[j]]$vwcaa[,-1],1,mean),
+                scenario=future.name[j]))
+            }
+        tmpdata <- tmpdata %>% group_by(scenario)
+        g1 <- g1 +
+            geom_point(data=tmpdata,
+                       mapping=aes(x=ssb.future,y=catch.future,color=year,
+                                   shape=factor(scenario))) +
+            geom_line(data=tmpdata,
+                      mapping=aes(x=ssb.future,y=catch.future,
+                                  linetype=factor(scenario)))
+    }
+
+    if(!is.null(past)){
+        tmpdata <- tibble(
+            year      =as.numeric(colnames(past$ssb)),
+            ssb.past  =unlist(colSums(past$ssb)),
+            catch.past=unlist(colSums(past$input$dat$caa*past$input$dat$waa))
+        )
+
+        g1 <- g1 +
+            geom_point(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past,
+                                                alpha=year),shape=2) +
+            geom_line(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past),color="gray")
+    }
+    
+    g1 <- g1 + geom_area(aes(x=ssb.mean,y=value,fill=age),col="gray",alpha=0.5) +
 #    geom_line(aes(x=ssb.mean,y=catch.CV,fill=age)) +
 #    scale_y_continuous(sec.axis = sec_axis(~.*5, name = "CV catch"))+
     scale_fill_brewer() + theme_bw() +
     geom_point(data=refs_base,aes(y=Catch,x=SSB))+
     theme(panel.grid = element_blank()) +
-    coord_cartesian(xlim=c(0,max(trace$ssb.mean,na.rm=T)*1.1),
-                    ylim=c(0,ymax*1.2),expand=0) +    
+    coord_cartesian(xlim=c(0,max(trace$ssb.mean,na.rm=T)*xlim.scale),
+                    ylim=c(0,ymax*ylim.scale),expand=0) +    
     geom_label_repel(data=refs_base,
                      aes(y=Catch,x=SSB,
                          label=str_c(RP_name,":",RP.definition)),
                      size=3,box.padding=0.5,segment.color="gray")+
-    xlab("平均親魚量") + ylab("平均漁獲量") 
+    xlab("平均親魚量") + ylab("平均漁獲量")
 
+    return(g1)
+        
 }
 
 make_RP_table <- function(refs_base){

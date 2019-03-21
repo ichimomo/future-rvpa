@@ -1,7 +1,7 @@
 MSY推定用のRコード（ダイジェスト版）
 ================
 Momoko Ichinokawa
-2019-03-21
+2019-03-22
 
 本マニュアルの完全版(細かいオプションの説明などがあります)はこちら <https://ichimomo.github.io/future-rvpa/future-doc-abc.html>
 
@@ -615,7 +615,7 @@ future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0xcff7638>
+    <bytecode: 0x8821ad8>
 
     $replace.rec.year
     [1] 2012
@@ -936,7 +936,7 @@ future.default.yearlag <- do.call(future.vpa,input.abc.yearlag)
         new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
         return(list(rec = rec, rec.resample = new.resid))
     }
-    <bytecode: 0xcff7638>
+    <bytecode: 0x8821ad8>
 
     $replace.rec.year
     [1] 2012

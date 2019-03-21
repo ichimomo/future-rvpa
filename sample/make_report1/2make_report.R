@@ -25,8 +25,23 @@ make_RP_table(refs.base)
 # 再生産関係をもとにしたyield curveと管理基準値のプロット。
 # 計算した全管理基準値を示す場合にはrefs.allを、厳選したものだけを示す場合にはrefs.baseを引数に使ってください
 # AR==TRUEにするとARありの結果もプロットされます
-g2 <- plot_yield(MSY.base,refs.all,AR=FALSE) 
+
+#g2 <- plot_yield(MSY.base,refs.all,AR=FALSE) # こちらでもまだ動きます
+g2 <- plot_yield(MSY.base$trace,refs.all,AR=FALSE) 
 g2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
+
+# xlimやylimを変更する場合
+g2.2 <- plot_yield(MSY.base$trace,refs.all,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3) 
+g2.2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
+
+# yield curveの元データが欲しい場合
+yield.table <- get.trace(MSY.base$trace) 
+yield.table <- yield.table %>% mutate(age=as.character(age)) %>% spread(key=age,value=value) %>% arrange(ssb.mean)
+
+# 将来予測と過去の漁獲量を追記する場合
+g2.3 <- plot_yield(MSY.base$trace,refs.base,
+                   future=list(future.Fcurrent,future.default),
+                   past=res.pma,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3) 
 
 # 神戸チャート
 
@@ -124,12 +139,10 @@ ssbmin.table %>% select(-stat_name) %>%
 
 ## ------------------------------------------------------------------------
 
-ssbmin.table %>% select(-stat_name) %>%
+catch.aav.table %>% select(-stat_name) %>%
     formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
                                                      style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
-
-
 
 

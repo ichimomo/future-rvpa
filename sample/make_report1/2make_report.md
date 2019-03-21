@@ -421,10 +421,27 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
     # 再生産関係をもとにしたyield curveと管理基準値のプロット。
     # 計算した全管理基準値を示す場合にはrefs.allを、厳選したものだけを示す場合にはrefs.baseを引数に使ってください
     # AR==TRUEにするとARありの結果もプロットされます
-    g2 <- plot_yield(MSY.base,refs.all,AR=FALSE) 
+
+    #g2 <- plot_yield(MSY.base,refs.all,AR=FALSE) # こちらでもまだ動きます
+    g2 <- plot_yield(MSY.base$trace,refs.all,AR=FALSE) 
     g2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-1.png)
+
+    # xlimやylimを変更する場合
+    g2.2 <- plot_yield(MSY.base$trace,refs.all,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3) 
+    g2.2 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値")
+
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-2.png)
+
+    # yield curveの元データが欲しい場合
+    yield.table <- get.trace(MSY.base$trace) 
+    yield.table <- yield.table %>% mutate(age=as.character(age)) %>% spread(key=age,value=value) %>% arrange(ssb.mean)
+
+    # 将来予測と過去の漁獲量を追記する場合
+    g2.3 <- plot_yield(MSY.base$trace,refs.base,
+                       future=list(future.Fcurrent,future.default),
+                       past=res.pma,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3) 
 
     # 神戸チャート
 
@@ -435,14 +452,14 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
                        Btarget="Btarget0") # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
     (g3 <- g3 + ggtitle("図3. 神戸チャート（4区分）"))
 
-![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-2.png)
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
 
     # Btarget0, Blow0, Blimit0として選ばれた管理基準値をベースにした神戸チャート6区分
     # Blowを使うかどうかは不明。とりあえず6区分の一番上の境界(Blowのオプション)は"Btarget0"と、targetで使う管理基準値の名前を入れて下さい
     g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6,Blow="Btarget0")
     (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 
-![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
+![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-4.png)
 
 HCRによる将来予測
 -----------------
@@ -7694,7 +7711,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### オプション：Catch AAV mean((catch\_y-catch\_y+1)/catch\_y+1)
 
-    ssbmin.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+    catch.aav.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
         color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
         style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
             0.8, "red", "black")))))
@@ -7709,28 +7726,7 @@ HCR\_name
 beta
 </th>
 <th style="text-align:right;">
-2018
-</th>
-<th style="text-align:right;">
-2019
-</th>
-<th style="text-align:right;">
-2020
-</th>
-<th style="text-align:right;">
-2021
-</th>
-<th style="text-align:right;">
-2022
-</th>
-<th style="text-align:right;">
-2023
-</th>
-<th style="text-align:right;">
-2028
-</th>
-<th style="text-align:right;">
-2038
+catch.aav.mean
 </th>
 </tr>
 </thead>
@@ -7745,35 +7741,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d9e2c7">0.4306009</span>
 </td>
 </tr>
 <tr>
@@ -7786,35 +7754,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0dbba">0.4763534</span>
 </td>
 </tr>
 <tr>
@@ -7827,35 +7767,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c5d3aa">0.5320292</span>
 </td>
 </tr>
 <tr>
@@ -7868,35 +7780,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b8c996">0.6017384</span>
 </td>
 </tr>
 <tr>
@@ -7909,35 +7793,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a6bb7b">0.6921492</span>
 </td>
 </tr>
 <tr>
@@ -7950,35 +7806,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #8ea958">0.8149655</span>
 </td>
 </tr>
 <tr>
@@ -7991,35 +7819,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f0f3e8">0.3150939</span>
 </td>
 </tr>
 <tr>
@@ -8032,35 +7832,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e9eede">0.3509704</span>
 </td>
 </tr>
 <tr>
@@ -8073,35 +7845,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e0e7d2">0.3939822</span>
 </td>
 </tr>
 <tr>
@@ -8114,35 +7858,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6e0c2">0.4471237</span>
 </td>
 </tr>
 <tr>
@@ -8155,35 +7871,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c9d5af">0.5152715</span>
 </td>
 </tr>
 <tr>
@@ -8196,35 +7884,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b7c894">0.6068322</span>
 </td>
 </tr>
 <tr>
@@ -8237,35 +7897,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ebf0e2">0.3385104</span>
 </td>
 </tr>
 <tr>
@@ -8278,35 +7910,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e3ead6">0.3777031</span>
 </td>
 </tr>
 <tr>
@@ -8319,35 +7923,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dae3c9">0.4244571</span>
 </td>
 </tr>
 <tr>
@@ -8360,35 +7936,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cfdab8">0.4824449</span>
 </td>
 </tr>
 <tr>
@@ -8401,35 +7949,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c1cfa2">0.5571418</span>
 </td>
 </tr>
 <tr>
@@ -8442,35 +7962,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #adc085">0.6582308</span>
 </td>
 </tr>
 <tr>
@@ -8483,35 +7975,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.2385939</span>
 </td>
 </tr>
 <tr>
@@ -8524,35 +7988,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f8faf5">0.2721242</span>
 </td>
 </tr>
 <tr>
@@ -8565,35 +8001,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f1f4ea">0.3102262</span>
 </td>
 </tr>
 <tr>
@@ -8606,35 +8014,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e8eddd">0.3556967</span>
 </td>
 </tr>
 <tr>
@@ -8647,35 +8027,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dde5cc">0.4131856</span>
 </td>
 </tr>
 <tr>
@@ -8688,35 +8040,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
-</td>
-<td style="text-align:right;">
-<span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ced9b6">0.4897960</span>
 </td>
 </tr>
 </tbody>
