@@ -153,11 +153,13 @@ make_RP_table <- function(refs_base){
         select(-RP_name) %>% # どの列を表示させるか選択する
         # 各列の有効数字を指定
         mutate(SSB=round(SSB,-floor(log10(min(SSB)))),
+               SSB2SSB0=round(SSB2SSB0,2),                              
                Catch=round(Catch,-floor(log10(min(Catch)))),
+               Catch.CV=round(Catch.CV,2),
                U=round(U,2),
                Fref2Fcurrent=round(Fref2Fcurrent,2)) %>%
-        rename("管理基準値"=RP.definition,"親魚資源量"=SSB,
-               "漁獲量"=Catch,"漁獲率"=U,"努力量の乗数"=Fref2Fcurrent)
+        rename("管理基準値"=RP.definition,"親魚資源量"=SSB,"B0に対する比"=SSB2SSB0,
+               "漁獲量"=Catch,"漁獲量の変動係数"=Catch.CV,"漁獲率"=U,"努力量の乗数"=Fref2Fcurrent)
     
    table_output  %>%    
         # 表をhtmlで出力

@@ -124,4 +124,12 @@ ssbmin.table %>% select(-stat_name) %>%
 
 ## ------------------------------------------------------------------------
 
+ssbmin.table %>% select(-stat_name) %>%
+    formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
+
+
 

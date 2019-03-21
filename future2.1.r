@@ -2566,8 +2566,8 @@ est.MSY <- function(vpares,farg,
                AR=FALSE)
     refvalue <- refvalue %>%
                    mutate(SSB2SSB0=refvalue$ssb.mean/refvalue$ssb.mean[2])
-    sumvalue <- refvalue %>% select(RP_name,AR,ssb.mean,biom.mean,U.mean,catch.mean,Fref2Fcurrent,SSB2SSB0)
-    colnames(sumvalue) <- c("RP_name","AR","SSB","B","U","Catch","Fref/Fcur","SSB/SSB0")
+    sumvalue <- refvalue %>% select(RP_name,AR,ssb.mean,SSB2SSB0,biom.mean,U.mean,catch.mean,catch.CV,Fref2Fcurrent)
+    colnames(sumvalue) <- c("RP_name","AR","SSB","SSB2SSB0","B","U","Catch","Catch.CV","Fref/Fcur")
     sumvalue <- bind_cols(sumvalue,refvalue[,substr(colnames(refvalue),1,1)=="F"])
     
 
@@ -2623,8 +2623,8 @@ est.MSY <- function(vpares,farg,
     refvalue2 <-  refvalue2 %>%
         mutate(SSB2SSB0=refvalue$ssb.mean/refvalue$ssb.mean[2])
     
-    sumvalue2 <- refvalue2 %>% select(RP_name,AR,ssb.mean,biom.mean,U.mean,catch.mean,Fref2Fcurrent,SSB2SSB0)
-    colnames(sumvalue2) <- c("RP_name","AR","SSB","B","U","Catch","Fref/Fcur","SSB/SSB0")
+    sumvalue2 <- refvalue2 %>% select(RP_name,AR,ssb.mean,SSB2SSB0,biom.mean,U.mean,catch.mean,catch.CV,Fref2Fcurrent)
+    colnames(sumvalue2) <- c("RP_name","AR","SSB","SSB2SSB0","B","U","Catch","Catch.CV","Fref/Fcur")
     sumvalue2 <- bind_cols(sumvalue2,refvalue2[,substr(colnames(refvalue2),1,1)=="F"])
 
 
@@ -2674,9 +2674,16 @@ est.MSY <- function(vpares,farg,
                        pgy=lapply(fout.PGY,function(x) x$input),
                        B0percent=lapply(fout.B0percent,function(x) x$input))
 
+    allsum <- bind_rows(sumvalue,sumvalue2)
+    allsum$RP.definition <- NA
+    allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="MSY"] <- "Btarget0"
+    allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="PGY_0.9_lower"] <- "Blow0"
+    allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="PGY_0.6_lower"] <- "Blimit0"    
+    allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="PGY_0.1_lower"] <- "Bban0"    
+    
     invisible(list(summary=as.data.frame(as.matrix(sumvalue)),
                    summaryAR=as.data.frame(as.matrix(sumvalue2)),
-                   summary_tb=bind_rows(sumvalue,sumvalue2),
+                   summary_tb=allsum,
                    all.stat=as.data.frame(as.matrix(refvalue)),
                    all.statAR=as.data.frame(as.matrix(refvalue2)),
                    all.stat_tb=bind_rows(refvalue,refvalue2),                   

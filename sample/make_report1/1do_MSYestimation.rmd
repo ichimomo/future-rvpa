@@ -161,6 +161,7 @@ MSY.base <- est.MSY(res.pma, # VPAの計算結果
 
 ```{r summary}
 # 結果の表示(tibbleという形式で表示され、最初の10行以外は省略されます)
+options(tibble.width = Inf)
 (refs.all <- MSY.base$summary_tb)
 
 # 全データをじっくり見たい場合
@@ -173,20 +174,15 @@ MSY.base <- est.MSY(res.pma, # VPAの計算結果
 - **設定ポイント** est.MSYで計算された管理基準値から、何をBtarget, Blimit, Bbanとして用いるかをチョイスします。
 - 具体的には、refs.allにRP.definitionという新しい列をひとつ作って、その列にそれぞれの管理基準値をどのように使うかを指定します
 - 「管理基準値名 + 0」はデフォルト規則による管理基準値
+- デフォルトでは、ARなし、MSY="Btarget0", 0.9MSY="Blow0",0.6MSY="Blimit0", 0.1MSY="Bban0"になるようになっています
 - 代替候補がある場合は「管理基準値名 + 数字」として指定
 - たとえば目標管理基準値の第一候補はBmsyなのでRP_nameがMSYでARなしの行のRP.definitionには"Btarget0"と入力します
 - Rコードがちょっと汚いですがご容赦ください。いい方法あったら教えてください。
 
 ```{r}
-
-# どの管理基準値をどのように定義するか、ここで指定します
-refs.all$RP.definition <- NA 
-refs.all$RP.definition[refs.all$RP_name=="MSY" & refs.all$AR==FALSE] <- "Btarget0"  # RP_nameがMSYでARがなしのものをBtargetとする
-refs.all$RP.definition[refs.all$RP_name=="B0-20%" & refs.all$AR==FALSE] <- "Btarget1"  # たとえばBtargetの代替値をいちおう示す場合
+# どの管理基準値をどのように定義するか。デフォルトから外れる場合はここで定義する
+refs.all$RP.definition[refs.all$RP_name=="B0-20%" & refs.all$AR==FALSE] <- "Btarget1"  # たとえばBtargetの代替値としてB020%も候補に残しておきたい場合
 refs.all$RP.definition[refs.all$RP_name=="PGY_0.95_lower" & refs.all$AR==FALSE] <- "Btarget2" 
-refs.all$RP.definition[refs.all$RP_name=="PGY_0.9_lower" & refs.all$AR==FALSE] <- "Blow0"
-refs.all$RP.definition[refs.all$RP_name=="PGY_0.6_lower" & refs.all$AR==FALSE] <- "Blimit0"
-refs.all$RP.definition[refs.all$RP_name=="PGY_0.1_lower" & refs.all$AR==FALSE] <- "Bban0"
 refs.all$RP.definition[refs.all$RP_name=="Ben-19431" & refs.all$AR==FALSE] <- "Bcurrent"
 refs.all$RP.definition[refs.all$RP_name=="Ben-63967" & refs.all$AR==FALSE] <- "Bmax"
 refs.all$RP.definition[refs.all$RP_name=="Ben-24000" & refs.all$AR==FALSE] <- "Blimit1"
@@ -199,7 +195,7 @@ refs.all %>% select(RP_name,RP.definition)
 (refs.base <- refs.all %>%
     dplyr::filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
     arrange(desc(SSB)) %>% # SSBを大きい順に並び替え
-    select(RP.definition,RP_name,SSB,Catch,U,Fref2Fcurrent)) #　列を並び替え
+    select(RP.definition,RP_name,SSB,SSB2SSB0,Catch,Catch.CV,U,Fref2Fcurrent)) #　列を並び替え
 
 ```
 
@@ -281,6 +277,19 @@ ssbmin.table <- kobeII.table %>%
     ungroup() %>%
     arrange(HCR_name,desc(beta))%>%
     mutate(stat_name="Pr(SSB>SSBlim)")
+
+
+# オプション: Catch AAV mean((catch_y-catch_y+1)/catch_y+1)
+calc.aav <- function(x) abs(diff(x))/x[-1]
+catch.aav.table <- kobeII.table %>%
+    dplyr::filter(year%in%c(2017:2023),stat=="catch") %>%
+    group_by(HCR_name,beta,sim) %>%
+    summarise(catch.aav=mean(calc.aav(value))) %>%
+    group_by(HCR_name,beta) %>%
+    summarise(catch.aav.mean=mean(catch.aav)) %>%
+    arrange(HCR_name,desc(beta))%>%
+    mutate(stat_name="catch.csv (recent 5 year)")
+
 
 ## csvファイルに一括して出力する場合
 all.table <- bind_rows(catch.table,

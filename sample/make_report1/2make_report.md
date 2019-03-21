@@ -48,69 +48,69 @@
 
 **表：さまざまな管理基準値**
 
-<table>
+<table style="width:93%;">
 <colgroup>
-<col style="width: 18%" />
-<col style="width: 28%" />
-<col style="width: 53%" />
+<col width="18%" />
+<col width="26%" />
+<col width="48%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">ラベル</th>
-<th style="text-align: left;">管理基準値</th>
-<th style="text-align: left;">説明</th>
+<th align="left">ラベル</th>
+<th align="left">管理基準値</th>
+<th align="left">説明</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Btarget0</td>
-<td style="text-align: left;">目標</td>
-<td style="text-align: left;">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
+<td align="left">Btarget0</td>
+<td align="left">目標</td>
+<td align="left">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Btarget1</td>
-<td style="text-align: left;">目標(代替値候補1)</td>
-<td style="text-align: left;">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
+<td align="left">Btarget1</td>
+<td align="left">目標(代替値候補1)</td>
+<td align="left">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Btarget2</td>
-<td style="text-align: left;">目標(代替値候補2)</td>
-<td style="text-align: left;">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベル。(あくまで例であり、ABCルールでこういう管理基準値が選べるということではないです。)</td>
+<td align="left">Btarget2</td>
+<td align="left">目標(代替値候補2)</td>
+<td align="left">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベル。(あくまで例であり、ABCルールでこういう管理基準値が選べるということではないです。)</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Blow0</td>
-<td style="text-align: left;">高位・中位の境界</td>
-<td style="text-align: left;">MSYの90%の平均漁獲量を得るときの親魚資源量</td>
+<td align="left">Blow0</td>
+<td align="left">高位・中位の境界</td>
+<td align="left">MSYの90%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Blimit0</td>
-<td style="text-align: left;">限界</td>
-<td style="text-align: left;">MSYの60%の平均漁獲量を得るときの親魚資源量</td>
+<td align="left">Blimit0</td>
+<td align="left">限界</td>
+<td align="left">MSYの60%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Blimit1</td>
-<td style="text-align: left;">限界(代替値候補1)</td>
-<td style="text-align: left;">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。（が、Blimitで代替値候補がある場合の例として、ここではこれも代替値候補としてみる）</td>
+<td align="left">Blimit1</td>
+<td align="left">限界(代替値候補1)</td>
+<td align="left">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。（が、Blimitで代替値候補がある場合の例として、ここではこれも代替値候補としてみる）</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Bban0</td>
-<td style="text-align: left;">禁漁</td>
-<td style="text-align: left;">MSYの10%の平衡漁獲量を得るときの親魚資源量</td>
+<td align="left">Bban0</td>
+<td align="left">禁漁</td>
+<td align="left">MSYの10%の平衡漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Bmax</td>
-<td style="text-align: left;">経験値</td>
-<td style="text-align: left;">過去最大親魚量　</td>
+<td align="left">Bmax</td>
+<td align="left">経験値</td>
+<td align="left">過去最大親魚量　</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">B_HS</td>
-<td style="text-align: left;">経験値</td>
-<td style="text-align: left;">HS再生産関係の折れ点　</td>
+<td align="left">B_HS</td>
+<td align="left">経験値</td>
+<td align="left">HS再生産関係の折れ点　</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">B_current</td>
-<td style="text-align: left;">経験値</td>
-<td style="text-align: left;">最近年の親魚量　</td>
+<td align="left">B_current</td>
+<td align="left">経験値</td>
+<td align="left">最近年の親魚量　</td>
 </tr>
 </tbody>
 </table>
@@ -128,7 +128,13 @@
 親魚資源量
 </th>
 <th style="text-align:right;">
+B0に対する比
+</th>
+<th style="text-align:right;">
 漁獲量
+</th>
+<th style="text-align:right;">
+漁獲量の変動係数
 </th>
 <th style="text-align:right;">
 漁獲率
@@ -148,8 +154,14 @@ Btarget0
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 100.00%">125000</span>
 </td>
 <td style="text-align:right;">
+0.26
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 100.00%">72000</span>
+</td>
+<td style="text-align:right;">
+0.14
 </td>
 <td style="text-align:right;">
 <span
@@ -169,8 +181,14 @@ Btarget1
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 78.40%">98000</span>
 </td>
 <td style="text-align:right;">
+0.20
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 98.61%">71000</span>
+</td>
+<td style="text-align:right;">
+0.15
 </td>
 <td style="text-align:right;">
 <span
@@ -190,8 +208,14 @@ Btarget2
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 56.00%">70000</span>
 </td>
 <td style="text-align:right;">
+0.14
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 94.44%">68000</span>
+</td>
+<td style="text-align:right;">
+0.16
 </td>
 <td style="text-align:right;">
 <span
@@ -211,8 +235,14 @@ Bmax
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 51.20%">64000</span>
 </td>
 <td style="text-align:right;">
+0.13
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 93.06%">67000</span>
+</td>
+<td style="text-align:right;">
+0.17
 </td>
 <td style="text-align:right;">
 <span
@@ -232,8 +262,14 @@ Blow0
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 46.40%">58000</span>
 </td>
 <td style="text-align:right;">
+0.12
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 90.28%">65000</span>
+</td>
+<td style="text-align:right;">
+0.18
 </td>
 <td style="text-align:right;">
 <span
@@ -253,8 +289,14 @@ B\_HS
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 41.60%">52000</span>
 </td>
 <td style="text-align:right;">
+0.11
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 83.33%">60000</span>
+</td>
+<td style="text-align:right;">
+0.24
 </td>
 <td style="text-align:right;">
 <span
@@ -274,8 +316,14 @@ Blimit0
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 28.00%">35000</span>
 </td>
 <td style="text-align:right;">
+0.07
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 59.72%">43000</span>
+</td>
+<td style="text-align:right;">
+0.46
 </td>
 <td style="text-align:right;">
 <span
@@ -295,8 +343,14 @@ Blimit1
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 19.20%">24000</span>
 </td>
 <td style="text-align:right;">
+0.05
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 41.67%">30000</span>
+</td>
+<td style="text-align:right;">
+0.66
 </td>
 <td style="text-align:right;">
 <span
@@ -316,8 +370,14 @@ Bcurrent
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 15.20%">19000</span>
 </td>
 <td style="text-align:right;">
+0.04
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 33.33%">24000</span>
+</td>
+<td style="text-align:right;">
+0.76
 </td>
 <td style="text-align:right;">
 <span
@@ -337,8 +397,14 @@ Bban0
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: olivedrab; width: 4.80%">6000</span>
 </td>
 <td style="text-align:right;">
+0.01
+</td>
+<td style="text-align:right;">
 <span
 style="display: inline-block; direction: rtl; border-radius: 4px; padding-right: 2px; background-color: steelblue; width: 9.72%">7000</span>
+</td>
+<td style="text-align:right;">
+1.41
 </td>
 <td style="text-align:right;">
 <span
@@ -424,11 +490,10 @@ Fを定義したかを書く)
 ### 平均漁獲量
 
     library(formattable)
-    catch.table %>%  select(-stat_name) %>%
-        formattable::formattable(list(area(col=-1)~color_tile("white","steelblue"),
-                                      beta=color_tile("white","blue"),
-                                      HCR_name=formatter("span", 
-        style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    catch.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "steelblue"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -476,35 +541,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d5e3ee">16000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a2c0d9">36000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #79a4c8">52000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5d91bd">63000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -517,35 +582,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8e4ef">15000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a7c3db">34000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #7ea8ca">50000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5f93be">62000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -558,35 +623,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbe6f0">14000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #acc7dd">32000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #83abcd">48000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6295bf">61000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -599,35 +664,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e0eaf2">12000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b1cadf">30000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #88afcf">46000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6798c1">59000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #558cba">66000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4b85b6">70000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4b85b6">70000.0</span>
 </td>
 </tr>
 <tr>
@@ -640,35 +705,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e2ebf3">11000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b9d0e2">27000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #93b6d3">42000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6f9dc4">56000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5d91bd">63000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 </tr>
 <tr>
@@ -681,35 +746,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e7eff5">9000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c1d5e6">24000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9dbdd7">38000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #7ba6c9">51000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6798c1">59000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #578ebb">65000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #578ebb">65000.0</span>
 </td>
 </tr>
 <tr>
@@ -722,35 +787,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cbdcea">20000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #aac5dc">33000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #83abcd">48000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6295bf">61000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -763,35 +828,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cedeeb">19000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #86adce">47000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6496c0">60000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #528ab9">67000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -804,35 +869,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d3e1ed">17000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b1cadf">30000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #88afcf">46000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6798c1">59000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #528ab9">67000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -845,35 +910,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8e4ef">15000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b7cee1">28000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #8db2d1">44000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6c9cc3">57000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #578ebb">65000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4b85b6">70000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4b85b6">70000.0</span>
 </td>
 </tr>
 <tr>
@@ -886,35 +951,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbe6f0">14000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #bed3e4">25000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #95b7d4">41000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #74a1c6">54000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5d91bd">63000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 </tr>
 <tr>
@@ -927,35 +992,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e0eaf2">12000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c3d7e7">23000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9fbed8">37000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #7ea8ca">50000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6798c1">59000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #578ebb">65000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #578ebb">65000.0</span>
 </td>
 </tr>
 <tr>
@@ -968,35 +1033,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cbdcea">20000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #98b9d5">40000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #76a2c7">53000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5d91bd">63000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4b85b6">70000.0</span>
 </td>
 </tr>
 <tr>
@@ -1009,35 +1074,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0dfec">18000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9dbdd7">38000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #76a2c7">53000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5a8fbc">64000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1050,35 +1115,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d5e3ee">16000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a2c0d9">36000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #79a4c8">52000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5d91bd">63000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1091,35 +1156,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d8e4ef">15000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a7c3db">34000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #7ea8ca">50000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5f93be">62000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1132,35 +1197,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dde8f1">13000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #86adce">47000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6496c0">60000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #528ab9">67000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1173,35 +1238,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e2ebf3">11000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b7cee1">28000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #8db2d1">44000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6c9cc3">57000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5a8fbc">64000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 </tr>
 <tr>
@@ -1214,35 +1279,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c1d5e6">24000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a5c2da">35000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #86adce">47000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6798c1">59000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #558cba">66000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4b85b6">70000.0</span>
 </td>
 </tr>
 <tr>
@@ -1255,35 +1320,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c3d7e7">23000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a7c3db">34000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #83abcd">48000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6496c0">60000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #528ab9">67000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1296,35 +1361,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c9dae9">21000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #aac5dc">33000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #83abcd">48000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6295bf">61000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5088b8">68000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1337,35 +1402,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cedeeb">19000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #86adce">47000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6496c0">60000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #528ab9">67000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4682b4">72000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1378,35 +1443,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d3e1ed">17000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b4cce0">29000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #8bb0d0">45000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6798c1">59000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #558cba">66000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4883b5">71000.0</span>
 </td>
 </tr>
 <tr>
@@ -1419,35 +1484,35 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #afc9de">31000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dbe6f0">14000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #bcd1e3">26000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #93b6d3">42000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6f9dc4">56000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #5a8fbc">64000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #4d87b7">69000.0</span>
 </td>
 </tr>
 </tbody>
@@ -1455,11 +1520,10 @@ style="display: block; padding: 0 4px; border-radius: 4px">NaN</span>
 ### currentFからのFの削減率
 
     library(formattable)
-    Fsakugen.table %>%  select(-stat_name) %>%
-        formattable::formattable(list(area(col=-1)~color_tile("white","steelblue"),
-                                      beta=color_tile("white","blue"),
-                                      HCR_name=formatter("span", 
-        style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    Fsakugen.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "steelblue"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -2485,11 +2549,10 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f1
 </table>
 ### SSB&gt;SSBtargetとなる確率
 
-    ssbtarget.table %>% select(-stat_name) %>%
-        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
-                                      beta=color_tile("white","blue"),
-                                      HCR_name=formatter("span", 
-                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    ssbtarget.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -3515,11 +3578,10 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blowを上回る（高位水準になる）確率
 
-    ssblow.table %>% select(-stat_name) %>%
-        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
-                                      beta=color_tile("white","blue"),
-                                      HCR_name=formatter("span", 
-                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    ssblow.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -4545,11 +4607,10 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blimitを上回る確率
 
-    ssblimit.table %>% select(-stat_name) %>%
-        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
-                                      beta=color_tile("white","blue"),
-                                      HCR_name=formatter("span", 
-                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    ssblimit.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -5575,11 +5636,10 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### Blimitを上回る確率
 
-    ssblimit.table %>% select(-stat_name) %>%
-        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
-                                      beta=color_tile("white","blue"),
-                                      HCR_name=formatter("span", 
-                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    ssblimit.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
@@ -6605,11 +6665,1039 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b
 </table>
 ### 過去最低親魚量を上回る確率
 
-    ssbmin.table %>% select(-stat_name) %>%
-        formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
-                                      beta=color_tile("white","blue"),
-                                      HCR_name=formatter("span", 
-                                                         style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+    ssbmin.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
+
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+HCR\_name
+</th>
+<th style="text-align:right;">
+beta
+</th>
+<th style="text-align:right;">
+2018
+</th>
+<th style="text-align:right;">
+2019
+</th>
+<th style="text-align:right;">
+2020
+</th>
+<th style="text-align:right;">
+2021
+</th>
+<th style="text-align:right;">
+2022
+</th>
+<th style="text-align:right;">
+2023
+</th>
+<th style="text-align:right;">
+2028
+</th>
+<th style="text-align:right;">
+2038
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: red">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget0-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit0-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #0000ff">1.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #3333ff">0.9</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6565ff">0.8</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #9999ff">0.7</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ccccff">0.6</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+<span style="color: black">Btarget1-Blimit1-Bban0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.5</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #6b8e23">100.0</span>
+</td>
+</tr>
+</tbody>
+</table>
+### オプション：Catch AAV mean((catch\_y-catch\_y+1)/catch\_y+1)
+
+    ssbmin.table %>% select(-stat_name) %>% formattable::formattable(list(area(col = -1) ~ 
+        color_tile("white", "olivedrab"), beta = color_tile("white", "blue"), HCR_name = formatter("span", 
+        style = ~style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta == 
+            0.8, "red", "black")))))
 
 <table class="table table-condensed">
 <thead>
