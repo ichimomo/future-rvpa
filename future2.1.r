@@ -751,17 +751,23 @@ future.vpa <-
 
       if(!is.null(rec.arg$resample)) if(rec.arg$resample==TRUE) eaa[] <- NA # resampling‚·‚éê‡‚É‚Íeaa‚É‚Í‚È‚É‚à“ü‚ê‚È‚¢
     
-      if(outtype=="FULL"){
-          fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,
-                       maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
-                       eaa=eaa,alpha=alpha,
-                       waa=waa,waa.catch=waa.catch,currentF=currentF,
-                       vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
-                       years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,rec.arg=rec.arg,
-                       waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
-                       Frec=Frec,rec.new=rec.new,pre.catch=pre.catch,input=arglist)
-    }
-      else{
+      fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,
+                   maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
+                   eaa=eaa,alpha=alpha,
+                   waa=waa,waa.catch=waa.catch,currentF=currentF,
+                   vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
+                   years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,rec.arg=rec.arg,
+                   waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
+                   Frec=Frec,rec.new=rec.new,pre.catch=pre.catch,input=arglist)
+
+      if(is.plot){
+          par(mfrow=c(2,2))
+          plot.future(fres)
+      }
+      if(waa.fun) fres$waa.reg <- WAA.res
+
+      
+      if(outtype=="Det"){
           fres <- list(faa=faa[,,1],M=M[,,1],recruit=naa[1,,],eaa=eaa,baa=biom,
                        maa=maa[,,1],vbiom=apply(biom,c(2,3),sum,na.rm=T),
                        waa=waa[,,1],waa.catch=waa.catch[,,1],currentF=currentF,
@@ -770,6 +776,16 @@ future.vpa <-
                        waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
                        Frec=Frec,rec.new=rec.new,pre.catch=pre.catch,input=arglist)
       }
+
+      if(outtype=="short"){
+          fres <- list(recruit=naa[1,,],eaa=eaa,baa=biom,
+                       vbiom=apply(biom,c(2,3),sum,na.rm=T),
+                       currentF=currentF,
+                       vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
+                       years=fyears,fyear.year=fyear.year,ABC=ABC,
+                       waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
+                       Frec=Frec,rec.new=rec.new,pre.catch=pre.catch,input=arglist)
+      }      
 
       ## if(non.det==TRUE){
       ##     fres <- list(faa=faa[,,-1,drop=F],naa=naa[,,-1,drop=F],biom=biom[,,-1,drop=F],
@@ -785,11 +801,7 @@ future.vpa <-
       ## }
       
       class(fres) <- "future"
-      if(is.plot){
-          par(mfrow=c(2,2))
-          plot.future(fres)
-      }
-      if(waa.fun) fres$waa.reg <- WAA.res
+
       invisible(fres)
   }
 
