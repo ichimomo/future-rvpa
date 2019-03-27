@@ -1,27 +1,27 @@
-#---------------- ŠÇ—Šî€’lŒvZ‚Ì‚½‚ß‚ÌŠÖ” ------------------------
+#---------------- ç®¡ç†åŸºæº–å€¤è¨ˆç®—ã®ãŸã‚ã®é–¢æ•° ------------------------
 # ref.F
 ref.F <- function(
-  res, # VPA‚ÌŒ‹‰Ê‚ÌƒIƒuƒWƒFƒNƒg
-  sel=NULL, # ‰¼’è‚·‚é‘I‘ğ—¦DNULL‚Ìê‡Cres$Fc.at.age‚ªg‚í‚ê‚é
-  waa=NULL, # ‰¼’è‚·‚é¶•¨ƒpƒ‰ƒ[ƒ^D’¼Ú‚Ì’l‚ğ“ü‚ê‚é‚©C”N‚ğw’è‚·‚é‚â‚è•û‚Ì‚Ç‚¿‚ç‚Å‚à“®‚­B’¼Úw’è‚·‚é‚Ù‚¤‚ª—DæB
+  res, # VPAã®çµæœã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+  sel=NULL, # ä»®å®šã™ã‚‹é¸æŠç‡ï¼NULLã®å ´åˆï¼Œres$Fc.at.ageãŒä½¿ã‚ã‚Œã‚‹
+  waa=NULL, # ä»®å®šã™ã‚‹ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ï¼ç›´æ¥ã®å€¤ã‚’å…¥ã‚Œã‚‹ã‹ï¼Œå¹´ã‚’æŒ‡å®šã™ã‚‹ã‚„ã‚Šæ–¹ã®ã©ã¡ã‚‰ã§ã‚‚å‹•ãã€‚ç›´æ¥æŒ‡å®šã™ã‚‹ã»ã†ãŒå„ªå…ˆã€‚
   maa=NULL,
   M=NULL,
   waa.catch=NULL,
   M.year=NULL, 
-  waa.year=NULL, # ”N‚ğw’è‚µ‚Ä¶•¨ƒpƒ‰ƒ[ƒ^‚ğ‰¼’è‚·‚éê‡D”N‚Ì”ÍˆÍ‚Ì•½‹Ï’l‚ª—p‚¢‚ç‚ê‚éDNULL‚Ìê‡CVPAÅI”N‚Ì’l‚ªg‚í‚ê‚é
+  waa.year=NULL, # å¹´ã‚’æŒ‡å®šã—ã¦ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ä»®å®šã™ã‚‹å ´åˆï¼å¹´ã®ç¯„å›²ã®å¹³å‡å€¤ãŒç”¨ã„ã‚‰ã‚Œã‚‹ï¼NULLã®å ´åˆï¼ŒVPAæœ€çµ‚å¹´ã®å€¤ãŒä½¿ã‚ã‚Œã‚‹
   maa.year=NULL,
-  rps.year = NULL, # Fmed‚ÌŒvZ‚Ég‚¤RPS‚Ì”N‚Ì”ÍˆÍDNULL‚Ìê‡C‘S”ÍˆÍ‚ª—p‚¢‚ç‚ê‚é
-  max.age = Inf, # ‰Á“ü”N—î‚ğ‚OÎ‚Æ‚µ‚½‚Æ‚«‚ÉASPRŒvZ‚Ål—¶‚³‚ê‚éÅ‘å‚Ì”N—îi”N—î‚Ì”‚Å‚Í‚È‚¢‚±‚Æ‚É’ˆÓjB‰Á“ü”N—î‚ª‚PÎˆÈã‚Ì‚Æ‚«‚ÍASPRŒvZ‚Ål—¶‚µ‚½‚¢”N—î-‰Á“ü”N—î‚ğ“ü—Í‚·‚éA‚Ü‚½‚Ímin.age‚Ìˆø”‚É‰Á“ü”N—î‚ğİ’è‚·‚éB
-  min.age = 0, # ‰Á“ü”N—î‚ª0Î‚Å‚È‚¢‚Æ‚«‚Éw’è‚Å‚«‚é
+  rps.year = NULL, # Fmedã®è¨ˆç®—ã«ä½¿ã†RPSã®å¹´ã®ç¯„å›²ï¼NULLã®å ´åˆï¼Œå…¨ç¯„å›²ãŒç”¨ã„ã‚‰ã‚Œã‚‹
+  max.age = Inf, # åŠ å…¥å¹´é½¢ã‚’ï¼æ­³ã¨ã—ãŸã¨ãã«ã€SPRè¨ˆç®—ã§è€ƒæ…®ã•ã‚Œã‚‹æœ€å¤§ã®å¹´é½¢ï¼ˆå¹´é½¢ã®æ•°ã§ã¯ãªã„ã“ã¨ã«æ³¨æ„ï¼‰ã€‚åŠ å…¥å¹´é½¢ãŒï¼‘æ­³ä»¥ä¸Šã®ã¨ãã¯ã€SPRè¨ˆç®—ã§è€ƒæ…®ã—ãŸã„å¹´é½¢-åŠ å…¥å¹´é½¢ã‚’å…¥åŠ›ã™ã‚‹ã€ã¾ãŸã¯min.ageã®å¼•æ•°ã«åŠ å…¥å¹´é½¢ã‚’è¨­å®šã™ã‚‹ã€‚
+  min.age = 0, # åŠ å…¥å¹´é½¢ãŒ0æ­³ã§ãªã„ã¨ãã«æŒ‡å®šã§ãã‚‹
   d = 0.001,
-  Fspr.init = 0.5, # F%SPR‚Ì‰Šú’l
-  Fmax.init = 1.5, # Fmax‚Ì‰Šú’l
-  F0.1.init = 0.7, # F0.1‚Ì‰Šú’l
-  pSPR = seq(10,90,by=10), # F%SPR‚ğŒvZ‚·‚é‚Æ‚«‚Ì“SPR
+  Fspr.init = 0.5, # F%SPRã®åˆæœŸå€¤
+  Fmax.init = 1.5, # Fmaxã®åˆæœŸå€¤
+  F0.1.init = 0.7, # F0.1ã®åˆæœŸå€¤
+  pSPR = seq(10,90,by=10), # F%SPRã‚’è¨ˆç®—ã™ã‚‹ã¨ãã®ï¼…SPR
   iterlim=1000,
   plot=TRUE,
-  Pope=FALSE, # 2014.7.4’Ç‰Á
-  F.range = seq(from=0,to=2,length=101)  # YPR, SPR‹Èü‚ğ‘‚­‚Æ‚«‚ÌF‚Ì”ÍˆÍ
+  Pope=FALSE, # 2014.7.4è¿½åŠ 
+  F.range = seq(from=0,to=2,length=101)  # YPR, SPRæ›²ç·šã‚’æ›¸ãã¨ãã®Fã®ç¯„å›²
 ){
 
     argname <- ls()
@@ -273,58 +273,58 @@ calc.rel.abund <- function(sel,Fr,na,M,waa,waa.catch=NULL,maa,min.age=0,max.age=
 
 
 
-##----------------------- «—ˆ—\‘ªŠÖ” ----------------------------
-## multi‚ÌƒIƒvƒVƒ‡ƒ“‚ÍŠÇ—Œã‚ÌF‚ÌmultiplieriŠÇ—‘OŒã‚Åselectivity‚ª“¯‚¶j
+##----------------------- å°†æ¥äºˆæ¸¬é–¢æ•° ----------------------------
+## multiã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯ç®¡ç†å¾Œã®Fã®multiplierï¼ˆç®¡ç†å‰å¾Œã§selectivityãŒåŒã˜ï¼‰
 future.vpa <-
   function(res0,
-           currentF=NULL, # ŠÇ—‘O‚ÌF
-           multi=1, # ŠÇ—ŒãiABC.year‚©‚çj‚ÌF (current F x multi)
+           currentF=NULL, # ç®¡ç†å‰ã®F
+           multi=1, # ç®¡ç†å¾Œï¼ˆABC.yearã‹ã‚‰ï¼‰ã®F (current F x multi)
            nyear=10,Pope=res0$input$Pope,
            outtype="FULL",
-           multi.year=1,#‚ ‚é“Á’è‚Ì”N‚¾‚¯F‚ğ•Ï‚¦‚½‚¢ê‡BƒfƒtƒHƒ‹ƒg‚Í1B•Ï‚¦‚éê‡‚ÍAw’è‚µ‚½”N‚Ü‚½‚Íƒ^ƒCƒ€ƒXƒeƒbƒv‚Ì—v‘f”‚ÌƒxƒNƒgƒ‹‚Åw’èB
-           # ”N”‚Ìw’è
-           start.year=NULL, # «—ˆ—\‘ª‚ÌŠJn”NCNULL‚Ìê‡‚ÍVPAŒvZ‚ÌÅI”N‚ÌŸ‚Ì”N
-           ABC.year=NULL, # ABC year‚ğŒvZ‚·‚é”NBNULL‚Ìê‡‚ÍVPAŒvZ‚ÌÅI”N‚ÌŸ‚ÌŸ‚Ì”N
-           waa.year=NULL, # VPAŒ‹‰Ê‚©‚ç¶•¨ƒpƒ‰ƒ[ƒ^‚ğ‚à‚Á‚Ä‚«‚Ä•½‹Ï‚·‚éŠúŠÔ
-           # NULL‚Ìê‡CVPA‚ÌÅI”N‚Ìƒpƒ‰ƒ[ƒ^‚ğ‚Á‚Ä‚­‚é
-           maa.year=NULL, # VPAŒ‹‰Ê‚©‚ç¶•¨ƒpƒ‰ƒ[ƒ^‚ğ‚à‚Á‚Ä‚«‚Ä•½‹Ï‚·‚éŠúŠÔ
-           M.year=NULL, # VPAŒ‹‰Ê‚©‚ç¶•¨ƒpƒ‰ƒ[ƒ^‚ğ‚à‚Á‚Ä‚«‚Ä•½‹Ï‚·‚éŠúŠÔ
+           multi.year=1,#ã‚ã‚‹ç‰¹å®šã®å¹´ã ã‘Fã‚’å¤‰ãˆãŸã„å ´åˆã€‚ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯1ã€‚å¤‰ãˆã‚‹å ´åˆã¯ã€æŒ‡å®šã—ãŸå¹´ã¾ãŸã¯ã‚¿ã‚¤ãƒ ã‚¹ãƒ†ãƒƒãƒ—ã®è¦ç´ æ•°ã®ãƒ™ã‚¯ãƒˆãƒ«ã§æŒ‡å®šã€‚
+           # å¹´æ•°ã®æŒ‡å®š
+           start.year=NULL, # å°†æ¥äºˆæ¸¬ã®é–‹å§‹å¹´ï¼ŒNULLã®å ´åˆã¯VPAè¨ˆç®—ã®æœ€çµ‚å¹´ã®æ¬¡ã®å¹´
+           ABC.year=NULL, # ABC yearã‚’è¨ˆç®—ã™ã‚‹å¹´ã€‚NULLã®å ´åˆã¯VPAè¨ˆç®—ã®æœ€çµ‚å¹´ã®æ¬¡ã®æ¬¡ã®å¹´
+           waa.year=NULL, # VPAçµæœã‹ã‚‰ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ã‚‚ã£ã¦ãã¦å¹³å‡ã™ã‚‹æœŸé–“
+           # NULLã®å ´åˆï¼ŒVPAã®æœ€çµ‚å¹´ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’æŒã£ã¦ãã‚‹
+           maa.year=NULL, # VPAçµæœã‹ã‚‰ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ã‚‚ã£ã¦ãã¦å¹³å‡ã™ã‚‹æœŸé–“
+           M.year=NULL, # VPAçµæœã‹ã‚‰ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ã‚‚ã£ã¦ãã¦å¹³å‡ã™ã‚‹æœŸé–“
            seed=NULL,
-           strategy="F", # F: ‹™ŠlŒW”ˆê’è, E: ‹™ŠlŠ„‡ˆê’èAC: ‹™Šl—Êˆê’èipre.catch‚Å‹™Šl—Ê‚ğw’èj
-           HCR=NULL,# HCR‚ğg‚¤ê‡Alist(Blim=154500, Bban=49400,beta=1,year.lag=0)‚Ì‚æ‚¤‚Éw’è‚·‚é‚©AˆÈ‰º‚Ìˆø”‚ğƒZƒbƒg‚·‚é,year.lag=0‚Å«—ˆ—\‘ª”N‚Ì—\‘ªSSB‚ğg‚¤B-2‚Ìê‡‚Í‚Q”N’x‚ê‚ÌSSB‚ğg‚¤
+           strategy="F", # F: æ¼ç²ä¿‚æ•°ä¸€å®š, E: æ¼ç²å‰²åˆä¸€å®šã€C: æ¼ç²é‡ä¸€å®šï¼ˆpre.catchã§æ¼ç²é‡ã‚’æŒ‡å®šï¼‰
+           HCR=NULL,# HCRã‚’ä½¿ã†å ´åˆã€list(Blim=154500, Bban=49400,beta=1,year.lag=0)ã®ã‚ˆã†ã«æŒ‡å®šã™ã‚‹ã‹ã€ä»¥ä¸‹ã®å¼•æ•°ã‚’ã‚»ãƒƒãƒˆã™ã‚‹,year.lag=0ã§å°†æ¥äºˆæ¸¬å¹´ã®äºˆæ¸¬SSBã‚’ä½¿ã†ã€‚-2ã®å ´åˆã¯ï¼’å¹´é…ã‚Œã®SSBã‚’ä½¿ã†
            beta=NULL,delta=NULL,Blim=0,Bban=0,
            plus.group=res0$input$plus.group,
-           N=1000,# Šm—¦“I‚ÈƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“‚ğ‚·‚éê‡‚ÌŒJ‚è•Ô‚µ‰ñ”B
-           # N+1‚ÌŒ‹‰Ê‚ª•Ô‚³‚êA1—ñ–Ú‚ÉŒˆ’è˜_“I‚ÈŒ‹‰Ê‚ª                       
-           # 0‚ğ—^‚¦‚é‚ÆŒˆ’è˜_“I‚ÈŒ‹‰Ê‚Ì‚İ‚ğo—Í
-           silent=FALSE, is.plot=TRUE, # ŒvZğŒ‚ğo—ÍAƒvƒƒbƒg‚·‚é‚©
-           random.select=NULL, # ‘I‘ğ—¦‚ğƒ‰ƒ“ƒ_ƒ€ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éê‡Aƒ‰ƒ“ƒ_ƒ€ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚é”N‚ğ“ü‚ê‚é
-           # strategy="C"‚Ü‚½‚Í"E"‚Ì‚Æ‚«‚Ì‚İ—LŒø
-           pre.catch=NULL, # list(year=2012,wcatch=13000), ‹™Šld—Ê‚ğgiven‚Å—^‚¦‚éê‡
-           # list(year=2012:2017,E=rep(0.5,6)), ‹™ŠlŠ„‡‚ğgiven‚Å—^‚¦‚éê‡                       
-           ##-------- ‰Á“ü‚ÉŠÖ‚·‚éİ’è -----------------
-           rec.new=NULL, # w’è‚µ‚½”N‚Ì‰Á“ü—Ê
-           # ”N‚ğw’è‚µ‚È‚¢‚Å—^‚¦‚éê‡‚ÍA©“®“I‚ÉƒXƒ^[ƒg”N‚Ì‰Á“ü‚É‚È‚éB
-           # list(year=, rec=)‚Å—^‚¦‚éê‡‚ÍA‘Î‰‚·‚é”N‚Ì‰Á“ü‚ğ’u‚«Š·‚¦‚éB
-           ##--- ‰Á“üŠÖ”
-           recfunc=HS.recAR, # Ä¶YŠÖŒW‚ÌŠÖ”
+           N=1000,# ç¢ºç‡çš„ãªã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’ã™ã‚‹å ´åˆã®ç¹°ã‚Šè¿”ã—å›æ•°ã€‚
+           # N+1ã®çµæœãŒè¿”ã•ã‚Œã€1åˆ—ç›®ã«æ±ºå®šè«–çš„ãªçµæœãŒ                       
+           # 0ã‚’ä¸ãˆã‚‹ã¨æ±ºå®šè«–çš„ãªçµæœã®ã¿ã‚’å‡ºåŠ›
+           silent=FALSE, is.plot=TRUE, # è¨ˆç®—æ¡ä»¶ã‚’å‡ºåŠ›ã€ãƒ—ãƒ­ãƒƒãƒˆã™ã‚‹ã‹
+           random.select=NULL, # é¸æŠç‡ã‚’ãƒ©ãƒ³ãƒ€ãƒ ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹å ´åˆã€ãƒ©ãƒ³ãƒ€ãƒ ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹å¹´ã‚’å…¥ã‚Œã‚‹
+           # strategy="C"ã¾ãŸã¯"E"ã®ã¨ãã®ã¿æœ‰åŠ¹
+           pre.catch=NULL, # list(year=2012,wcatch=13000), æ¼ç²é‡é‡ã‚’givenã§ä¸ãˆã‚‹å ´åˆ
+           # list(year=2012:2017,E=rep(0.5,6)), æ¼ç²å‰²åˆã‚’givenã§ä¸ãˆã‚‹å ´åˆ                       
+           ##-------- åŠ å…¥ã«é–¢ã™ã‚‹è¨­å®š -----------------
+           rec.new=NULL, # æŒ‡å®šã—ãŸå¹´ã®åŠ å…¥é‡
+           # å¹´ã‚’æŒ‡å®šã—ãªã„ã§ä¸ãˆã‚‹å ´åˆã¯ã€è‡ªå‹•çš„ã«ã‚¹ã‚¿ãƒ¼ãƒˆå¹´ã®åŠ å…¥ã«ãªã‚‹ã€‚
+           # list(year=, rec=)ã§ä¸ãˆã‚‹å ´åˆã¯ã€å¯¾å¿œã™ã‚‹å¹´ã®åŠ å…¥ã‚’ç½®ãæ›ãˆã‚‹ã€‚
+           ##--- åŠ å…¥é–¢æ•°
+           recfunc=HS.recAR, # å†ç”Ÿç”£é–¢ä¿‚ã®é–¢æ•°
            rec.arg=list(a=1,b=1,rho=0,sd=0,c=1,bias.correction=TRUE,
-                        resample=FALSE,resid=0,resid.year=NULL), # ‰Á“ü‚ÌŠeíİ’è
-           ##--- FrecƒIƒvƒVƒ‡ƒ“GFrecŒvZ‚Ì‚½‚ß‚Ìİ’èƒŠƒXƒg‚ğ—^‚¦‚é‚ÆAw’è‚³‚ê‚½İ’è‚Å‚ÌFrec‚É‘Î‰‚·‚éF‚Å«—ˆ—\‘ª‚ğs‚¤
+                        resample=FALSE,resid=0,resid.year=NULL), # åŠ å…¥ã®å„ç¨®è¨­å®š
+           ##--- Frecã‚ªãƒ—ã‚·ãƒ§ãƒ³ï¼›Frecè¨ˆç®—ã®ãŸã‚ã®è¨­å®šãƒªã‚¹ãƒˆã‚’ä¸ãˆã‚‹ã¨ã€æŒ‡å®šã•ã‚ŒãŸè¨­å®šã§ã®Frecã«å¯¾å¿œã™ã‚‹Fã§å°†æ¥äºˆæ¸¬ã‚’è¡Œã†
            Frec=NULL,
-           # list(stochastic=TRUE, # TRUE‚Ìê‡Astochastic simulation‚Å50%‚ÌŠm—¦‚ÅBlimit‚ğ‰z‚·(PMS, TMI)
-           # FALSE‚Ìê‡ARPSŒÅ’è‚Ìprojection‚ªBilmit‚Æˆê’v‚·‚é(NSK)
-           #      future.year=2018, # ‰½”N‚Ì‘Œ¹—Ê‚ğŒ©‚é‚©H
-           #      Blimit=450*1000,  # Blimit (xƒgƒ“)
-           #      scenario="catch.mean" or "blimit" (ƒfƒtƒHƒ‹ƒg‚Íblimit; "catch.mean"‚Æ‚·‚é‚Æstochastic simulation‚É‚¨‚¯‚é•½‹Ï‹™Šl—Ê‚ªBlimit‚Åw’è‚µ‚½’l‚Æˆê’v‚·‚é‚æ‚¤‚É‚È‚é)
-           #      Frange=c(0.01,2*mult)) # F‚Ì’Tõ”ÍˆÍ
-           waa=NULL,waa.catch=NULL,maa=NULL,M=NULL, # ‹Gß–ˆ‚Ì¶•¨ƒpƒ‰ƒ[ƒ^A‚Ü‚½‚ÍA¶•¨ƒpƒ‰ƒ[ƒ^‚ğŠO‚©‚ç—^‚¦‚éê‡
-           replace.rec.year=2012, # ‰Á“ü—Ê‚ğ—ï”N‚Ì«—ˆ—\‘ª‚Å‚Ì‰Á“ü—Ê‚É’u‚«Š·‚¦‚é‚©H
+           # list(stochastic=TRUE, # TRUEã®å ´åˆã€stochastic simulationã§50%ã®ç¢ºç‡ã§Blimitã‚’è¶Šã™(PMS, TMI)
+           # FALSEã®å ´åˆã€RPSå›ºå®šã®projectionãŒBilmitã¨ä¸€è‡´ã™ã‚‹(NSK)
+           #      future.year=2018, # ä½•å¹´ã®è³‡æºé‡ã‚’è¦‹ã‚‹ã‹ï¼Ÿ
+           #      Blimit=450*1000,  # Blimit (xãƒˆãƒ³)
+           #      scenario="catch.mean" or "blimit" (ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯blimit; "catch.mean"ã¨ã™ã‚‹ã¨stochastic simulationã«ãŠã‘ã‚‹å¹³å‡æ¼ç²é‡ãŒBlimitã§æŒ‡å®šã—ãŸå€¤ã¨ä¸€è‡´ã™ã‚‹ã‚ˆã†ã«ãªã‚‹)
+           #      Frange=c(0.01,2*mult)) # Fã®æ¢ç´¢ç¯„å›²
+           waa=NULL,waa.catch=NULL,maa=NULL,M=NULL, # å­£ç¯€æ¯ã®ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã€ã¾ãŸã¯ã€ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’å¤–ã‹ã‚‰ä¸ãˆã‚‹å ´åˆ
+           replace.rec.year=2012, # åŠ å…¥é‡ã‚’æš¦å¹´ã®å°†æ¥äºˆæ¸¬ã§ã®åŠ å…¥é‡ã«ç½®ãæ›ãˆã‚‹ã‹ï¼Ÿ
            F.sigma=0,
-           waa.fun=FALSE, #waa‚ğnaa‚Ìfunction‚Æ‚·‚é‚©
+           waa.fun=FALSE, #waaã‚’naaã®functionã¨ã™ã‚‹ã‹
            naa0=NULL,eaa0=NULL,ssb0=NULL,faa0=NULL,
-           add.year=0, # ‰ª‘ºƒIƒvƒVƒ‡ƒ“‚É‘Î‰B=1‚Å1”N•ª—]Œv‚ÉŒvZ‚·‚é
-           det.run=TRUE # 1‰ñ‚ß‚Ìƒ‰ƒ“‚ÍŒˆ’è˜_“I«—ˆ—\‘ª‚ğ‚·‚éiŠ®àø‚É‚Í‘Î‰‚µ‚Ä‚¢‚È‚¢j
+           add.year=0, # å²¡æ‘ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã«å¯¾å¿œã€‚=1ã§1å¹´åˆ†ä½™è¨ˆã«è¨ˆç®—ã™ã‚‹
+           det.run=TRUE # 1å›ã‚ã®ãƒ©ãƒ³ã¯æ±ºå®šè«–çš„å°†æ¥äºˆæ¸¬ã‚’ã™ã‚‹ï¼ˆå®Œç’§ã«ã¯å¯¾å¿œã—ã¦ã„ãªã„ï¼‰
            ){
 
     
@@ -354,15 +354,15 @@ future.vpa <-
       ##-------------
 
       ##---- set S-R functin option -----
-      ## g‚¤ŠÖ”‚É‚æ‚Á‚Ä‚Í•K—v‚È‚¢ƒIƒvƒVƒ‡ƒ“‚à‚ ‚é‚ªAg‚í‚È‚¢ƒIƒvƒVƒ‡ƒ“‚ğ“ü‚ê‚Ä‚àƒGƒ‰[‚Ío‚È‚¢‚Ì‚ÅA
-                                        # rec.arg$resample‚ªNULL‚©‚Ç‚¤‚©‚ÅAƒpƒ‰ƒƒgƒŠƒbƒN‚ÈŒë·•ª•z‚©‚»‚¤‚Å‚È‚¢‚©ic·ƒŠƒTƒ“ƒvƒŠƒ“ƒOj‚ğ”»•Ê‚·‚é
+      ## ä½¿ã†é–¢æ•°ã«ã‚ˆã£ã¦ã¯å¿…è¦ãªã„ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚‚ã‚ã‚‹ãŒã€ä½¿ã‚ãªã„ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’å…¥ã‚Œã¦ã‚‚ã‚¨ãƒ©ãƒ¼ã¯å‡ºãªã„ã®ã§ã€
+                                        # rec.arg$resampleãŒNULLã‹ã©ã†ã‹ã§ã€ãƒ‘ãƒ©ãƒ¡ãƒˆãƒªãƒƒã‚¯ãªèª¤å·®åˆ†å¸ƒã‹ãã†ã§ãªã„ã‹ï¼ˆæ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ï¼‰ã‚’åˆ¤åˆ¥ã™ã‚‹
       if(is.null(rec.arg$rho)){
           rec.arg$rho <- 0
           if(!silent) cat("rec.arg$rho is assumed to be 0...\n")
       }
-      if(is.null(rec.arg$sd2)) rec.arg$sd2 <- sqrt(rec.arg$sd^2/(1-rec.arg$rho^2)) #rho‚İ•½‹Ï•â³—pSD # HS.recAR
+      if(is.null(rec.arg$sd2)) rec.arg$sd2 <- sqrt(rec.arg$sd^2/(1-rec.arg$rho^2)) #rhoè¾¼ã¿å¹³å‡è£œæ­£ç”¨SD # HS.recAR
 
-      ## resampling option‚ğg‚í‚È‚¢ê‡
+      ## resampling optionã‚’ä½¿ã‚ãªã„å ´åˆ
       if(is.null(rec.arg$resample)|!isTRUE(rec.arg$resample)){
           if(is.null(rec.arg$bias.correction)) rec.arg$bias.correction <- TRUE # HS.recAR, HS.rec0
           if(is.null(rec.arg$rho)){
@@ -385,7 +385,7 @@ future.vpa <-
           }
       }
       else{
-         if(rec.arg$rho>0) stop("You set rho is >0. You cannot use resample=TRUE option when rho>0") # resampling‚Ìê‡‚É©ŒÈ‘ŠŠÖ‚Íl—¶‚Å‚«‚È‚¢‚Ì‚Årho‚Í‹­§“I‚Éƒ[ƒ
+         if(rec.arg$rho>0) stop("You set rho is >0. You cannot use resample=TRUE option when rho>0") # resamplingã®å ´åˆã«è‡ªå·±ç›¸é–¢ã¯è€ƒæ…®ã§ããªã„ã®ã§rhoã¯å¼·åˆ¶çš„ã«ã‚¼ãƒ­
       }
       
       if(!is.null(rec.arg$sd)) rec.arg$sd <- c(0,rep(rec.arg$sd,N-1))
@@ -404,15 +404,15 @@ future.vpa <-
     
     fyear.year <- floor(fyears)
     ntime <- length(fyears)
-    ages <- as.numeric(dimnames(res0$naa)[[1]]) # ages:VPA‚Ål—¶‚³‚ê‚éÅ‘å”N—î”
+    ages <- as.numeric(dimnames(res0$naa)[[1]]) # ages:VPAã§è€ƒæ…®ã•ã‚Œã‚‹æœ€å¤§å¹´é½¢æ•°
     min.age <- min(as.numeric(ages))
 
     year.overlap <- years %in% start.year   
     {if(sum(year.overlap)==0){
-         nage <- sum(!is.na(res0$naa[,ncol(res0$naa)])) # nage:«—ˆ—\‘ª‚Ål—¶‚·‚×‚«”N‚Ì”
+         nage <- sum(!is.na(res0$naa[,ncol(res0$naa)])) # nage:å°†æ¥äºˆæ¸¬ã§è€ƒæ…®ã™ã¹ãå¹´ã®æ•°
      }
      else{
-         nage <- sum(!is.na(res0$naa[,year.overlap])) # nage:«—ˆ—\‘ª‚Ål—¶‚·‚×‚«”N‚Ì”
+         nage <- sum(!is.na(res0$naa[,year.overlap])) # nage:å°†æ¥äºˆæ¸¬ã§è€ƒæ…®ã™ã¹ãå¹´ã®æ•°
      }}
     
       if(!silent){
@@ -431,17 +431,17 @@ future.vpa <-
 #          }
       }
     
-    # ƒV[ƒh‚Ìİ’è
+    # ã‚·ãƒ¼ãƒ‰ã®è¨­å®š
     if(is.null(seed)) arglist$seed <- as.numeric(Sys.time())
     
-    #------------FrecƒIƒvƒVƒ‡ƒ“‚Ìê‡ -------------
+    #------------Frecã‚ªãƒ—ã‚·ãƒ§ãƒ³ã®å ´åˆ -------------
     if(!is.null(Frec)){
       multi.org <- multi
       if(is.null(Frec$stochastic)) Frec$stochastice <- TRUE
 #      if(is.null(Frec$method)) Frec$method <- "optimize"
       if(is.null(Frec$target.probs)) Frec$target.probs <- 50
-      if(is.null(Frec$scenario)) Frec$scenario <- "blimit" # 2017/12/25’Ç‹L 
-      if(is.null(Frec$Frange)) Frec$Frange <- c(0.01,multi.org*2)   # 2017/12/25’Ç‹L(’Tõ‚·‚éF‚Ì”ÍˆÍ‚Ìw’è)
+      if(is.null(Frec$scenario)) Frec$scenario <- "blimit" # 2017/12/25è¿½è¨˜ 
+      if(is.null(Frec$Frange)) Frec$Frange <- c(0.01,multi.org*2)   # 2017/12/25è¿½è¨˜(æ¢ç´¢ã™ã‚‹Fã®ç¯„å›²ã®æŒ‡å®š)
       if(is.null(Frec$future.year)) Frec$future.year <- fyears[length(fyears)]-1
       #      arglist$Frec <- Frec
       
@@ -465,11 +465,11 @@ future.vpa <-
               (length(is.lower.ssb[tmp,-1])-1)*100
             return.obj <- probs-Frec$target.probs
           }
-          # stochastic projection‚É‚¨‚¯‚é•½‹Ï‹™Šl—Ê‚ğ–Ú“I‚Ì’l‚Éˆê’v‚³‚¹‚é 
+          # stochastic projectionã«ãŠã‘ã‚‹å¹³å‡æ¼ç²é‡ã‚’ç›®çš„ã®å€¤ã«ä¸€è‡´ã•ã›ã‚‹ 
           if(Frec$scenario=="catch.mean"){
             return.obj <- (log(Frec$Blimit)-log(mean(fres.tmp$vwcaa[tmp,-1])))^2
           }
-          # stochastic projection‚É‚¨‚¯‚é•½‹Ïe‹›‘Œ¹—Ê‚ğ–Ú“I‚Ì’l‚Éˆê’v‚³‚¹‚é 
+          # stochastic projectionã«ãŠã‘ã‚‹å¹³å‡è¦ªé­šè³‡æºé‡ã‚’ç›®çš„ã®å€¤ã«ä¸€è‡´ã•ã›ã‚‹ 
           if(Frec$scenario=="ssb.mean"){
             return.obj <- (log(Frec$Blimit)-log(mean(fres.tmp$vssb[tmp,-1])))^2
           }                
@@ -511,15 +511,15 @@ future.vpa <-
     
     # future F matrix
     faa[] <- currentF*multi # *exp(rnorm(length(faa),0,F.sigma))
-    # ABCyearˆÈ‘O‚Ícurrent F‚ğg‚¤B
+    # ABCyearä»¥å‰ã¯current Fã‚’ä½¿ã†ã€‚
     faa[,fyears<min(ABC.year),] <- currentF*exp(rnorm(length(faa[,fyears<min(ABC.year),]),0,F.sigma))
     
-      ## VPAŠúŠÔ‚Æ«—ˆ—\‘ªŠúŠÔ‚ª”í‚Á‚Ä‚¢‚éê‡AVPAŠúŠÔ‚ÌF‚ÍVPA‚ÌŒ‹‰Ê‚ğg‚¤
+      ## VPAæœŸé–“ã¨å°†æ¥äºˆæ¸¬æœŸé–“ãŒè¢«ã£ã¦ã„ã‚‹å ´åˆã€VPAæœŸé–“ã®Fã¯VPAã®çµæœã‚’ä½¿ã†
       overlapped.years <- list(future=which(fyear.year %in% years),vpa=which(years %in% fyear.year))
       if(length(overlapped.years$future)>0){  
 #          for(jj in 1:length(vpayears.overlapped)){
               for(j in 1:length(overlapped.years$future)){
-                  if(any(res0$faa[,overlapped.years$vpa[j]]>0) && !is.null(res0$input$dat$waa[,overlapped.years$vpa[j]])){ # ‚à‚µfaa‚ªƒ[ƒ‚Å‚È‚¢‚È‚çiPMI‚Ìê‡A2012‚Ü‚Åƒf[ƒ^‚ª“ü‚Á‚Ä‚¢‚é‚ªAfaa‚Íƒ[ƒ‚É‚È‚Á‚Ä‚¢‚é‚Ì‚Å
+                  if(any(res0$faa[,overlapped.years$vpa[j]]>0) && !is.null(res0$input$dat$waa[,overlapped.years$vpa[j]])){ # ã‚‚ã—faaãŒã‚¼ãƒ­ã§ãªã„ãªã‚‰ï¼ˆPMIã®å ´åˆã€2012ã¾ã§ãƒ‡ãƒ¼ã‚¿ãŒå…¥ã£ã¦ã„ã‚‹ãŒã€faaã¯ã‚¼ãƒ­ã«ãªã£ã¦ã„ã‚‹ã®ã§
                       faa[,overlapped.years$future[j],] <- res0$faa[,overlapped.years$vpa[j]]
                       waa[,overlapped.years$future[j],] <- res0$input$dat$waa[,overlapped.years$vpa[j]]
                       if(!is.null(res0$input$dat$waa.catch)){
@@ -542,7 +542,7 @@ future.vpa <-
       eaa <- matrix(0,ntime,N)
       rec.tmp <- list(rec.resample=NULL,tmparg=NULL)
     
-    if (waa.fun){ #”N—î•Ê‘Ìd‚Ì—\‘ªŠÖ”
+    if (waa.fun){ #å¹´é½¢åˆ¥ä½“é‡ã®äºˆæ¸¬é–¢æ•°
       WAA <- res0$input$dat$waa
       NAA <- res0$naa
 #      nage <- nrow(WAA)
@@ -563,10 +563,10 @@ future.vpa <-
     
       set.seed(arglist$seed)        
 
-      # 1”N–Ú‚Ì”N—î‘g¬‚ğ“ü‚ê‚é
+      # 1å¹´ç›®ã®å¹´é½¢çµ„æˆã‚’å…¥ã‚Œã‚‹
       if(!start.year%in%years){
-          # VPAŒ‹‰Ê‚ª2011”N‚Ü‚ÅA«—ˆ—\‘ª‚ª2012”N‚Ìê‡
-          # «—ˆ—\‘ª‚ÌÅ‰‚Ì”N‚Ìİ’èGƒoƒŠƒG[ƒVƒ‡ƒ“‚ª‚ ‚è‚â‚â‚±‚µ‚¢‚Ì‚Å‚±‚±‚Åİ’è‚³‚ê‚é
+          # VPAçµæœãŒ2011å¹´ã¾ã§ã€å°†æ¥äºˆæ¸¬ãŒ2012å¹´ã®å ´åˆ
+          # å°†æ¥äºˆæ¸¬ã®æœ€åˆã®å¹´ã®è¨­å®šï¼›ãƒãƒªã‚¨ãƒ¼ã‚·ãƒ§ãƒ³ãŒã‚ã‚Šã‚„ã‚„ã“ã—ã„ã®ã§ã“ã“ã§è¨­å®šã•ã‚Œã‚‹
           if(start.year==(max(years)+1)){
             {if(is.null(res0$input$dat$M)){
                 M.lastyear <- M.org
@@ -581,7 +581,7 @@ future.vpa <-
                                      plus.group=plus.group)
             naa[1:nage,1,] <- tmp
 
-            # naa0‚ªgiven‚Ìê‡A‚±‚±‚Åã‘‚«
+            # naa0ãŒgivenã®å ´åˆã€ã“ã“ã§ä¸Šæ›¸ã
             if(!is.null(naa0)){
                 naa[,1,] <- naa0
                 if(is.null(faa0)) faa0 <- res0$Fc.at.age
@@ -606,7 +606,7 @@ future.vpa <-
                                rec.resample=rec.tmp$rec.resample,
                                rec.arg=rec.arg)
             eaa[1,] <- rec.tmp$rec.resample[1:N]
-            rec.arg$resid <- rec.tmp$rec.resample # ARƒIƒvƒVƒ‡ƒ“‚É‘Î‰
+            rec.arg$resid <- rec.tmp$rec.resample # ARã‚ªãƒ—ã‚·ãƒ§ãƒ³ã«å¯¾å¿œ
             
             if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg
             naa[1,1,] <- rec.tmp$rec
@@ -628,13 +628,13 @@ future.vpa <-
         if(!is.list(rec.new)){
           naa[1,1,] <- rec.new
         }
-        else{ # rec.new‚ªlist‚Ìê‡
+        else{ # rec.newãŒlistã®å ´åˆ
           naa[1,fyears%in%rec.new$year,] <- rec.new$rec
         }}
       
       for(i in 1:(ntime-1)){
        
-        #‹™Šl—Ê‚ªgiven‚Ìê‡
+        #æ¼ç²é‡ãŒgivenã®å ´åˆ
         if(!is.null(pre.catch) && fyears[i]%in%pre.catch$year){
           if(!is.null(pre.catch$wcatch)){
             if(fyears[i]<ABC.year){
@@ -654,7 +654,7 @@ future.vpa <-
             }
           }
           
-          # ‘I‘ğ—¦‚ğƒ‰ƒ“ƒ_ƒ€ƒTƒ“ƒvƒŠƒ“ƒO‚·‚éê‡
+          # é¸æŠç‡ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹å ´åˆ
 #          if(!is.null(random.select)) saa.tmp <- as.numeric(res0$saa[,colnames(res0$saa)==sample(random.select,1)])
           saa.tmp <- sweep(faa[,i,],2,apply(faa[,i,],2,max),FUN="/")
           tmp <- lapply(1:dim(naa)[[3]],
@@ -668,9 +668,9 @@ future.vpa <-
             faa.new <- NULL
         }
           
-          ## HCR‚ğg‚¤ê‡(“–”N‚Ì‘Œ¹—Ê‚©‚ç“–”N‚ÌF‚ğ•ÏX‚·‚é)
+          ## HCRã‚’ä½¿ã†å ´åˆ(å½“å¹´ã®è³‡æºé‡ã‹ã‚‰å½“å¹´ã®Fã‚’å¤‰æ›´ã™ã‚‹)
           if(!is.null(HCR) && fyears[i]>=ABC.year
-             && is.null(faa.new)) # <- pre.catch‚Å‹™Šl—Ê‚ğƒZƒbƒg‚µ‚Ä‚¢‚È‚¢
+             && is.null(faa.new)) # <- pre.catchã§æ¼ç²é‡ã‚’ã‚»ãƒƒãƒˆã—ã¦ã„ãªã„
           {
               tmp <- i+HCR$year.lag
               if(tmp>0){
@@ -686,24 +686,24 @@ future.vpa <-
               faa[,i,] <- ifelse(faa[,i,]<0,0,faa[,i,])
           }          
        
-          ## ‹™Šl‚µ‚Ä‚P”N•ª‘Oii‰Á“ü‚Í‚Ü‚¾‚¢‚ê‚Ä‚¢‚È‚¢j
+          ## æ¼ç²ã—ã¦ï¼‘å¹´åˆ†å‰é€²ï¼ˆåŠ å…¥ã¯ã¾ã ã„ã‚Œã¦ã„ãªã„ï¼‰
           tmp <- forward.calc.mat2(faa[,i,],naa[,i,],M[,i,],plus.group=plus.group)
-          # Šù‚É’l‚ª“ü‚Á‚Ä‚¢‚é‚Æ‚±‚ëi‚P”N–Ú‚Ì‰Á“ü—Êj‚Íœ‚¢‚Ä—‚”N‚ÌNAA‚ğ“ü‚ê‚é
+          # æ—¢ã«å€¤ãŒå…¥ã£ã¦ã„ã‚‹ã¨ã“ã‚ï¼ˆï¼‘å¹´ç›®ã®åŠ å…¥é‡ï¼‰ã¯é™¤ã„ã¦ç¿Œå¹´ã®NAAã‚’å…¥ã‚Œã‚‹
           naa.tmp <- naa[,i+1,]
           naa.tmp[is.na(naa.tmp)] <- tmp[is.na(naa.tmp)]          
           naa[,i+1, ] <- naa.tmp
         
-          ## “–”N‚Ì‰Á“ü‚ÌŒvZ
+          ## å½“å¹´ã®åŠ å…¥ã®è¨ˆç®—
           if(fyears[i+1]-min.age < start.year){
-              # QÆ‚·‚ée‹›‘Œ¹—Ê‚ªVPAŠúŠÔ‚Å‚ ‚éê‡AVPAŠúŠÔ‚ÌSSB‚ğ‚Æ‚Á‚Ä‚­‚é
+              # å‚ç…§ã™ã‚‹è¦ªé­šè³‡æºé‡ãŒVPAæœŸé–“ã§ã‚ã‚‹å ´åˆã€VPAæœŸé–“ã®SSBã‚’ã¨ã£ã¦ãã‚‹
               thisyear.ssb <- sum(res0$ssb[,as.character(fyears[i+1]-min.age)],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom
               thisyear.ssb <- rep(thisyear.ssb,N)              
               if(!is.null(ssb0)) thisyear.ssb <- colSums(ssb0)
           }
           else{
-              # ‚»‚¤‚Å‚È‚¢ê‡
+              # ãã†ã§ãªã„å ´åˆ
             if(waa.fun){
-                # “®“I‚Èwaa‚Í‘Î‰‚·‚é”N‚Ìwaa‚ğ‘‚«Š·‚¦‚½ã‚Åg‚¤H
+                # å‹•çš„ãªwaaã¯å¯¾å¿œã™ã‚‹å¹´ã®waaã‚’æ›¸ãæ›ãˆãŸä¸Šã§ä½¿ã†ï¼Ÿ
                 waa[2:nage,i+1-min.age,] <- t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,i+1-min.age,])+waa.rand[ii,i+1-min.age,]))))
 
             }
@@ -718,7 +718,7 @@ future.vpa <-
 #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg      
           rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb
           eaa[i+1,] <- rec.tmp$rec.resample[1:N]
-          rec.arg$resid <- rec.tmp$rec.resample # ARƒIƒvƒVƒ‡ƒ“‚É‘Î‰
+          rec.arg$resid <- rec.tmp$rec.resample # ARã‚ªãƒ—ã‚·ãƒ§ãƒ³ã«å¯¾å¿œ
 
       }
       
@@ -749,7 +749,7 @@ future.vpa <-
     
       ABC <- apply(as.matrix(vwcaa[fyears%in%ABC.year,,drop=F]),2,sum)
 
-      if(!is.null(rec.arg$resample)) if(rec.arg$resample==TRUE) eaa[] <- NA # resampling‚·‚éê‡‚É‚Íeaa‚É‚Í‚È‚É‚à“ü‚ê‚È‚¢
+      if(!is.null(rec.arg$resample)) if(rec.arg$resample==TRUE) eaa[] <- NA # resamplingã™ã‚‹å ´åˆã«ã¯eaaã«ã¯ãªã«ã‚‚å…¥ã‚Œãªã„
     
       fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,
                    maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
@@ -844,11 +844,11 @@ caa.est.mat <- function(naa,saa,waa,M,catch.obs,Pope){
   return(list(x=exp(tmp$minimum),caa=tmp2))
 }
 
-# HS—p; AR‚É‚Í‘Î‰‚µ‚Ä‚¢‚È‚¢‚ªAc·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚É‚Í‘Î‰‚µ‚Ä‚¢‚é
+# HSç”¨; ARã«ã¯å¯¾å¿œã—ã¦ã„ãªã„ãŒã€æ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã«ã¯å¯¾å¿œã—ã¦ã„ã‚‹
 HS.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # MesnilŠÖ”‚Ìparameter
-                                        resample=FALSE,resid=0, # c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éê‡Aresample=TRUE‚É‚µ‚ÄAresid‚ÉƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éc·i‘Î”j‚ğ“ü‚ê‚é
+                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnilé–¢æ•°ã®parameter
+                                        resample=FALSE,resid=0, # æ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹å ´åˆã€resample=TRUEã«ã—ã¦ã€residã«ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹æ®‹å·®ï¼ˆå¯¾æ•°ï¼‰ã‚’å…¥ã‚Œã‚‹
                                         bias.correction=TRUE)){
 
     rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb) 
@@ -868,14 +868,14 @@ HS.rec <- function(ssb,vpares,#deterministic=FALSE,
             rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)))
         }
     }
-  return(list(rec=rec,rec.resample=rec.arg$resid)) # b’è“I•ÏX
+  return(list(rec=rec,rec.resample=rec.arg$resid)) # æš«å®šçš„å¤‰æ›´
 }
 
-# RI—p; AR‚É‚Í‘Î‰‚µ‚Ä‚¢‚È‚¢‚ªAc·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚É‚Í‘Î‰‚µ‚Ä‚¢‚é
+# RIç”¨; ARã«ã¯å¯¾å¿œã—ã¦ã„ãªã„ãŒã€æ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã«ã¯å¯¾å¿œã—ã¦ã„ã‚‹
 RI.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # MesnilŠÖ”‚Ìparameter
-                                        resample=FALSE,resid=0, # c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éê‡Aresample=TRUE‚É‚µ‚ÄAresid‚ÉƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éc·i‘Î”j‚ğ“ü‚ê‚é
+                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnilé–¢æ•°ã®parameter
+                                        resample=FALSE,resid=0, # æ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹å ´åˆã€resample=TRUEã«ã—ã¦ã€residã«ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹æ®‹å·®ï¼ˆå¯¾æ•°ï¼‰ã‚’å…¥ã‚Œã‚‹
                                         bias.correction=TRUE)){
 
     rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb) # rec.arg$a*ssb/(1+rec.arg$b*ssb)    
@@ -896,15 +896,15 @@ RI.rec <- function(ssb,vpares,#deterministic=FALSE,
             rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)))
         }
     }
-  return(list(rec=rec,rec.resample=rec.arg$resid)) # b’è“I•ÏX
+  return(list(rec=rec,rec.resample=rec.arg$resid)) # æš«å®šçš„å¤‰æ›´
 }
 
 
-# RI—p; AR‚É‚Í‘Î‰‚µ‚Ä‚¢‚È‚¢‚ªAc·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚É‚Í‘Î‰‚µ‚Ä‚¢‚é
+# RIç”¨; ARã«ã¯å¯¾å¿œã—ã¦ã„ãªã„ãŒã€æ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã«ã¯å¯¾å¿œã—ã¦ã„ã‚‹
 BH.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # MesnilŠÖ”‚Ìparameter
-                                        resample=FALSE,resid=0, # c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éê‡Aresample=TRUE‚É‚µ‚ÄAresid‚ÉƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éc·i‘Î”j‚ğ“ü‚ê‚é
+                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnilé–¢æ•°ã®parameter
+                                        resample=FALSE,resid=0, # æ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹å ´åˆã€resample=TRUEã«ã—ã¦ã€residã«ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹æ®‹å·®ï¼ˆå¯¾æ•°ï¼‰ã‚’å…¥ã‚Œã‚‹
                                         bias.correction=TRUE)){
     rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
 #    rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb) 
@@ -924,14 +924,14 @@ BH.rec <- function(ssb,vpares,#deterministic=FALSE,
             rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)))
         }
     }
-  return(list(rec=rec,rec.resample=rec.arg$resid)) # b’è“I•ÏX
+  return(list(rec=rec,rec.resample=rec.arg$resid)) # æš«å®šçš„å¤‰æ›´
 }
 
-# ƒŠƒTƒ“ƒvƒŠƒ“ƒO—p(HS.rec, BH.rec, RI.rec‚Æ“¯“™)
+# ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ç”¨(HS.rec, BH.rec, RI.recã¨åŒç­‰)
 resample.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # MesnilŠÖ”‚Ìparameter
-                                resid=0, # c·ƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éê‡Aresample=TRUE‚É‚µ‚ÄAresid‚ÉƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éc·i‘Î”j‚ğ“ü‚ê‚é
+                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnilé–¢æ•°ã®parameter
+                                resid=0, # æ®‹å·®ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹å ´åˆã€resample=TRUEã«ã—ã¦ã€residã«ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹æ®‹å·®ï¼ˆå¯¾æ•°ï¼‰ã‚’å…¥ã‚Œã‚‹
                                 SR="HS",# or "BH","RI"
                                 bias.correction=TRUE)){
 
@@ -955,16 +955,16 @@ resample.rec <- function(ssb,vpares,#deterministic=FALSE,
             rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)))
         }
     }
-  return(list(rec=rec,rec.resample=rec.arg$resid)) # b’è“I•ÏX
+  return(list(rec=rec,rec.resample=rec.arg$resid)) # æš«å®šçš„å¤‰æ›´
 }
 
-# ‚µ‚«‚¢’l‚ğİ’è‚µA‚»‚Ì‹«ŠE‘OŒã‚ÅƒŠƒTƒ“ƒvƒŠƒ“ƒO‚·‚éc·‚ğ•Ï‚¦‚é
+# ã—ãã„å€¤ã‚’è¨­å®šã—ã€ãã®å¢ƒç•Œå‰å¾Œã§ãƒªã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ã™ã‚‹æ®‹å·®ã‚’å¤‰ãˆã‚‹
 resample_2block.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # MesnilŠÖ”‚Ìparameter
-                                resid.lower=0, # ‚µ‚«‚¢’l‚æ‚è‚à¬‚³‚¢‚Æ‚«‚Ìc·‚ÌƒZƒbƒg
-                                resid.higher=0, # ‚µ‚«‚¢’l‚æ‚è‚à‘å‚«‚¢‚Æ‚«‚Ìc·‚ÌƒZƒbƒg
-                                ssb.threshold=0, # ‚µ‚«‚¢’l
+                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnilé–¢æ•°ã®parameter
+                                resid.lower=0, # ã—ãã„å€¤ã‚ˆã‚Šã‚‚å°ã•ã„ã¨ãã®æ®‹å·®ã®ã‚»ãƒƒãƒˆ
+                                resid.higher=0, # ã—ãã„å€¤ã‚ˆã‚Šã‚‚å¤§ãã„ã¨ãã®æ®‹å·®ã®ã‚»ãƒƒãƒˆ
+                                ssb.threshold=0, # ã—ãã„å€¤
                                 SR="HS", # or "BH", "RI"
                                 bias.correction=TRUE)){
 
@@ -1007,22 +1007,22 @@ resample_2block.rec <- function(ssb,vpares,#deterministic=FALSE,
 #    else{
 #        rec <- c(rec0[1],exp(log(rec0[-1])+resid.set))
 #    }
-    return(list(rec=rec,rec.resample=rec.arg$resid)) # b’è“I•ÏX
+    return(list(rec=rec,rec.resample=rec.arg$resid)) # æš«å®šçš„å¤‰æ›´
 }
 
 
 
-# Hockey-stick(bias.correction‚ÌƒIƒvƒVƒ‡ƒ“‚ÍíœB‚Ç‚¤‚¹‚·‚é‚Ì‚Åj
+# Hockey-stick(bias.correctionã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¯å‰Šé™¤ã€‚ã©ã†ã›ã™ã‚‹ã®ã§ï¼‰
 HS.recAR <- function(ssb,vpares,#deterministic=FALSE,
                       rec.resample=NULL,
                       rec.arg=list(a=1000,b=1000,#gamma=0.01,
                                    sd=0.1, rho=0,
                                    resid=0)#, bias.correction=TRUE)
                       ){
-    ## Ä¶YŠÖŒW‚©‚ç‚Ì—\‘ª’l
+    ## å†ç”Ÿç”£é–¢ä¿‚ã‹ã‚‰ã®äºˆæ¸¬å€¤
 #    rec0 <- rec.arg$a*(ssb+sqrt(rec.arg$b^2+(rec.arg$gamma^2)/4)-sqrt((ssb-rec.arg$b)^2+(rec.arg$gamma^2)/4))
     rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb)     
-    rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # ©ŒÈ‘ŠŠÖ‚İ‚Ì—\‘ª’l
+    rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # è‡ªå·±ç›¸é–¢è¾¼ã¿ã®äºˆæ¸¬å€¤
 
     rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
     new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
@@ -1034,7 +1034,7 @@ HS.recAR <- function(ssb,vpares,#deterministic=FALSE,
 BH.recAR <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
                    rec.arg=list(a=1000,b=1000,sd=0.1,bias.correction=TRUE)){
   rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
-  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # ©ŒÈ‘ŠŠÖ‚İ‚Ì—\‘ª’l
+  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # è‡ªå·±ç›¸é–¢è¾¼ã¿ã®äºˆæ¸¬å€¤
   rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
   new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
   return(list(rec=rec,rec.resample=new.resid))
@@ -1044,13 +1044,13 @@ BH.recAR <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
 RI.recAR <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
                    rec.arg=list(a=1000,b=1000,sd=0.1,bias.correction=TRUE)){                   
     rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb) 
-    rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # ©ŒÈ‘ŠŠÖ‚İ‚Ì—\‘ª’l
+    rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # è‡ªå·±ç›¸é–¢è¾¼ã¿ã®äºˆæ¸¬å€¤
     rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
     new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
     return(list(rec=rec,rec.resample=new.resid))
 }
 
-## Allee effect (decompensation) ‚ ‚è‚ÌÄ¶YŠÖŒW
+## Allee effect (depensation) ã‚ã‚Šã®å†ç”Ÿç”£é–¢ä¿‚
 # Hockey-stick
 HS.recAR2 <- function(ssb,vpares,#deterministic=FALSE,
                      rec.resample=NULL,
@@ -1058,14 +1058,14 @@ HS.recAR2 <- function(ssb,vpares,#deterministic=FALSE,
                                   sd=0.1, rho=0, c=1,
                                   resid=0)#, bias.correction=TRUE)
 ){
-  ## Ä¶YŠÖŒW‚©‚ç‚Ì—\‘ª’l
+  ## å†ç”Ÿç”£é–¢ä¿‚ã‹ã‚‰ã®äºˆæ¸¬å€¤
   #    rec0 <- rec.arg$a*(ssb+sqrt(rec.arg$b^2+(rec.arg$gamma^2)/4)-sqrt((ssb-rec.arg$b)^2+(rec.arg$gamma^2)/4))
   a <- rec.arg$a
   b <- rec.arg$b
   c <- rec.arg$c
   rec0 <- ifelse(ssb>b,b*a,a*b*(ssb/b)^c)
   # rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb)     
-  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # ©ŒÈ‘ŠŠÖ‚İ‚Ì—\‘ª’l
+  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # è‡ªå·±ç›¸é–¢è¾¼ã¿ã®äºˆæ¸¬å€¤
   
   rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
   new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
@@ -1081,7 +1081,7 @@ BH.recAR2 <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
   c <- rec.arg$c
   rec0 <- (a/b)/(1+1/(b*ssb)^c)
   # rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
-  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # ©ŒÈ‘ŠŠÖ‚İ‚Ì—\‘ª’l
+  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # è‡ªå·±ç›¸é–¢è¾¼ã¿ã®äºˆæ¸¬å€¤
   rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
   new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
   return(list(rec=rec,rec.resample=new.resid))
@@ -1095,7 +1095,7 @@ RI.recAR2 <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
   c <- rec.arg$c
   rec0 <- a/(b*exp(1))*(b*ssb)^c*exp(c*(1-b*ssb))
   # rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb) 
-  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # ©ŒÈ‘ŠŠÖ‚İ‚Ì—\‘ª’l
+  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # è‡ªå·±ç›¸é–¢è¾¼ã¿ã®äºˆæ¸¬å€¤
   rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
   new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
   return(list(rec=rec,rec.resample=new.resid))
@@ -1119,7 +1119,7 @@ plot.futures <- function(fres.list,conf=c(0.1,0.5,0.9),target="SSB",legend.text=
 
 plot.future <- function(fres0,ylim.tmp=NULL,xlim.tmp=NULL,vpares=NULL,what=c(TRUE,TRUE,TRUE),conf=0.1,N.line=0,
                         label=c("Biomass","SSB","Catch"),is.legend=TRUE,add=FALSE,col=NULL,...){
-    ## ˆÃ–Ù‚ÉAvssb‚È‚Ç‚Ìmatrix‚Ì1—ñ–Ú‚ÍŒˆ’è˜_“I‚Èƒ‰ƒ“‚ÌŒ‹‰Ê‚Æ‰¼’è‚µ‚Ä‚¢‚é 
+    ## æš—é»™ã«ã€vssbãªã©ã®matrixã®1åˆ—ç›®ã¯æ±ºå®šè«–çš„ãªãƒ©ãƒ³ã®çµæœã¨ä»®å®šã—ã¦ã„ã‚‹ 
     if(is.null(col)) col <- 1                        
     matplot2 <- function(x,add=FALSE,...){
         if(add==FALSE) matplot(rownames(x),x,type="l",lty=c(2,1,2),col=col,xlab="Year",...)
@@ -1184,7 +1184,7 @@ plot.future <- function(fres0,ylim.tmp=NULL,xlim.tmp=NULL,vpares=NULL,what=c(TRU
   
 }
 
-#print.future <- function(fres){ # S3 method ‚ğg‚¢‚½‚¢‚ñ‚Å‚·‚ªA‚Ü‚¾‚¢‚Ü‚¢‚¿‚í‚©‚è‚Ü‚¹‚ñ
+#print.future <- function(fres){ # S3 method ã‚’ä½¿ã„ãŸã„ã‚“ã§ã™ãŒã€ã¾ã ã„ã¾ã„ã¡ã‚ã‹ã‚Šã¾ã›ã‚“
 #  cat(fres$ABC[1])
 #}
 #
@@ -1206,17 +1206,17 @@ ref.F2 <- function(res0,target.year=c(2018,2023),current.year=2011,Blim,
   return(Frec)
 }
 
-# 2012. 8. 3 -- ŠÇ—Šî€’lŒvZ‚ÍŠO‚Éo‚·
-getABC <- function(res.vpa, # VPA‚ÌŒ‹‰Ê
-                   res.ref, # ŠÇ—Šî€’lŒvZ‚ÌŒ‹‰Ê
-                   res.future, # «—ˆ—\‘ªŒvZ‚ÌŒ‹‰Ê
+# 2012. 8. 3 -- ç®¡ç†åŸºæº–å€¤è¨ˆç®—ã¯å¤–ã«å‡ºã™
+getABC <- function(res.vpa, # VPAã®çµæœ
+                   res.ref, # ç®¡ç†åŸºæº–å€¤è¨ˆç®—ã®çµæœ
+                   res.future, # å°†æ¥äºˆæ¸¬è¨ˆç®—ã®çµæœ
                    ref.case="all",
                    multi=NULL,
                    N=NULL,                   
                    SSBcur=1000,
                    Blim=1000,Bban=0,                   
-                   target.year=NULL, # NULL‚Ìê‡CABC.year+4
-                   catch.year=NULL, # 2013:2017‚È‚ÇA‹™Šl—Ê‚Ì•½‹Ï‚ğo‚µ‚½‚¢ŠúŠÔANULL‚Ìê‡AABC.year:ABC.year+4
+                   target.year=NULL, # NULLã®å ´åˆï¼ŒABC.year+4
+                   catch.year=NULL, # 2013:2017ãªã©ã€æ¼ç²é‡ã®å¹³å‡ã‚’å‡ºã—ãŸã„æœŸé–“ã€NULLã®å ´åˆã€ABC.year:ABC.year+4
                    is.plot=TRUE){
   if(all(ref.case=="all")) ref.case <- names(res.ref$summary)
   if(all(is.null(multi))) multi <- rep(1,length(ref.case))
@@ -1249,13 +1249,13 @@ getABC <- function(res.vpa, # VPA‚ÌŒ‹‰Ê
     input.tmp$is.plot <- FALSE
     input.tmp$N <- N
 
-    # Frec‚Åg‚í‚ê‚½ƒV[ƒh‚Í‚Æ‚Á‚Ä‚¨‚©‚È‚¢‚Æ‚¢‚¯‚È‚¢=> seed‚ÍFrec‚Ìˆø”‚ÌŠO‚Éo‚·‚±‚ÆI
+    # Frecã§ä½¿ã‚ã‚ŒãŸã‚·ãƒ¼ãƒ‰ã¯ã¨ã£ã¦ãŠã‹ãªã„ã¨ã„ã‘ãªã„=> seedã¯Frecã®å¼•æ•°ã®å¤–ã«å‡ºã™ã“ã¨ï¼
     input.tmp$Frec <- NULL
     
     fres[[i]] <- do.call(future.vpa, input.tmp)
     ABC[i] <- fres[[i]]$ABC[1]
 #    browser()    
-    if(res.future$input$ts>1){ # ts>2‚Ìê‡A‹™Šl—Ê‚È‚Ç‚ÌŒvZ‚Í—ï”N‚ğg‚¤
+    if(res.future$input$ts>1){ # ts>2ã®å ´åˆã€æ¼ç²é‡ãªã©ã®è¨ˆç®—ã¯æš¦å¹´ã‚’ä½¿ã†
       input.tmp <- res.future$input
       input.tmp$multi <- tmp      
       input.tmp$ts <- 1
@@ -1270,14 +1270,14 @@ getABC <- function(res.vpa, # VPA‚ÌŒ‹‰Ê
             sum(fres[[i]]$biom[,years==ABC.year,1],na.rm=T)
     catch.year <- (ABC.year):(ABC.year+4)
     wcatch[,i] <- apply(fres[[i]]$vwcaa[years %in% (catch.year),-1],1,mean,na.rm=T)
-    catch5u[i] <- quantile(fres[[i]]$vwcaa[years==max(catch.year),-1],probs=0.9) # catch‚Í2017”N
+    catch5u[i] <- quantile(fres[[i]]$vwcaa[years==max(catch.year),-1],probs=0.9) # catchã¯2017å¹´
     catch5l[i] <- quantile(fres[[i]]$vwcaa[years==max(catch.year),-1],probs=0.1) 
 
     tmp.year <- years %in% target.year
     if(is.null(SSBcur)) SSBcur <- fres[[i]]$vssb[years==(ABC.year),1]    
       
     SSBcur.tmp[i] <- SSBcur
-    upperSSBlim[i] <- sum(fres[[i]]$vssb[tmp.year,-1]>Blim)/N*100 # SSB‚Í2018”N“–‰‚Ü‚Å
+    upperSSBlim[i] <- sum(fres[[i]]$vssb[tmp.year,-1]>Blim)/N*100 # SSBã¯2018å¹´å½“åˆã¾ã§
     upperSSBcur[i] <- sum(fres[[i]]$vssb[tmp.year,-1]>SSBcur)/N*100
     SSBlim[i] <- Blim
   }
@@ -1306,9 +1306,9 @@ getABC <- function(res.vpa, # VPA‚ÌŒ‹‰Ê
   rownames(res.ref$ABC)[8] <- paste("upperSSBlim at",target.year)  
   fres0 <- fres
   write.table(round(res.ref$ABC,2),sep="\t")
-  save(fres0,file="fres0.R") # «—ˆ—\‘ª‚Ì‘SŒ‹‰Ê‚Ífres0.R‚É‚ÄƒZ[ƒu‚³‚ê‚Ä‚¢‚é
+  save(fres0,file="fres0.R") # å°†æ¥äºˆæ¸¬ã®å…¨çµæœã¯fres0.Rã«ã¦ã‚»ãƒ¼ãƒ–ã•ã‚Œã¦ã„ã‚‹
 
-  # Kobe chart‚Ìì¬
+  # Kobe chartã®ä½œæˆ
   kobe.array <- array(NA,dim=c(length(fres),nrow(fres[[1]]$vssb),5))
   dimnames(kobe.array) <- list(names(ABC),rownames(fres[[1]]$vssb),
                                c("catch","Biomass","SSB","upperBlimit","upperBban"))
@@ -1320,10 +1320,10 @@ getABC <- function(res.vpa, # VPA‚ÌŒ‹‰Ê
 }  
 
 #----------------------------------------------------------------------
-#----------   ‰Á“ü‚ÉŠÖ‚·‚éŠÖ”B‹›íspecific        -------------------
+#----------   åŠ å…¥ã«é–¢ã™ã‚‹é–¢æ•°ã€‚é­šç¨®specific        -------------------
 #----------------------------------------------------------------------
 
-#-------------- VPA mode —pŠÖ” -------------------
+#-------------- VPA mode ç”¨é–¢æ•° -------------------
 caa.est <- function(naa,saa,waa,M,catch.obs,Pope){
   saa <- saa/max(saa)
   tmpfunc <- function(x,catch.obs=catch.obs,naa=naa,saa=saa,waa=waa,M=M,out=FALSE,Pope=Pope){
@@ -1347,7 +1347,7 @@ caa.est <- function(naa,saa,waa,M,catch.obs,Pope){
 }
 
 
-#---------------- Œ‹‰Ê‚ÌŠm‚©‚ß—pŠÖ” ---------------------
+#---------------- çµæœã®ç¢ºã‹ã‚ç”¨é–¢æ•° ---------------------
 # --------USAGE-------
 # tdata <- get.tdata("vpa_results.csv")
 # check.res(res.pms,list(fres,fres),tdata,digits=2,type="%")
@@ -1376,8 +1376,8 @@ get.data <- function(tfile){
 }
 
 
-### Œ‹‰Ê‚Ì“üo—Í
-## Œ‹‰Ê‚Ìo—Í
+### çµæœã®å…¥å‡ºåŠ›
+## çµæœã®å‡ºåŠ›
 out.vpa <- function(res=NULL, # VPA result 
                     rres=NULL, # reference point 
                     fres=NULL, # future projection result (not nessesarily)
@@ -1502,7 +1502,7 @@ read.vpa <- function(tfile,
                      Fc.label="Current F",
                      naa.label="numbers at age",
                      Blimit=NULL,
-                     Pope=NULL, # VPAŒvZ‚É‚Ç‚Á‚¿‚ğg‚Á‚Ä‚¢‚é‚©“ü‚ê‚éiTRUE or FALSEjBƒfƒtƒHƒ‹ƒg‚ÍNULL‚Åcaa,faa,naa‚ÌŠÖŒW‚©‚ç©“®”»•Ê‚·‚é‚ªA©“®”»•Ê‚ÌŒ‹‰Ê‚Ícat‚Åo—Í‚³‚ê‚é‚Ì‚ÅA‚»‚ê‚ğ‚İ‚Ä³‚µ‚­”»’f‚³‚ê‚Ä‚¢‚é‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢B
+                     Pope=NULL, # VPAè¨ˆç®—æ™‚ã«ã©ã£ã¡ã‚’ä½¿ã£ã¦ã„ã‚‹ã‹å…¥ã‚Œã‚‹ï¼ˆTRUE or FALSEï¼‰ã€‚ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯NULLã§caa,faa,naaã®é–¢ä¿‚ã‹ã‚‰è‡ªå‹•åˆ¤åˆ¥ã™ã‚‹ãŒã€è‡ªå‹•åˆ¤åˆ¥ã®çµæœã¯catã§å‡ºåŠ›ã•ã‚Œã‚‹ã®ã§ã€ãã‚Œã‚’ã¿ã¦æ­£ã—ãåˆ¤æ–­ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèªã—ã¦ãã ã•ã„ã€‚
                      fc.year=NULL){
 
     tmpdata <- read.csv(tfile,header=F,as.is=F,colClasses="character")
@@ -1566,7 +1566,7 @@ read.vpa <- function(tfile,
     
   dres$Blimit <- Blimit
 
-    ## catch at age‚ÌŒvZ‚Épope‚Ì‹ß—®‚ğg‚Á‚Ä‚¢‚é‚©‚Ç‚¤‚©A’Êí‚ÍŠO‚©‚çî•ñ‚Æ‚µ‚Ä—^‚¦‚Ä‚Ù‚µ‚¢‚Æ‚±‚ë‚¾‚ªA—^‚¦‚ç‚ê‚È‚¢ê‡A“ü—Í‚³‚ê‚½caa,faa,naa‚ÌŠÖŒW‚ğŒ©‚ÄAPope‚ÅŒvZ‚³‚ê‚Ä‚¢‚é‚Ì‚©‚»‚¤‚Å‚È‚¢‚Ì‚©‚ğ”»’f‚µ‚Ädres$input$Pope‚É“ü‚ê‚é
+    ## catch at ageã®è¨ˆç®—æ™‚ã«popeã®è¿‘ä¼¼å¼ã‚’ä½¿ã£ã¦ã„ã‚‹ã‹ã©ã†ã‹ã€é€šå¸¸ã¯å¤–ã‹ã‚‰æƒ…å ±ã¨ã—ã¦ä¸ãˆã¦ã»ã—ã„ã¨ã“ã‚ã ãŒã€ä¸ãˆã‚‰ã‚Œãªã„å ´åˆã€å…¥åŠ›ã•ã‚ŒãŸcaa,faa,naaã®é–¢ä¿‚ã‚’è¦‹ã¦ã€Popeã§è¨ˆç®—ã•ã‚Œã¦ã„ã‚‹ã®ã‹ãã†ã§ãªã„ã®ã‹ã‚’åˆ¤æ–­ã—ã¦dres$input$Popeã«å…¥ã‚Œã‚‹
   if(is.null(Pope)){
       caa.pope  <- dres$naa*(1-exp(-dres$faa))*exp(-dres$input$dat$M/2)
         diff.pope <- mean(unlist(dres$input$dat$caa/caa.pope))
@@ -1684,49 +1684,49 @@ get.kobematrix <- function(fres,Blim=0,Bban=0,ssb=TRUE){
     else  tmp <- fres$vbiom[,-1]
     
     res <- data.frame(
-        # ‹™Šl—Ê
+        # æ¼ç²é‡
         catch.deterministic=fres$vwcaa[,1],
-        # ‘Œ¹—Ê
+        # è³‡æºé‡
         biom.deterministic=fres$vbiom[,1],
-        # e‹›—Ê
+        # è¦ªé­šé‡
         ssb.deterministic=fres$vssb[,1],
-        # Blim‰ñ•œŠm—¦
+        # Blimå›å¾©ç¢ºç‡
         probability.upper.Blim=apply(tmp>Blim,1,mean)*100,
-        # BbanˆÈãŠm—¦
+        # Bbanä»¥ä¸Šç¢ºç‡
         probability.upper.Bban=apply(tmp>Bban,1,mean)*100)
 
     return(res)
 }
 
 ############
-# RVPA‚ÌŒ‹‰Ê‚©‚çMSY‚ğŒvZ‚·‚éŠÖ”
-# å‚Ég‚¤‚Ì‚ÍSR.est(Ä¶YŠÖŒW‚ğƒtƒBƒbƒg‚µAMSY‚ğŒvZ)‚ÆSR.plotiƒtƒBƒbƒg‚µ‚½Œ‹‰Ê‚ğƒvƒƒbƒgj
+# RVPAã®çµæœã‹ã‚‰MSYã‚’è¨ˆç®—ã™ã‚‹é–¢æ•°
+# ä¸»ã«ä½¿ã†ã®ã¯SR.est(å†ç”Ÿç”£é–¢ä¿‚ã‚’ãƒ•ã‚£ãƒƒãƒˆã—ã€MSYã‚’è¨ˆç®—)ã¨SR.plotï¼ˆãƒ•ã‚£ãƒƒãƒˆã—ãŸçµæœã‚’ãƒ—ãƒ­ãƒƒãƒˆï¼‰
 ############
 
 ############
-# g‚¢•û
+# ä½¿ã„æ–¹
 ############
 if(0){
-                                        # ƒ}ƒTƒo‘¾•½—m‚Ìƒf[ƒ^‚ğ“Ç‚İ‚İ; modelA‚Ívpa‚Ì‹A‚è’l
+                                        # ãƒã‚µãƒå¤ªå¹³æ´‹ã®ãƒ‡ãƒ¼ã‚¿ã‚’èª­ã¿è¾¼ã¿; modelAã¯vpaã®å¸°ã‚Šå€¤
     modelA <- readRDS("modelA_res.Rdata")
-                                        # MSYŒvZ    
+                                        # MSYè¨ˆç®—    
     res1 <- SR.est(modelA, 
-                   what.est=c(TRUE,TRUE,TRUE), # HS,BH,RI‚Ì‚Ç‚ê‚ğƒtƒBƒbƒg‚·‚é‚©B
-                   bref.year=2013:2015, # ¶•¨ƒpƒ‰ƒ[ƒ^‚ğ—p‚¢‚éŠúŠÔ
-                   years=c(1970:2013), # ŠÏ‘ª‚³‚ê‚½SRŠÖŒW‚ğ—p‚¢‚éŠúŠÔ
-                   er.log=TRUE, # Œë·BTRUE‚Å‘Î”³‹KŒë·
-                   fc.year=2013:2015, # MSYŒvZ‚Ì‚³‚¢‚É‘I‘ğ—¦‚ğ•½‹Ï‚·‚éŠúŠÔ
-                   seed=1 # —”‚ÌíB‚±‚Ì’l‚ğ•Ï‚¦‚é‚Æ—”‚ª•Ï‚í‚é‚Ì‚ÅŒ‹‰Ê‚à•Ï‚í‚é
+                   what.est=c(TRUE,TRUE,TRUE), # HS,BH,RIã®ã©ã‚Œã‚’ãƒ•ã‚£ãƒƒãƒˆã™ã‚‹ã‹ã€‚
+                   bref.year=2013:2015, # ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ç”¨ã„ã‚‹æœŸé–“
+                   years=c(1970:2013), # è¦³æ¸¬ã•ã‚ŒãŸSRé–¢ä¿‚ã‚’ç”¨ã„ã‚‹æœŸé–“
+                   er.log=TRUE, # èª¤å·®ã€‚TRUEã§å¯¾æ•°æ­£è¦èª¤å·®
+                   fc.year=2013:2015, # MSYè¨ˆç®—ã®ã•ã„ã«é¸æŠç‡ã‚’å¹³å‡ã™ã‚‹æœŸé–“
+                   seed=1 # ä¹±æ•°ã®ç¨®ã€‚ã“ã®å€¤ã‚’å¤‰ãˆã‚‹ã¨ä¹±æ•°ãŒå¤‰ã‚ã‚‹ã®ã§çµæœã‚‚å¤‰ã‚ã‚‹
                    )
     
-    res1$summary # „’èƒpƒ‰ƒ[ƒ^AŠÇ—Šî€’l‚ÌŠm”F
-                                        # Ä¶Yƒpƒ‰ƒ[ƒ^a,b‚ÍƒGƒNƒZƒ‹‚Æ‚Ù‚Úˆê’v‚·‚é‚Í‚¸‚¾‚ªAŠÇ—Šî€’l‚ÍŠm—¦“IƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“‚ğ‚à‚Æ‚ÉŒvZ‚µ‚Ä‚¢‚é‚Ì‚ÅAƒGƒNƒZƒ‹‚Æ‚Í•K‚¸‚µ‚àˆê’v‚µ‚È‚¢B}‚T“‚­‚ç‚¢‚Ìˆá‚¢‚Í‚ ‚é‚İ‚½‚¢
+    res1$summary # æ¨å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã€ç®¡ç†åŸºæº–å€¤ã®ç¢ºèª
+                                        # å†ç”Ÿç”£ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿a,bã¯ã‚¨ã‚¯ã‚»ãƒ«ã¨ã»ã¼ä¸€è‡´ã™ã‚‹ã¯ãšã ãŒã€ç®¡ç†åŸºæº–å€¤ã¯ç¢ºç‡çš„ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’ã‚‚ã¨ã«è¨ˆç®—ã—ã¦ã„ã‚‹ã®ã§ã€ã‚¨ã‚¯ã‚»ãƒ«ã¨ã¯å¿…ãšã—ã‚‚ä¸€è‡´ã—ãªã„ã€‚Â±ï¼•ï¼…ãã‚‰ã„ã®é•ã„ã¯ã‚ã‚‹ã¿ãŸã„
 
-                                        # Œ‹‰Ê‚Ìƒvƒƒbƒg(HS‚Ì‚İ)
+                                        # çµæœã®ãƒ—ãƒ­ãƒƒãƒˆ(HSã®ã¿)
     res1.pred <- plot.SR(res1,what.plot=c("hs"))
-                                        # Œ‹‰Ê‚Ìƒvƒƒbƒg(HS,BH,RI‚ğ‘S‚Ä)
+                                        # çµæœã®ãƒ—ãƒ­ãƒƒãƒˆ(HS,BH,RIã‚’å…¨ã¦)
     res1.pred <- plot.SR(res1,what.plot=c("hs","bh","ri"))
-    allplot(res1) # —v–ñ•\EƒOƒ‰ƒt‚Ìo—Í
+    allplot(res1) # è¦ç´„è¡¨ãƒ»ã‚°ãƒ©ãƒ•ã®å‡ºåŠ›
 
 }
 
@@ -1872,7 +1872,7 @@ get.stat3 <- function(fout,eyear=0,hsp=NULL,tmp.year=NULL,unit.waa=1){
 
     Faa <- as.data.frame(t(fout$multi * fout$input$res0$Fc.at.age))
     colnames(Faa) <- paste("F",dimnames(fout$naa)[[1]],sep="")
-    res.stat1 <- cbind(a,Faa) # ‚±‚±‚Ü‚ÅAget.stat
+    res.stat1 <- cbind(a,Faa) # ã“ã“ã¾ã§ã€get.stat
 
     agename <- dimnames(fout$naa)[[1]]
     nage <- dim(fout$naa)[[1]]    
@@ -1931,7 +1931,7 @@ plot.SR <- function(srres,what.plot=c("hs","bh","ri","sl"),xyscale=c(1.3,1.3),xs
 
     col.tmp <- c(rgb(0.3,0.8,0.3,alpha=0.8),rgb(0.8,0.3,0.3,alpha=0.8),rgb(0.3,0.3,0.8,alpha=0.8))
     
-    # xscale=TRUE‚Ìê‡AB0‚ªÄ¶YŠÖŒW‚É‚æ‚Á‚ÄˆÙ‚È‚Á‚Ä‚­‚é‚Ì‚ÅA•¡”‚Ìd‚Ë‘‚«‚Í‚µ‚È‚¢‚±S‚ÆI
+    # xscale=TRUEã®å ´åˆã€B0ãŒå†ç”Ÿç”£é–¢ä¿‚ã«ã‚ˆã£ã¦ç•°ãªã£ã¦ãã‚‹ã®ã§ã€è¤‡æ•°ã®é‡ã­æ›¸ãã¯ã—ãªã„ã“Sã¨ï¼
 #    tmp <- which(names(srres)==what.plot)
     tmp <- which(names(srres)%in%what.plot)
     resid <- list()
@@ -2006,8 +2006,8 @@ plot.SR <- function(srres,what.plot=c("hs","bh","ri","sl"),xyscale=c(1.3,1.3),xs
     return(list(AICc=AICc,resid=resid,x=xpred,y=ypred))
 }
 
-# MSYŒvZ‚Å‰¼’è‚³‚ê‚Ä‚¢‚é‘I‘ğ—¦‚Å‹™Šl‚µ‚½‚Æ‚«‰½”{‚É‚È‚é‚©H => ŒvZŠÔ‚ªAAB
-# %SPRHMSY‚ğ’B¬‚µ‚½‚ÌF‚ğ%SPRŠ·Z
+# MSYè¨ˆç®—ã§ä»®å®šã•ã‚Œã¦ã„ã‚‹é¸æŠç‡ã§æ¼ç²ã—ãŸã¨ãä½•å€ã«ãªã‚‹ã‹ï¼Ÿ => è¨ˆç®—æ™‚é–“ãŒã€ã€ã€‚
+# %SPRï¼ŸMSYã‚’é”æˆã—ãŸæ™‚ã®Fã‚’%SPRæ›ç®—
 plot.Kobe0 <- function(srres,pickB="",what.plot="hs",plot.history=FALSE){
     tmp <- which(names(srres)==what.plot)-3
     years <- colnames(srres$vpares$ssb)
@@ -2113,7 +2113,7 @@ show.likeprof <- function(res){
     title("Diagnostics")    
 }
 
-# ’PˆÊ‚Ícatch at age‚Ì”ö”‚ª100–œ”öAwaa‚ªg‚Ìê‡Ad—Ê‚Ì’PˆÊ‚ª‚¿‚å‚¤‚Çƒgƒ“‚É‚È‚é‚æ‚¤‚É‚È‚Á‚Ä‚¢‚éB
+# å˜ä½ã¯catch at ageã®å°¾æ•°ãŒ100ä¸‡å°¾ã€waaãŒgã®å ´åˆã€é‡é‡ã®å˜ä½ãŒã¡ã‚‡ã†ã©ãƒˆãƒ³ã«ãªã‚‹ã‚ˆã†ã«ãªã£ã¦ã„ã‚‹ã€‚
 
 plot.info <- function(a,xpos=7){
     plot(1:(nrow(a)+2),type="n",ylab="",xlab="",axes=F)
@@ -2251,10 +2251,10 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 }
 
 get.SPR <- function(dres,target.SPR=NULL,byear.current=NULL){
-    # F‚Ì—ğj“I‚È%SPR‚ğŒ©‚Ä‚İ‚é                                                                             
-    # –ˆ”NˆÙ‚È‚éF‚â¶•¨ƒpƒ‰ƒ[ƒ^‚É‘Î‚µ‚ÄAYPR,SPRASPR0‚ª‚Ç‚Ì‚­‚ç‚¢•Ï‚í‚Á‚Ä‚¢‚é‚Ì‚©Œ©‚é(RƒR[ƒh—á2)
-    # target.SPR‚ª—^‚¦‚ç‚ê‚é‚ÆAtarget.SPRi“j‚Æ‚µ‚Ä—^‚¦‚½”š‚É‘Î‰‚·‚éSPR’l‚É‘Î‚·‚éF‚Ìæ”‚ào—Í‚·‚é
-    #   NULL‚Ìê‡‚É‚ÍFc.at.age‚Å—^‚¦‚ç‚ê‚½F‚É‘Î‚·‚éæ”‚Æ‚·‚é
+    # Fã®æ­´å²çš„ãª%SPRã‚’è¦‹ã¦ã¿ã‚‹                                                                             
+    # æ¯å¹´ç•°ãªã‚‹Fã‚„ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã«å¯¾ã—ã¦ã€YPR,SPRã€SPR0ãŒã©ã®ãã‚‰ã„å¤‰ã‚ã£ã¦ã„ã‚‹ã®ã‹è¦‹ã‚‹(Rã‚³ãƒ¼ãƒ‰ä¾‹2)
+    # target.SPRãŒä¸ãˆã‚‰ã‚Œã‚‹ã¨ã€target.SPRï¼ˆï¼…ï¼‰ã¨ã—ã¦ä¸ãˆãŸæ•°å­—ã«å¯¾å¿œã™ã‚‹SPRå€¤ã«å¯¾ã™ã‚‹Fã®ä¹—æ•°ã‚‚å‡ºåŠ›ã™ã‚‹
+    #   NULLã®å ´åˆã«ã¯Fc.at.ageã§ä¸ãˆã‚‰ã‚ŒãŸFã«å¯¾ã™ã‚‹ä¹—æ•°ã¨ã™ã‚‹
     #   F=Ftarget.SPR/Fcurrent
     #
 
@@ -2269,16 +2269,16 @@ get.SPR <- function(dres,target.SPR=NULL,byear.current=NULL){
     dres$ysdata <- matrix(0,ncol(dres$faa),5)
     dimnames(dres$ysdata) <- list(colnames(dres$faa),c("perSPR","YPR","SPR","SPR0","F/Ftarget"))
     for(i in 1:ncol(dres$faa)){
-	dres$Fc.at.age <- dres$faa[,i] # Fc.at.age‚É‘ÎÛ”N‚ÌFAA‚ğ“ü‚ê‚é
+	dres$Fc.at.age <- dres$faa[,i] # Fc.at.ageã«å¯¾è±¡å¹´ã®FAAã‚’å…¥ã‚Œã‚‹
         if(all(dres$Fc.at.age>0)){
-            byear <- colnames(dres$faa)[i] # ‰½”N‚Ì¶•¨ƒpƒ‰ƒ[ƒ^‚ğg‚¤‚©                                       
-            # RVPA‚Ìref.FŠÖ”‚ÅYPR‚È‚Ç‚ğŒvZB                                                                  
-            # ”z•z‚µ‚Ä‚¢‚é1.3‚©‚ç1.4‚ÉƒAƒbƒvƒf[ƒg‚µ‚Ä‚¢‚é‚Ì‚ÅAV‚µ‚¢‚Ù‚¤‚ÌŠÖ”‚ğg‚¤‚±‚Æ(•Ô‚è’l‚ª‚¿‚å‚Á‚Æˆá‚¤)
+            byear <- colnames(dres$faa)[i] # ä½•å¹´ã®ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ä½¿ã†ã‹                                       
+            # RVPAã®ref.Fé–¢æ•°ã§YPRãªã©ã‚’è¨ˆç®—ã€‚                                                                  
+            # é…å¸ƒã—ã¦ã„ã‚‹1.3ã‹ã‚‰1.4ã«ã‚¢ãƒƒãƒ—ãƒ‡ãƒ¼ãƒˆã—ã¦ã„ã‚‹ã®ã§ã€æ–°ã—ã„ã»ã†ã®é–¢æ•°ã‚’ä½¿ã†ã“ã¨(è¿”ã‚Šå€¤ãŒã¡ã‚‡ã£ã¨é•ã†)
             a <- ref.F(dres,waa.year=byear,maa.year=byear,M.year=byear,rps.year=2000:2011,
                        pSPR=round(target.SPR),
                        F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*2),
                                      length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)
-            # YPR‚Æ%SPR
+            # YPRã¨%SPR
             dres$ysdata[i,1:2] <- (as.numeric(rev(a$ypr.spr[which(a$ypr.spr$Frange2Fcurrent==1)[1],2:3])))
             # SPR                                                                                               
             dres$ysdata[i,3] <- a$spr0*dres$ysdata[i,1]/100
@@ -2298,12 +2298,12 @@ get.SPR <- function(dres,target.SPR=NULL,byear.current=NULL){
 
 
 get.SRdata <- function(vpares,R.dat=NULL,SSB.dat=NULL,years=as.numeric(colnames(vpares$naa))){
-    # R.dat‚ÆSSB.dat‚¾‚¯‚ª—^‚¦‚ç‚ê‚½ê‡A‚»‚ê‚ğg‚Á‚ÄƒVƒ“ƒvƒ‹‚ÉƒtƒBƒbƒg‚·‚é
+    # R.datã¨SSB.datã ã‘ãŒä¸ãˆã‚‰ã‚ŒãŸå ´åˆã€ãã‚Œã‚’ä½¿ã£ã¦ã‚·ãƒ³ãƒ—ãƒ«ã«ãƒ•ã‚£ãƒƒãƒˆã™ã‚‹
     if(!is.null(R.dat) & !is.null(SSB.dat)){
         dat <- data.frame(R=R.dat,SSB=SSB.dat,year=1:length(R.dat))
     }
     else{
-    # ƒf[ƒ^‚Ì®Œ`
+    # ãƒ‡ãƒ¼ã‚¿ã®æ•´å½¢
         n <- ncol(vpares$naa)
         L <- as.numeric(rownames(vpares$naa)[1])
 
@@ -2311,12 +2311,12 @@ get.SRdata <- function(vpares,R.dat=NULL,SSB.dat=NULL,years=as.numeric(colnames(
         dat$R <- as.numeric(vpares$naa[1,])
         dat$SSB <- as.numeric(colSums(vpares$ssb,na.rm=TRUE))
         dat$year <- as.numeric(colnames(vpares$ssb))
-    # ‰Á“ü”N—î•ª‚¾‚¯‚¸‚ç‚·
+    # åŠ å…¥å¹´é½¢åˆ†ã ã‘ãšã‚‰ã™
         dat$R <- dat$R[(L+1):n]
         dat$SSB <- dat$SSB[1:(n-L)]
         dat$year <- dat$year[(L+1):n]
 
-                                        # ƒf[ƒ^‚Ì’Šo
+                                        # ãƒ‡ãƒ¼ã‚¿ã®æŠ½å‡º
         dat <- as.data.frame(dat)
         dat <- dat[dat$year%in%years,]
     }
@@ -2332,32 +2332,32 @@ plot.SRdata <- function(SRdata){
 est.MSY <- function(vpares,farg,
                    seed=1,
                    nyear=NULL,
-                   eyear=0, # «—ˆ—\‘ª‚ÌÅŒã‚Ìeyear+1”N•ª‚ğ•½tó‘Ô‚Æ‚·‚é
-#                   FUN=median, # ‹™Šl—Ê‚Ì‰½‚ğÅ‘å‰»‚·‚é‚©H
-                   FUN=mean, # ‹™Šl—Ê‚Ì‰½‚ğÅ‘å‰»‚·‚é‚©H                   
-                   N=1000, # stochasticŒvZ‚·‚é‚Æ‚«‚ÌŒJ‚è•Ô‚µ‰ñ”
-                   onlylower.pgy=FALSE,# PGYŒvZ‚·‚é‚Æ‚«‰ºŒÀ‚Ì‚İŒvZ‚·‚éiŒvZŠÔÈ—ª‚Ì‚½‚ßj
+                   eyear=0, # å°†æ¥äºˆæ¸¬ã®æœ€å¾Œã®eyear+1å¹´åˆ†ã‚’å¹³è¡¡çŠ¶æ…‹ã¨ã™ã‚‹
+#                   FUN=median, # æ¼ç²é‡ã®ä½•ã‚’æœ€å¤§åŒ–ã™ã‚‹ã‹ï¼Ÿ
+                   FUN=mean, # æ¼ç²é‡ã®ä½•ã‚’æœ€å¤§åŒ–ã™ã‚‹ã‹ï¼Ÿ                   
+                   N=1000, # stochasticè¨ˆç®—ã™ã‚‹ã¨ãã®ç¹°ã‚Šè¿”ã—å›æ•°
+                   onlylower.pgy=FALSE,# PGYè¨ˆç®—ã™ã‚‹ã¨ãä¸‹é™ã®ã¿è¨ˆç®—ã™ã‚‹ï¼ˆè¨ˆç®—æ™‚é–“çœç•¥ã®ãŸã‚ï¼‰
                    optim.method="optimize",
-                   max.target="catch.mean", # method="optimize"ˆÈŠO‚ğg‚¤‚Æ‚«A‚Ç‚Ìw•W‚ğÅ‘å‰»‚·‚é‚©B‘¼‚ÌƒIƒvƒVƒ‡ƒ“‚Æ‚µ‚Ä‚Í"catch.median" (‹™Šl—Ê‚Ìmedian‚ÌÅ‘å‰»)
-                   calc.yieldcurve=TRUE, # yield curve‚ğ³Šm‚ÉŒvZ‚·‚é‚©‚Ç‚¤‚©BTRUE‚¾‚ÆŒvZŠÔ‚ª—]Œv‚É‚©‚©‚éBFALSE‚¾‚ÆAyield curve‚Í³Šm‚Å‚Í‚È‚¢
+                   max.target="catch.mean", # method="optimize"ä»¥å¤–ã‚’ä½¿ã†ã¨ãã€ã©ã®æŒ‡æ¨™ã‚’æœ€å¤§åŒ–ã™ã‚‹ã‹ã€‚ä»–ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨ã—ã¦ã¯"catch.median" (æ¼ç²é‡ã®medianã®æœ€å¤§åŒ–)
+                   calc.yieldcurve=TRUE, # yield curveã‚’æ­£ç¢ºã«è¨ˆç®—ã™ã‚‹ã‹ã©ã†ã‹ã€‚TRUEã ã¨è¨ˆç®—æ™‚é–“ãŒä½™è¨ˆã«ã‹ã‹ã‚‹ã€‚FALSEã ã¨ã€yield curveã¯æ­£ç¢ºã§ã¯ãªã„
                    Blimit=0, 
-                   trace.multi=c(seq(from=0,to=0.9,by=0.1),1,seq(from=1.1,to=2,by=0.1),3:5,7,20,100), # Fmsy‚ğ’Tõ‚µ‚½‚èAYield curve‚ğ‘‚­‚Æ‚«‚ÉƒOƒŠƒbƒhƒT[ƒ`‚ğ‚·‚é‚Æ‚«‚ÌF‚Ì‚İBFcurrent‚É‘Î‚·‚éæ”BF‚ªˆÙí‚É‘å‚«‚¢ê‡Ae‹›=0‚É‚È‚Á‚Ä‰Á“üNA
+                   trace.multi=c(seq(from=0,to=0.9,by=0.1),1,seq(from=1.1,to=2,by=0.1),3:5,7,20,100), # Fmsyã‚’æ¢ç´¢ã—ãŸã‚Šã€Yield curveã‚’æ›¸ãã¨ãã«ã‚°ãƒªãƒƒãƒ‰ã‚µãƒ¼ãƒã‚’ã™ã‚‹ã¨ãã®Fã®åˆ»ã¿ã€‚Fcurrentã«å¯¾ã™ã‚‹ä¹—æ•°ã€‚FãŒç•°å¸¸ã«å¤§ãã„å ´åˆã€è¦ªé­š=0ã«ãªã£ã¦åŠ å…¥ï¼NA
                    is.plot=TRUE,
-                   PGY=NULL, # PGYŠÇ—Šî€’l‚ğŒvZ‚·‚é‚©‚Ç‚¤‚©BŒvZ‚µ‚È‚¢ê‡‚ÍNULL‚ğAŒvZ‚·‚éê‡‚Íc(0.8,0.9,0.95)‚Ì‚æ‚¤‚ÉŠ„‡‚ğ“ü‚ê‚é
-                   B0percent=NULL, # B0_XX%‚ÌŠÇ—Šî€’l‚ğŒvZ‚·‚é‚©‚Ç‚¤‚©
-                   Bempirical=NULL, # “Á’è‚Ìe‹›—Ê‚ğƒ^[ƒQƒbƒg‚É‚·‚éê‡
-                   long.term=20, # ¢‘ãŠÔ‚Ì‰½”{”NŒã‚Ìó‘Ô‚ğ•½tó‘Ô‚Æ‰¼’è‚·‚é‚©
-                   GT=NULL, # ¢‘ãŠÔ‚ğŠO‚©‚ç—^‚¦‚éê‡(¢‘ãŠÔ‚ÌŒvZ‚Í«—ˆ—\‘ª‚Åg‚í‚ê‚é”N—î•Ê¬n—¦E©‘R€–SŒW”‚ğg‚Á‚Ä‚¢‚é‚ªA•Ê‚Ìƒpƒ‰ƒ[ƒ^‚ğ—^‚¦‚½‚¢ê‡‚È‚ÇAŠO‚ÅŒvZ‚µ‚Ä‚±‚±‚É“ü‚ê‚é)
-                   mY=5, # ©ŒÈ‘ŠŠÖ‚ğl—¶‚µ‚ÄŠÇ—Šî€’l‚ğŒvZ‚·‚éê‡A•½tó‘Ô‚©‚ç‰½”Ni‚ß‚é‚©                   
-                   resid.year=0, # AR‚ ‚è‚Ìê‡AÅ‹ß”N‰½”N•ª‚Ìc·‚ğ•½‹Ï‚·‚é‚©
-                   current.resid=NULL # c·‚Ì’l‚ğ’¼Ú“ü‚ê‚éê‡Bã‚Ì”N”‚ªİ’è‚³‚ê‚Ä‚¢‚Ä‚à‚±‚¿‚ç‚ªİ’è‚³‚ê‚½‚ç‚±‚Ì’l‚ğg‚¤
+                   PGY=NULL, # PGYç®¡ç†åŸºæº–å€¤ã‚’è¨ˆç®—ã™ã‚‹ã‹ã©ã†ã‹ã€‚è¨ˆç®—ã—ãªã„å ´åˆã¯NULLã‚’ã€è¨ˆç®—ã™ã‚‹å ´åˆã¯c(0.8,0.9,0.95)ã®ã‚ˆã†ã«å‰²åˆã‚’å…¥ã‚Œã‚‹
+                   B0percent=NULL, # B0_XX%ã®ç®¡ç†åŸºæº–å€¤ã‚’è¨ˆç®—ã™ã‚‹ã‹ã©ã†ã‹
+                   Bempirical=NULL, # ç‰¹å®šã®è¦ªé­šé‡ã‚’ã‚¿ãƒ¼ã‚²ãƒƒãƒˆã«ã™ã‚‹å ´åˆ
+                   long.term=20, # ä¸–ä»£æ™‚é–“ã®ä½•å€å¹´å¾Œã®çŠ¶æ…‹ã‚’å¹³è¡¡çŠ¶æ…‹ã¨ä»®å®šã™ã‚‹ã‹
+                   GT=NULL, # ä¸–ä»£æ™‚é–“ã‚’å¤–ã‹ã‚‰ä¸ãˆã‚‹å ´åˆ(ä¸–ä»£æ™‚é–“ã®è¨ˆç®—ã¯å°†æ¥äºˆæ¸¬ã§ä½¿ã‚ã‚Œã‚‹å¹´é½¢åˆ¥æˆç†Ÿç‡ãƒ»è‡ªç„¶æ­»äº¡ä¿‚æ•°ã‚’ä½¿ã£ã¦ã„ã‚‹ãŒã€åˆ¥ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ä¸ãˆãŸã„å ´åˆãªã©ã€å¤–ã§è¨ˆç®—ã—ã¦ã“ã“ã«å…¥ã‚Œã‚‹)
+                   mY=5, # è‡ªå·±ç›¸é–¢ã‚’è€ƒæ…®ã—ã¦ç®¡ç†åŸºæº–å€¤ã‚’è¨ˆç®—ã™ã‚‹å ´åˆã€å¹³è¡¡çŠ¶æ…‹ã‹ã‚‰ä½•å¹´é€²ã‚ã‚‹ã‹                   
+                   resid.year=0, # ARã‚ã‚Šã®å ´åˆã€æœ€è¿‘å¹´ä½•å¹´åˆ†ã®æ®‹å·®ã‚’å¹³å‡ã™ã‚‹ã‹
+                   current.resid=NULL # æ®‹å·®ã®å€¤ã‚’ç›´æ¥å…¥ã‚Œã‚‹å ´åˆã€‚ä¸Šã®å¹´æ•°ãŒè¨­å®šã•ã‚Œã¦ã„ã¦ã‚‚ã“ã¡ã‚‰ãŒè¨­å®šã•ã‚ŒãŸã‚‰ã“ã®å€¤ã‚’ä½¿ã†
                    ){
 
     require(tidyverse)
 
-### “à•”‚Åg‚¤‚½‚ß‚ÌŠÖ”’è‹`
-    ## Å¬‰»‚Ì‚½‚ß‚ÌŠÖ”
-    ## ƒVƒ~ƒ…ƒŒ[ƒVƒ‡ƒ“‰ñ”‚Ô‚ñ‚Ì‹™Šl—Ê‚ÌFUNimean, geomean, medianj‚ğÅ‘å‰»‚·‚éF‚ğ‘I‚Ô
+### å†…éƒ¨ã§ä½¿ã†ãŸã‚ã®é–¢æ•°å®šç¾©
+    ## æœ€å°åŒ–ã®ãŸã‚ã®é–¢æ•°
+    ## ã‚·ãƒŸãƒ¥ãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³å›æ•°ã¶ã‚“ã®æ¼ç²é‡ã®FUNï¼ˆmean, geomean, medianï¼‰ã‚’æœ€å¤§åŒ–ã™ã‚‹Fã‚’é¸ã¶
     msy.objfun <- function(x,f.arg,FUN=FUN,eyear=eyear){
       f.arg$multi <- x
       fout <- do.call(future.vpa,f.arg)
@@ -2421,8 +2421,8 @@ est.MSY <- function(vpares,farg,
         return(list(out,fout))
     }    
 
-### ŠÖ”’è‹`‚¨‚í‚è
-    ## ¢‘ãŠÔ‚ğŒvZ
+### é–¢æ•°å®šç¾©ãŠã‚ã‚Š
+    ## ä¸–ä»£æ™‚é–“ã‚’è¨ˆç®—
     if(is.null(GT)){
         GT <- Generation.Time(vpares,maa.year=farg$maa.year,
                               M.year=farg$M.year)  # Generation Time
@@ -2432,9 +2432,9 @@ est.MSY <- function(vpares,farg,
     }
     trace.N <- N        
     years <- sort(as.numeric(rev(names(vpares$naa))[1:5]))
-    nY <- nyear+1    # ‚±‚ê•K—vHH
+    nY <- nyear+1    # ã“ã‚Œå¿…è¦ï¼Ÿï¼Ÿ
 
-    ## ˆø”‚Ì’²®
+    ## å¼•æ•°ã®èª¿æ•´
     b0 <- numeric() # B0
     fout <- fout0 <- trace <- Fhist <- fout.HS.5par <- list()
 
@@ -2449,15 +2449,15 @@ est.MSY <- function(vpares,farg,
     farg.tmp$det.run <- FALSE
 
     if(!is.null(farg.tmp$pre.catch)){
-        farg.tmp$pre.catch <- NULL # pre.catchƒIƒvƒVƒ‡ƒ“‚ª‚ ‚é‚Æ‚¤‚Ü‚­‚¢‚©‚È‚¢‚Ì‚Å‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é
+        farg.tmp$pre.catch <- NULL # pre.catchã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹ã¨ã†ã¾ãã„ã‹ãªã„ã®ã§ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹
         cat("notice: option \"pre.catch\" is turned off in estimating MSY.\n")
     }
     if(!is.null(farg.tmp$rec.new)){
-        farg.tmp$rec.new <- NULL # rec.newƒvƒVƒ‡ƒ“‚ª‚ ‚é‚Æ‚¤‚Ü‚­‚¢‚©‚È‚¢‚Ì‚Å‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é
+        farg.tmp$rec.new <- NULL # rec.newãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹ã¨ã†ã¾ãã„ã‹ãªã„ã®ã§ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹
         cat("notice: option \"rec.new\" is turned off in estimating MSY.\n")            
     }
 
-    # B0‚ÌŒvZ
+    # B0ã®è¨ˆç®—
     farg.tmp$multi <- 0
     fout0 <- do.call(future.vpa,farg.tmp)
     B0 <- get.stat3(fout0,eyear=eyear,hsp=Blimit)
@@ -2475,7 +2475,7 @@ est.MSY <- function(vpares,farg,
     cat("Estimating MSY\n")
     if(optim.method=="optimize"){
         tmp <- optimize(msy.objfun,range.tmp,f.arg=farg.tmp,eyear=eyear,FUN=FUN)
-        # •Ç‚É‚ ‚½‚Á‚Ä‚¢‚éŒÀ‚è‘±‚¯‚é
+        # å£ã«ã‚ãŸã£ã¦ã„ã‚‹é™ã‚Šç¶šã‘ã‚‹
         while(sum(round(tmp$minimum,3)==range.tmp)>0){
             tmp0 <- round(tmp$minimum,3)==range.tmp
             range.tmp <- sort(c(range.tmp[tmp0],
@@ -2484,7 +2484,7 @@ est.MSY <- function(vpares,farg,
             tmp <- optimize(msy.objfun,range.tmp,f.arg=farg.tmp,eyear=eyear,FUN=FUN)
         }
         farg.msy <- farg.tmp
-        farg.msy$multi <- tmp$minimum # Fc.at.a * multi‚ªFmsy
+        farg.msy$multi <- tmp$minimum # Fc.at.a * multiãŒFmsy
         cat("F multiplier=",tmp$minimum,"\n")
         fout.msy <- do.call(future.vpa,farg.msy)
         fout.msy$input$multi <- fout.msy$multi
@@ -2494,7 +2494,7 @@ est.MSY <- function(vpares,farg,
             trace$table <- trace$table[order(trace$table$fmulti),]
         }
     }
-    # optimize‚Å‚È‚­grid‚Å‚â‚éê‡
+    # optimizeã§ãªãgridã§ã‚„ã‚‹å ´åˆ
     else{
         Fmulti <- seq(from=min(range.tmp),to=max(range.tmp),by=0.01)
         trace.tmp <- trace.func(farg.tmp,eyear,hsp=Blimit,fmulti=Fmulti,trace.N=trace.N)
@@ -2511,7 +2511,7 @@ est.MSY <- function(vpares,farg,
     rownames(MSY) <- "MSY"
 #    cat(" SSB=",MSY$"ssb.mean","\n")    
     
-    ## PGY‚ÌŒvZ
+    ## PGYã®è¨ˆç®—
     fout.PGY <- list()
     PGYstat <- NULL
     if(!is.null(PGY)){
@@ -2552,7 +2552,7 @@ est.MSY <- function(vpares,farg,
         }
     ###
 
-    ## B0_%‚ÌŒvZ
+    ## B0_%ã®è¨ˆç®—
     fout.B0percent <- list()
     B0stat <- NULL
     if(!is.null(B0percent)){
@@ -2582,7 +2582,7 @@ est.MSY <- function(vpares,farg,
         }
 ###
 
-    ## “Á’è‚ÌSSB‚ğ–Úw‚·ê‡
+    ## ç‰¹å®šã®SSBã‚’ç›®æŒ‡ã™å ´åˆ
     fout.Bempirical <- list()
     Bempirical.stat <- NULL
     if(!is.null(Bempirical)){
@@ -2623,7 +2623,7 @@ est.MSY <- function(vpares,farg,
     sumvalue <- bind_cols(sumvalue,refvalue[,substr(colnames(refvalue),1,1)=="F"])
     
 
-### AR‚ ‚è‚Ìê‡‚ÌŠÇ—Šî€’l‚ÌŒvZi•½tó‘Ô‚©‚ç5”N•ªi‚ß‚½‚Æ‚«‚Ì’lj
+### ARã‚ã‚Šã®å ´åˆã®ç®¡ç†åŸºæº–å€¤ã®è¨ˆç®—ï¼ˆå¹³è¡¡çŠ¶æ…‹ã‹ã‚‰5å¹´åˆ†é€²ã‚ãŸã¨ãã®å€¤ï¼‰
 
     if(resid.year > 0 && is.null(current.resid)){
         current.resid <- mean(rev(fout.msy$input$rec.arg$resid)[1:resid.year]) 
@@ -2689,7 +2689,7 @@ est.MSY <- function(vpares,farg,
               2,unlist(sumvalue$SSB),FUN="/")
     colnames(ssb.ar.mean) <- rownames(sumvalue$SSB)
     
-    ### Œ‹‰Ê‚Ìƒvƒƒbƒg‚È‚Ç
+    ### çµæœã®ãƒ—ãƒ­ãƒƒãƒˆãªã©
 
     trace$table <- subset(trace$table,fmulti>0)
     
@@ -2752,7 +2752,7 @@ get.perform <- function(fout0,Blimit=0,longyear=50,smallcatch=0.5,N=NULL,
     stat2 <- data.frame(t(as.data.frame(strsplit(colnames(stat2),"-"))),value=as.numeric(stat2))
     rownames(stat2) <- NULL
 
-    # waa‚É‚æ‚é‰Ád•½‹Ï”N—î&‘g¬
+    # waaã«ã‚ˆã‚‹åŠ é‡å¹³å‡å¹´é½¢&çµ„æˆ
     xx <- subset(stat2,X1=="TB" & X2=="MA")
     nage <- sum(!is.na(xx$value))
     tmp <- c(rep(2,ceiling(nage/3)),rep(3,ceiling(nage/3)))
@@ -2771,16 +2771,16 @@ get.perform <- function(fout0,Blimit=0,longyear=50,smallcatch=0.5,N=NULL,
     large.portion2 <- tapply(xx$bvalue[!is.na(xx$bvalue)],tmp,sum,na.rm=T)
     stat1$largefish.catch <- large.portion2[names(large.portion2)==3]/sum(large.portion2)    
 
-    # ‹™Šl—Ê<0.5•½‹Ï‹™Šl—Ê‚Ì•p“x
+    # æ¼ç²é‡<0.5å¹³å‡æ¼ç²é‡ã®é »åº¦
     if(is.null(tmp.year)) tmp.year <- nrow(fout0$vwcaa)
     stat1$catch.safe <- 1/mean(fout0$vwcaa[tmp.year,]<smallcatch*mean(fout0$vwcaa[tmp.year,]))
     stat1$catch.safe <- ifelse(stat1$catch.safe>longyear,longyear,stat1$catch.safe)
     
-    # e‹›—Ê<Blimit‚Ì•p“x@¨@Šm—¦‚Ì‹t”
+    # è¦ªé­šé‡<Blimitã®é »åº¦ã€€â†’ã€€ç¢ºç‡ã®é€†æ•°
     stat1$ssb.safe <- 1/stat1$"lower.HSpoint"
     stat1$ssb.safe <- ifelse(stat1$ssb.safe>longyear,longyear,stat1$ssb.safe)
 
-    # ABC.year‚©‚ç5”N–Ú‚Ü‚Å‚Ì•½‹Ï—İÏ‹™Šl—Ê
+    # ABC.yearã‹ã‚‰5å¹´ç›®ã¾ã§ã®å¹³å‡ç´¯ç©æ¼ç²é‡
     short.catch <- numeric()
     for(i in 1:length(shortyear)){
         years <- fout0$input$ABC.year:(fout0$input$ABC.year+shortyear[i])
@@ -2789,7 +2789,7 @@ get.perform <- function(fout0,Blimit=0,longyear=50,smallcatch=0.5,N=NULL,
     names(short.catch) <- paste("short.catch",shortyear,sep="")
     short.catch <- as.data.frame(t(short.catch))
 
-    # •½tó‘Ô‚É‚È‚Á‚½”N
+    # å¹³è¡¡çŠ¶æ…‹ã«ãªã£ãŸå¹´
     years <- names(fout0$vssb[,1])[-1]
     heikou.diff <- which(diff(fout0$vssb[,1])/fout0$vssb[-1,1]<0.01)
     if(length(heikou.diff)>0) stat1$eq.year <- years[min(heikou.diff)] else stat1$eq.year <- Inf 
@@ -2811,7 +2811,7 @@ plotRadial <- function(index,base=1,col.tmp=NULL,lwd=2,...){
                 labels=colnames(index),
                 radial.lim=c(0,1.5),clockwise=TRUE,start=1,
                 line.col=c(NA,col.tmp),
-                poly.col=c(rgb(40/255,96/255,163/255,0.2),rep(NA,nrow(index2)-1)), # MSY‚¾‚¯F‚Å“h‚é
+                poly.col=c(rgb(40/255,96/255,163/255,0.2),rep(NA,nrow(index2)-1)), # MSYã ã‘è‰²ã§å¡—ã‚‹
                 ...
                 )
     refname <- rownames(index)
@@ -2826,23 +2826,23 @@ plotRadial <- function(index,base=1,col.tmp=NULL,lwd=2,...){
 }
 
 
-## ŠÇ—Šî€’l‚ğæ‚èo‚·ŠÖ”
+## ç®¡ç†åŸºæº–å€¤ã‚’å–ã‚Šå‡ºã™é–¢æ•°
 get.Bref <- function(res,SRfunc="hs",B0=c(0.3),SPR0=c(0.3),HS=c(1,1.3),PGY=c("PGY_0.9_upper_hs","PGY_0.9_lower_hs")){
     sumref <- res$summary[rownames(res$summary)==SRfunc,]
     refpoints <- list()
-    ## MSYŠÇ—Šî€’l‚ğƒsƒbƒNƒAƒbƒv
+    ## MSYç®¡ç†åŸºæº–å€¤ã‚’ãƒ”ãƒƒã‚¯ã‚¢ãƒƒãƒ—
     refpoints$BMSY <- sumref$"SSB_MSY"
 
-    ## B0Šî€‚ÌŠÇ—Šî€’l‚ÍB0~“
-    ## B0‚Ì’l‚Ímout$summary$"B0(SSB)"‚É‚ ‚éB‚P”Ô–Ú‚ªHS‚ÌŒ‹‰Ê
-    refpoints$B0per <- sumref$"B0(SSB)"[1] * B0 # B0_10,20,30,35,40%‚Ì’l
+    ## B0åŸºæº–ã®ç®¡ç†åŸºæº–å€¤ã¯B0Ã—ï¼…
+    ## B0ã®å€¤ã¯mout$summary$"B0(SSB)"ã«ã‚ã‚‹ã€‚ï¼‘ç•ªç›®ãŒHSã®çµæœ
+    refpoints$B0per <- sumref$"B0(SSB)"[1] * B0 # B0_10,20,30,35,40%ã®å€¤
     names(refpoints$B0per) <- paste(B0*100,"%",sep="")
 
-    ## B_HSŠÖ˜A‚ÌŠÇ—Šî€’l
+    ## B_HSé–¢é€£ã®ç®¡ç†åŸºæº–å€¤
     refpoints$BHS <- sumref$b[1] *  HS
     names(refpoints$BHS) <- paste("B_HSx",HS,sep="")
 
-    ## B_PGYŠÖ˜A‚ÌŠÇ—Šî€’l(HS‚ğ‚à‚Æ‚É‚µ‚½‚à‚Ì‚ÍPGY.biom.hs‚É‚ ‚è‚Ü‚·)
+    ## B_PGYé–¢é€£ã®ç®¡ç†åŸºæº–å€¤(HSã‚’ã‚‚ã¨ã«ã—ãŸã‚‚ã®ã¯PGY.biom.hsã«ã‚ã‚Šã¾ã™)
     x <- res$PGY.biom.hs["ssb.mean"]
     refpoints$BPGY <- x[match(PGY,rownames(x)),1]
     names(refpoints$BPGY) <- PGY
@@ -2872,8 +2872,8 @@ plot.RP <- function(rdata,RP=NULL,biomass.scale=1,ymax=1,is.text=TRUE){
         }
     }
 }
-#### ‘Œ¹—Ê‚ÌãÏ‚İƒOƒ‰ƒt‚ğ‘‚­
-plotBfish <- function(res0, # SR.est‚ÌŒ‹‰Ê
+#### è³‡æºé‡ã®ä¸Šç©ã¿ã‚°ãƒ©ãƒ•ã‚’æ›¸ã
+plotBfish <- function(res0, # SR.estã®çµæœ
                       Bref,                      
                       unit.waa=1,ssb.max=Inf,
                       target="hs",biomass.scale=1000,pngfile="fish.png"){
@@ -2912,10 +2912,10 @@ plotBfish <- function(res0, # SR.est‚ÌŒ‹‰Ê
 #            ylim=c(0,max(tb2)),xlim=c(0,ssb.max))            
                                         #    menplot(range1,cbind(c(-100,-100),rep(max(tb2)*1.5,2)),col=gray(0.9),border=NA)
                                         #    menplot(range2,cbind(c(-100,-100),rep(max(tb2)*1.5,2)),col=gray(0.7),border=NA)
-    # ŠÇ—Šî€’l‚Ìƒvƒƒbƒg
+    # ç®¡ç†åŸºæº–å€¤ã®ãƒ—ãƒ­ãƒƒãƒˆ
     plot.RP(Bref,biomass.scale=biomass.scale,ymax=max(tb3)*1.1)
 
-    # ‰ß‹‚ÌŒn—ñ
+    # éå»ã®æ™‚ç³»åˆ—
 #        matpoints(ssb,tb2[,1],type="l",lwd=2,col="gray",lty=3)
         points(x <- colSums(res0$vpares$ssb)/biomass.scale,
                y <- colSums(res0$vpares$baa)/biomass.scale,type="o",
@@ -2924,7 +2924,7 @@ plotBfish <- function(res0, # SR.est‚ÌŒ‹‰Ê
         text(x[1],y[1],colnames(x)[1],adj=0)
         text(rev(x[1]),rev(y)[1],rev(colnames(x))[1],adj=0)
 
-    ## Ï‚İã‚°ƒOƒ‰ƒt
+    ## ç©ã¿ä¸Šã’ã‚°ãƒ©ãƒ•
     non.na <- !is.na(ssb)
     for(i in 1:ncol(tb2)) menplot(ssb[non.na], cbind(0,tb2)[non.na,i:(i+1)],col=col.tmp1[i],border=NA)
     title("Total biomass",line=-1,adj=0.1)    
@@ -2975,9 +2975,9 @@ plotBfish <- function(res0, # SR.est‚ÌŒ‹‰Ê
 
 #        points(x <- apply(fout0$vssb,1,mean)[1:10]/biomass.scale,
 #               y <- apply(fout0$vwcaa,1,mean)[1:10]/biomass.scale,col="blue",type="o",pch=20,lwd=3)
-#        text(rev(x)[1],rev(y)[1],paste("Œ»İ‚ÌF‚Å‚Ì10”N«—ˆ—\‘ª"),adj=-0.1,col="blue")
+#        text(rev(x)[1],rev(y)[1],paste("ç¾åœ¨ã®Fã§ã®10å¹´å°†æ¥äºˆæ¸¬"),adj=-0.1,col="blue")
 
-        # ‹›‚Ìƒvƒƒbƒg
+        # é­šã®ãƒ—ãƒ­ãƒƒãƒˆ
         waa.tmp <- (apply(res0$vpares$input$dat$waa,1,mean))^(1/3)*10
         waa.tmp <- waa.tmp/max(waa.tmp) * 0.9
         x <- tc2[which.min(abs(ssb-ssb.max*0.88)),]
@@ -2991,7 +2991,7 @@ plotBfish <- function(res0, # SR.est‚ÌŒ‹‰Ê
 
     title("Total catch",line=-1,adj=0.1)
     
-    ## “w—Í—Ê‚âCV‚Ìƒvƒƒbƒg
+    ## åŠªåŠ›é‡ã‚„CVã®ãƒ—ãƒ­ãƒƒãƒˆ
     tmp <- round(ssb*biomass.scale)>0 & !is.na(ssb)
     matplot(ssb,tres0$fmulti,type="l",ylab="Efforts (Current=1)",col=1,lwd=2,
             xaxs="i",yaxs="i",xlab=paste("SSB (",biomass.scale,"MT)",sep=""),xlim=c(0,ssb.max),
@@ -3012,8 +3012,8 @@ plotBfish <- function(res0, # SR.est‚ÌŒ‹‰Ê
     
 }
 
-## kobe.matrix‚ÌŒvZ
-# Pr(B<Btarget)‚Ì‚İ‚ğ•Ô‚·’Pƒ‚È‚â‚Â
+## kobe.matrixã®è¨ˆç®—
+# Pr(B<Btarget)ã®ã¿ã‚’è¿”ã™å˜ç´”ãªã‚„ã¤
 get.kobemat <- function(fout,N=fout$input$N,nyear=fout$input$nyear,Btarget=0,
                       fmulti=seq(from=0.3,to=1,by=0.1)){
     multi.org <- 1
@@ -3032,7 +3032,7 @@ get.kobemat <- function(fout,N=fout$input$N,nyear=fout$input$nyear,Btarget=0,
     invisible(prob.btarget)
 }
 
-# Btarget‚ÍƒxƒNƒgƒ‹‚Å“ü—ÍA•½‹Ïe‹›—Ê‚È‚Ç‚ào—Í
+# Btargetã¯ãƒ™ã‚¯ãƒˆãƒ«ã§å…¥åŠ›ã€å¹³å‡è¦ªé­šé‡ãªã©ã‚‚å‡ºåŠ›
 get.kobemat2 <- function(fout,N=fout$input$N,nyear=fout$input$nyear,Btarget=0,
                       fmulti=seq(from=0.3,to=1,by=0.1),target.name=1:length(Btarget)){
     multi.org <- 1
@@ -3046,7 +3046,7 @@ get.kobemat2 <- function(fout,N=fout$input$N,nyear=fout$input$nyear,Btarget=0,
         fres.short[[i]] <- do.call(future.vpa,farg)
     }
 
-    # Œ‹‰Ê‚Ìæ‚èo‚µ
+    # çµæœã®å–ã‚Šå‡ºã—
     prob.btarget <- list()
     for(i in 1:length(Btarget)){
 		prob.btarget[[i]] <- sapply(fres.short,function(x) apply(x$vssb>Btarget,1,mean))
@@ -3097,11 +3097,11 @@ plot.kobemat2 <- function(yy,...){
 }
 
 ####################
-### ¼“ˆ‰Á•M # 2018/06/07
+### è¥¿å¶‹åŠ ç­† # 2018/06/07
 
-## ‰Á“ü‚Ìc·‚Ì©ŒÈ‘ŠŠÖ‚ğl—¶‚µ‚½Ä¶YŠÖŒW‚Ì„’è
-## L1ƒmƒ‹ƒ€iÅ¬â‘Î’lj‚à„’è‚Å‚«‚é (sigma‚ÍSD)
-## TMB = TRUE‚Åmarginal likelihood (.cppƒtƒ@ƒCƒ‹‚ª•K—v)
+## åŠ å…¥ã®æ®‹å·®ã®è‡ªå·±ç›¸é–¢ã‚’è€ƒæ…®ã—ãŸå†ç”Ÿç”£é–¢ä¿‚ã®æ¨å®š
+## L1ãƒãƒ«ãƒ ï¼ˆæœ€å°çµ¶å¯¾å€¤ï¼‰ã‚‚æ¨å®šã§ãã‚‹ (sigmaã¯SD)
+## TMB = TRUEã§marginal likelihood (.cppãƒ•ã‚¡ã‚¤ãƒ«ãŒå¿…è¦)
 
 fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep(1,length(SRdata$year)),length=20){
   
@@ -3286,16 +3286,16 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
   return(Res)
 }
 
-### ¼“ˆ‰Á•M
-# Allee effect (decompensation)‚ ‚è‚ÌÄ¶YŠÖŒW‚Ì„’è—pŠÖ” (c.est=FALSE‚Æ‚·‚ê‚Îfit.SR‚Æ“¯‚¶)
+### è¥¿å¶‹åŠ ç­†
+# Allee effect (depensation)ã‚ã‚Šã®å†ç”Ÿç”£é–¢ä¿‚ã®æ¨å®šç”¨é–¢æ•° (c.est=FALSEã¨ã™ã‚Œã°fit.SRã¨åŒã˜)
 fit.SR2 <- function(SRdata,
                     SR="HS",
                     method="L2",
                     AR=1,
                     hessian=FALSE,
                     w=rep(1,length(SRdata$year)),
-                    length=20, #parameter (a,b) ‚Ì‰Šú’l‚ğŒˆ‚ß‚é‚Æ‚«‚Égrid search‚·‚é”
-                    c.est = TRUE #Allee effect‚ğ„’è‚·‚é‚©‚Ç‚¤‚©(c>1‚Ådepensation (Allee-like), c<1‚Åcompensation)
+                    length=20, #parameter (a,b) ã®åˆæœŸå€¤ã‚’æ±ºã‚ã‚‹ã¨ãã«grid searchã™ã‚‹æ•°
+                    c.est = TRUE #Allee effectã‚’æ¨å®šã™ã‚‹ã‹ã©ã†ã‹(c>1ã§depensation (Allee-like), c<1ã§compensation)
 ){
   
   argname <- ls()
@@ -3426,7 +3426,7 @@ fit.SR2 <- function(SRdata,
 plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",
                       ylab.tmp=ifelse(yaxis=="U","U/Umsy","F/Fmsy"),
                       xlab.tmp="SSB/SSBmsy",title.tmp="",HCR=NULL,
-                      yaxis="U" # y²‚É‚È‚É‚ğ‚Æ‚é‚©BU‚Ìê‡‚Í‹™Šl—¦BF‚Ìê‡‚Í F=-log(1-U)‚Æ‚µ‚ÄŒvZ‚µ‚½fishing mortality
+                      yaxis="U" # yè»¸ã«ãªã«ã‚’ã¨ã‚‹ã‹ã€‚Uã®å ´åˆã¯æ¼ç²ç‡ã€‚Fã®å ´åˆã¯ F=-log(1-U)ã¨ã—ã¦è¨ˆç®—ã—ãŸfishing mortality
                       ){ # HCR=list(beta=0.8)
     
     if (is.null(vpares$wcaa)) vpares$wcaa <- vpares$input$dat$caa * vpares$input$dat$waa
@@ -3593,8 +3593,8 @@ prof.lik <- function(Res,a=Res$pars$a,b=Res$pars$b,sd=Res$pars$sd,rho=Res$pars$r
 
 
 
-## ‚¿‚å‚Á‚Æ•¡G‚Èkobe.plot
-# fouts‚ª•¡”‚Ì«—ˆ—\‘ª‚ÌŒ‹‰ÊBbrefs‚Í•¡”‚ÌŠÇ—Šî€’l
+## ã¡ã‚‡ã£ã¨è¤‡é›‘ãªkobe.plot
+# foutsãŒè¤‡æ•°ã®å°†æ¥äºˆæ¸¬ã®çµæœã€‚brefsã¯è¤‡æ•°ã®ç®¡ç†åŸºæº–å€¤
 get.kobemat2 <- function(fouts,brefs,xlim=NULL,target.prob=0.5){
 #    brefs <- sort(brefs)
     years <- as.numeric(rownames(fouts[[1]]$vssb))        
@@ -3655,10 +3655,10 @@ Generation.Time <- function(vpares,
 
 
 ###############################
-#### ‘Œ¹—Ê‚ÌãÏ‚İƒOƒ‰ƒt‚ğ‘‚­
+#### è³‡æºé‡ã®ä¸Šç©ã¿ã‚°ãƒ©ãƒ•ã‚’æ›¸ã
 ###############################
 
-plotBfish <- function(tres0,vpares, # SR.est‚ÌŒ‹‰Ê
+plotBfish <- function(tres0,vpares, # SR.estã®çµæœ
                       b.target,ssb.max=Inf,
                       biomass.scale=1000){
    
@@ -3686,7 +3686,7 @@ plotBfish <- function(tres0,vpares, # SR.est‚ÌŒ‹‰Ê
 #    tb3 <- tb2[which(ssb<ssb.max),]
     matplot(ssb,tb2,type="n",ylab=paste("Total biomass (",biomass.scale," MT)",sep=""),xaxs="i",yaxs="i",
             xlab="SSB (1000MT)", xlim=range1,ylim=c(0,max(tb2)))
-    # ‰ß‹‚ÌŒn—ñ
+    # éå»ã®æ™‚ç³»åˆ—
         matpoints(ssb,tb2[,1],type="l",lwd=2,col="gray",lty=3)
 #        points(x <- colSums(vpares$ssb)/biomass.scale,
 #               y <- colSums(vpares$baa)/biomass.scale,type="o",
@@ -3704,7 +3704,7 @@ plotBfish <- function(tres0,vpares, # SR.est‚ÌŒ‹‰Ê
     abline(v=b.target,col="gray")
     
 
-    ## Ï‚İã‚°ƒOƒ‰ƒt
+    ## ç©ã¿ä¸Šã’ã‚°ãƒ©ãƒ•
     non.na <- !is.na(ssb)
     for(i in 1:ncol(tb2)) menplot(ssb[non.na], cbind(0,tb2)[non.na,i:(i+1)],col=col.tmp1[i],border=NA)
                                         #    title("Total biomass",line=-1,adj=0.1)
@@ -3740,14 +3740,14 @@ plotBfish <- function(tres0,vpares, # SR.est‚ÌŒ‹‰Ê
     }
 }
 
-############## ‰ª‘º‚³‚ñì¬ŠÖ” ##################3
+############## å²¡æ‘ã•ã‚“ä½œæˆé–¢æ•° ##################3
 
 future.vpa1 <- function(
      vpares,
      multi=1,
-     nyear=50, # «—ˆ—\‘ª‚Ì”N”
-     ABC.year=2018, # ABC‚ğŒvZ‚·‚é”N
-     waa.year=2015:2016, # ¶•¨ƒpƒ‰ƒ[ƒ^‚ÌQÆ”N
+     nyear=50, # å°†æ¥äºˆæ¸¬ã®å¹´æ•°
+     ABC.year=2018, # ABCã‚’è¨ˆç®—ã™ã‚‹å¹´
+     waa.year=2015:2016, # ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å‚ç…§å¹´
      maa.year=2015:2016,
      M.year=2015:2016,
      seed=1,
@@ -3761,7 +3761,7 @@ future.vpa1 <- function(
      Pope=FALSE,
      ssb0=NULL,
      faa0=NULL,
-     # recfunc‚É‘Î‚·‚éˆø”
+     # recfuncã«å¯¾ã™ã‚‹å¼•æ•°
      rec.arg=list(a=res1$pars[1],b=res1$pars[2],gamma=res1$gamma,
      sd=res1$pars[3],bias.correction=TRUE,rho=res1$pars[4],resid=res1$resid)
 ){
@@ -3861,11 +3861,11 @@ HS <- function(x,a,b,gamma1=0.001,HStype="HS") if (HStype=="Mesnil") a*(x+sqrt(b
 ##
 
 est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.6,ban=0.1,mY=5,long.term=20,
-                     Fmsy.max=3, # current F‚ªFmsy‚É”ä‚×‚Ä¬‚³‚·‚¬‚éê‡A‚¤‚Ü‚­û‘©‚µ‚È‚¢ê‡‚ª‚ ‚è‚Ü‚·B‚»‚Ì‚Æ‚«‚Í‚±‚ÌƒIƒvƒVƒ‡ƒ“‚ÅFmsy.max=10‚Æ‚©‚µ‚Ä‚­‚¾‚³‚¢B
+                     Fmsy.max=3, # current FãŒFmsyã«æ¯”ã¹ã¦å°ã•ã™ãã‚‹å ´åˆã€ã†ã¾ãåæŸã—ãªã„å ´åˆãŒã‚ã‚Šã¾ã™ã€‚ãã®ã¨ãã¯ã“ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã§Fmsy.max=10ã¨ã‹ã—ã¦ãã ã•ã„ã€‚
                      Fmsy.step=0.1,thin=1,inc=1,SRtype="L2",fm=5,tol=NULL,
-                     AutoCor=FALSE,# ŠÖ”“à•”‚Å©ŒÈ‘ŠŠÖŒW”‚ğ„’è‚·‚é‚© "future.vpa"‚ğg‚¤ê‡‚Í‚Ç‚¿‚ç‚Å‚à—Ç‚¢
-                     AutoCorOut=FALSE, # ƒtƒBƒbƒg‚³‚¹‚½‚ ‚Æc·‚Ì©ŒÈ‘ŠŠÖ‚ğŒvZ‚·‚éê‡
-                     current.resid=0, # Å‹ß”N‰½”N•ª‚Ì©ŒÈ‘ŠŠÖ‚ğ•½‹Ï‚·‚é‚©
+                     AutoCor=FALSE,# é–¢æ•°å†…éƒ¨ã§è‡ªå·±ç›¸é–¢ä¿‚æ•°ã‚’æ¨å®šã™ã‚‹ã‹ "future.vpa"ã‚’ä½¿ã†å ´åˆã¯ã©ã¡ã‚‰ã§ã‚‚è‰¯ã„
+                     AutoCorOut=FALSE, # ãƒ•ã‚£ãƒƒãƒˆã•ã›ãŸã‚ã¨æ®‹å·®ã®è‡ªå·±ç›¸é–¢ã‚’è¨ˆç®—ã™ã‚‹å ´åˆ
+                     current.resid=0, # æœ€è¿‘å¹´ä½•å¹´åˆ†ã®è‡ªå·±ç›¸é–¢ã‚’å¹³å‡ã™ã‚‹ã‹
                      future.function.name="future.vpa1",seed=1){
  
   if (is.null(tol)) tol <- .Machine$double.eps^0.25
@@ -3950,31 +3950,31 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     if (is.null(sim0)){
        sim0 <- future.vpa1(vpares,
                    multi=0,
-                   nyear=nyear, # «—ˆ—\‘ª‚Ì”N”
-                   N=N, # Šm—¦“IŒvZ‚ÌŒJ‚è•Ô‚µ‰ñ”
-                   ABC.year=max(years)+1, # ABC‚ğŒvZ‚·‚é”N
-                   waa.year=years, # ¶•¨ƒpƒ‰ƒ[ƒ^‚ÌQÆ”N
+                   nyear=nyear, # å°†æ¥äºˆæ¸¬ã®å¹´æ•°
+                   N=N, # ç¢ºç‡çš„è¨ˆç®—ã®ç¹°ã‚Šè¿”ã—å›æ•°
+                   ABC.year=max(years)+1, # ABCã‚’è¨ˆç®—ã™ã‚‹å¹´
+                   waa.year=years, # ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å‚ç…§å¹´
                    maa.year=years,
                    M.year=years,
                    seed=seed,
                    naa0=det.naa0,
                    Pope=Pope,
-                   # recfunc‚É‘Î‚·‚éˆø”
+                   # recfuncã«å¯¾ã™ã‚‹å¼•æ•°
                    rec.arg=list(a=res1$pars[1],b=res1$pars[2],gamma=res1$gamma,sd=res1$pars[3],bias.correction=TRUE,rho=res1$pars[4],resid=res1$resid)
       )
 
     sim1 <- future.vpa1(vpares,
                    multi=1,
-                   nyear=nyear, # «—ˆ—\‘ª‚Ì”N”
-                   N=1, # Šm—¦“IŒvZ‚ÌŒJ‚è•Ô‚µ‰ñ”
-                   ABC.year=max(years)+1, # ABC‚ğŒvZ‚·‚é”N
-                   waa.year=years, # ¶•¨ƒpƒ‰ƒ[ƒ^‚ÌQÆ”N
+                   nyear=nyear, # å°†æ¥äºˆæ¸¬ã®å¹´æ•°
+                   N=1, # ç¢ºç‡çš„è¨ˆç®—ã®ç¹°ã‚Šè¿”ã—å›æ•°
+                   ABC.year=max(years)+1, # ABCã‚’è¨ˆç®—ã™ã‚‹å¹´
+                   waa.year=years, # ç”Ÿç‰©ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å‚ç…§å¹´
                    maa.year=years,
                    M.year=years,
                    seed=seed,
                    naa0=det.naa0,
                    Pope=Pope,
-                   # recfunc‚É‘Î‚·‚éˆø”
+                   # recfuncã«å¯¾ã™ã‚‹å¼•æ•°
                    rec.arg=list(a=res1$pars[1],b=res1$pars[2],gamma=res1$gamma,sd=res1$pars[3],bias.correction=TRUE,rho=res1$pars[4],resid=res1$resid)
                    )
     } else{
@@ -3985,11 +3985,11 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
         farg$ABC.year <- max(years)+1
         farg$naa0 <- det.naa0
         if(!is.null(farg$pre.catch)){
-            farg$pre.catch <- NULL # pre.catchƒIƒvƒVƒ‡ƒ“‚ª‚ ‚é‚Æ‚¤‚Ü‚­‚¢‚©‚È‚¢‚Ì‚Å‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é
+            farg$pre.catch <- NULL # pre.catchã‚ªãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹ã¨ã†ã¾ãã„ã‹ãªã„ã®ã§ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹
             cat("notice: option \"pre.catch\" is turned off in estimating MSY.\n")
         }
         if(!is.null(farg$rec.new)){
-            farg$rec.new <- NULL # rec.newƒvƒVƒ‡ƒ“‚ª‚ ‚é‚Æ‚¤‚Ü‚­‚¢‚©‚È‚¢‚Ì‚Å‚È‚©‚Á‚½‚±‚Æ‚É‚·‚é
+            farg$rec.new <- NULL # rec.newãƒ—ã‚·ãƒ§ãƒ³ãŒã‚ã‚‹ã¨ã†ã¾ãã„ã‹ãªã„ã®ã§ãªã‹ã£ãŸã“ã¨ã«ã™ã‚‹
             cat("notice: option \"rec.new\" is turned off in estimating MSY.\n")            
         }
         farg$add.year <- 1
@@ -4003,7 +4003,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
         sim1 <- do.call(future.vpa1,farg)
     }
     
-##    MSY„’è
+##    MSYæ¨å®š
 
     farg <- sim1$input
     nY <- nyear+1
@@ -4051,7 +4051,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     MSYres <- syfunc(Fmsy.multi,farg,N=N,nyear=nyear,eyear=eyear,naa0=N0,eaa0=e0,ssb0=SSB0)
     ssb.msy <- mean(apply(MSYres$ssb,c(2,3),sum,na.rm=TRUE))
    
-##    PGY„’è
+##    PGYæ¨å®š
   
     id.pgy0 <- num.msy0:length(F.multi)
     id.pgy <- which.min((FSYest.c[id.pgy0] - pgy*MSY)^2)
@@ -4086,7 +4086,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     PGYhigh <- mean(PGYhigh.res$catch)
     ssb.high <- mean(apply(PGYhigh.res$ssb,c(2,3),sum,na.rm=T))
     
-##  Bhs„’è
+##  Bhsæ¨å®š
 
     if(res1$input$SR=="HS"){
         det.Bhs <- res1$pars[2]
@@ -4108,7 +4108,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
 
 ##  target function
 
-    # ÀÛ‚É‚ÍÅŒã‚ÌÄ¶YŠÖŒW‚Ìc·‚à“ü‚ê‚Ä‚â‚é•K—v‚ª‚ ‚éi©ŒÈ‘ŠŠÖ‚ğ“ü‚ê‚é‚Æ‚«‚É•K—vj
+    # å®Ÿéš›ã«ã¯æœ€å¾Œã®å†ç”Ÿç”£é–¢ä¿‚ã®æ®‹å·®ã‚‚å…¥ã‚Œã¦ã‚„ã‚‹å¿…è¦ãŒã‚ã‚‹ï¼ˆè‡ªå·±ç›¸é–¢ã‚’å…¥ã‚Œã‚‹ã¨ãã«å¿…è¦ï¼‰
     
     ##    target.func <- function(x,farg,naa0=NULL,eaa0=NULL,ssb0=NULL,faa0=NULL,mY=5,N=1,seed=1,eyear=4,p=1,beta=1,delta=0,Blim=0,Bban=0,sd0=NULL){
     target.func <- function(x,farg,naa0=NULL,eaa0=NULL,ssb0=NULL,faa0=NULL,mY=5,N=2,seed=1,eyear=4,p=1,beta=1,delta=0,Blim=0,Bban=0,sd0=NULL){    
@@ -4134,7 +4134,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
       return(out)
     }
 
-##  Blim0„’è
+##  Blim0æ¨å®š
     
     Lim0.res <- LIMtoLOW <- list()
     Flim.multi <- Lim0 <- ssb.lim0 <- PRT.lim <- numeric(length(lim))
@@ -4175,7 +4175,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
         PRT.lim[j] <- min(which(LIMtoLOW.ssb >= ssb.low))
     }
 
-    ## PRT.lim <= mY‚ğ–‚½‚·‚à‚Ì‚ªˆêŒÂ‚à‚È‚­warning‚ğ•Ô‚·‚±‚Æ‚ª‚ ‚é‚ªA•ú’u‚µ‚Ä‚¢‚Ü‚·ig‚Á‚Ä‚¢‚È‚¢ŒvZŒ‹‰Ê‚È‚Ì‚Åj
+    ## PRT.lim <= mYã‚’æº€ãŸã™ã‚‚ã®ãŒä¸€å€‹ã‚‚ãªãwarningã‚’è¿”ã™ã“ã¨ãŒã‚ã‚‹ãŒã€æ”¾ç½®ã—ã¦ã„ã¾ã™ï¼ˆä½¿ã£ã¦ã„ãªã„è¨ˆç®—çµæœãªã®ã§ï¼‰
     nlim.est <- min(which(PRT.lim <= mY))
     if(is.na(nlim.est) | nlim.est == Inf) nlim.est <- length(lim)
     
@@ -4186,7 +4186,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     ssb.lim1 <- ssb.lim0[nlim.est]
     PRT.lim1 <- PRT.lim[nlim.est]
     
-##  Bban0„’è
+##  Bban0æ¨å®š
 
     Ban0.res <- BANtoLIM <- list()
     Fban.multi <- Ban0 <- ssb.ban0 <- PRT.ban <- numeric(length(ban))
@@ -4231,7 +4231,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     ssb.ban1 <- ssb.ban0[nban.est]
     PRT.ban1 <- PRT.ban[nban.est]
     
-## Btarget„’è
+## Btargetæ¨å®š
 
     ## Btarget
     
@@ -4245,7 +4245,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     TARres <- target.func(Ftar.multi,farg,mY=mY,seed=seed,N=N,eyear=mY,naa0=N.m,eaa0=e.m+w.recent,ssb0=SSB.m)
     Btar <- mean(colSums(TARres$ssb[,mY,]))
     
-    # Blow „’è
+    # Blow æ¨å®š
     
     N.low <- PGYlow.res$naa[,1+(lag>0)*(lag-1),]
     e.low <- PGYlow.res$eaa[1+(lag>0)*(lag-1),]
@@ -4259,7 +4259,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     
     P.low <- Blow/Btar
     
-    # Blim „’è
+    # Blim æ¨å®š
     
     N.lim <- Lim1.res$naa[,1+(lag>0)*(lag-1),]
     e.lim <- Lim1.res$eaa[1+(lag>0)*(lag-1),]
@@ -4272,7 +4272,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     
     P.lim <- Blim/Btar
     
-    # Bban „’è
+    # Bban æ¨å®š
     
     N.ban <- Ban1.res$naa[,1+(lag>0)*(lag-1),]
     e.ban <- Ban1.res$eaa[1+(lag>0)*(lag-1),]
@@ -4289,7 +4289,7 @@ est.MSY2 <- function(vpares,N=1000,res1=NULL,sim0=NULL,nyear=NULL,pgy=0.9,lim=0.
     names(Pref) <- c("Low","Lim","Ban")
 
     if(0){
-        # plot‚Í‚µ‚È‚¢
+        # plotã¯ã—ãªã„
         x.range <- range(SRdata$SSB,Btar,Bban)
         plot(SRdata$SSB, SRdata$R,xlab="SSB",ylab="R",pch=16,col="blue",cex=1.2,xlim=x.range)
         x.SSB <- seq(0,x.range[2],len=100)
@@ -4399,20 +4399,20 @@ calc.beta <- function(msy.input,Ftar=NULL,Btar=NULL,Blim=NULL,Bban=NULL,Blim.pro
     input.beta <- msy.input
     input.beta$N <- N
     input.beta$multi <- Ftar    
-    ## Blim, Bban‚ğ‚à‚Æ‚É‚µ‚½HCR‚ğg‚Á‚Ä«—ˆ—\‘ª‚ğÀ{‚·‚é‚½‚ß‚ÌƒIƒvƒVƒ‡ƒ“‚ğ’Ç‰Á
+    ## Blim, Bbanã‚’ã‚‚ã¨ã«ã—ãŸHCRã‚’ä½¿ã£ã¦å°†æ¥äºˆæ¸¬ã‚’å®Ÿæ–½ã™ã‚‹ãŸã‚ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã‚’è¿½åŠ 
     input.beta$HCR <- list(Blim=Blim,
                            Bban=Bban,
-                           beta=1) # ‚»‚Ì‚Æ‚«‚Ìƒx[ƒ^‚ğ’Tõ‚·‚é‚ªA‚±‚±‚Å‚Í‚Æ‚è‚ ‚¦‚¸‚P‚Æ‚µ‚Ä‚¨‚­
+                           beta=1) # ãã®ã¨ãã®ãƒ™ãƒ¼ã‚¿ã‚’æ¢ç´¢ã™ã‚‹ãŒã€ã“ã“ã§ã¯ã¨ã‚Šã‚ãˆãšï¼‘ã¨ã—ã¦ãŠã
     input.beta$is.plot <- FALSE
     input.beta$Frec <- list(stochastic=TRUE,
-                            future.year=NULL, # NULL‚É‚µ‚Ä‚¨‚­‚Æ«—ˆ—\‘ª‚ÌÅI”N‚ÌŠm—¦‚ğŒ©‚é
+                            future.year=NULL, # NULLã«ã—ã¦ãŠãã¨å°†æ¥äºˆæ¸¬ã®æœ€çµ‚å¹´ã®ç¢ºç‡ã‚’è¦‹ã‚‹
                             Blimit=Blim,
-                            scenario="blimit", # «—ˆ‚Ìe‹›‘Œ¹—Ê‚ğBlimit‚Åw’è‚µ‚½’l‚ğQÆ‚µ‚ÄŒˆ‚ß‚é
-                            target.probs=100-Blim.prob*100) # BlimituˆÈ‰ºv‚É‚È‚éŠm—¦‚ğİ’è
+                            scenario="blimit", # å°†æ¥ã®è¦ªé­šè³‡æºé‡ã‚’Blimitã§æŒ‡å®šã—ãŸå€¤ã‚’å‚ç…§ã—ã¦æ±ºã‚ã‚‹
+                            target.probs=100-Blim.prob*100) # Blimitã€Œä»¥ä¸‹ã€ã«ãªã‚‹ç¢ºç‡ã‚’è¨­å®š
     fres.beta1 <- do.call(future.vpa,input.beta) 
 
     input.beta$Frec <- list(stochastic=TRUE,
-                            future.year=NULL, # NULL‚É‚µ‚Ä‚¨‚­‚Æ«—ˆ—\‘ª‚ÌÅI”N‚Æ”»’f‚·‚é
+                            future.year=NULL, # NULLã«ã—ã¦ãŠãã¨å°†æ¥äºˆæ¸¬ã®æœ€çµ‚å¹´ã¨åˆ¤æ–­ã™ã‚‹
                             Blimit=Btar,
                             scenario="blimit",target.probs=100-Btar.prob*100)
     fres.beta2 <- do.call(future.vpa,input.beta)
@@ -4430,9 +4430,9 @@ calc.beta <- function(msy.input,Ftar=NULL,Btar=NULL,Blim=NULL,Bban=NULL,Blim.pro
     return(beta)
 }
 
-## ‰ª‘º‚³‚ñì¬ƒo[ƒWƒ‡ƒ“BV‚µ‚¢ŠÖ”‚É·‚µ‘Ö‚¦
+## å²¡æ‘ã•ã‚“ä½œæˆãƒãƒ¼ã‚¸ãƒ§ãƒ³ã€‚æ–°ã—ã„é–¢æ•°ã«å·®ã—æ›¿ãˆ
 calc.beta0 <- function(res,mY=5,prob.beta=c(0.5,0.9),prob.delta=c(0.9,0.95),beta=1,delta=1,beta.est=TRUE,delta.est=FALSE,beta.range=c(0,1),delta.range=c(0.1,5),Fm2.max=5,thin=1,step1=0.2,tol=0.0001,
-                      Btar=res$Btar, # ‚¢‚¿‚¨‚¤AŠeíŠÇ—Šî€’l‚ÍŠO‚©‚ç‚Å‚à—^‚¦‚ç‚ê‚é‚æ‚¤‚É‚µ‚½
+                      Btar=res$Btar, # ã„ã¡ãŠã†ã€å„ç¨®ç®¡ç†åŸºæº–å€¤ã¯å¤–ã‹ã‚‰ã§ã‚‚ä¸ãˆã‚‰ã‚Œã‚‹ã‚ˆã†ã«ã—ãŸ
                       Blow=res$Blow,
                       Blim=res$Blim,
                       Bban=res$Bban,
@@ -4497,7 +4497,7 @@ calc.beta0 <- function(res,mY=5,prob.beta=c(0.5,0.9),prob.delta=c(0.9,0.95),beta
 #    beta <- floor(beta * 100)/100
   }
 
-  ## ƒOƒ‰ƒt‚É‚æ‚é}¦
+  ## ã‚°ãƒ©ãƒ•ã«ã‚ˆã‚‹å›³ç¤º
 #  ssb.msy <- apply(targ$ssb,c(2,3),sum)[5,]
 #  plot(density(ssb.msy),type="l",title="SSB")
 #  abline(v=Blim,lty=2,col=2)
@@ -4516,10 +4516,10 @@ calc.beta0 <- function(res,mY=5,prob.beta=c(0.5,0.9),prob.delta=c(0.9,0.95),beta
 }
 
 
-calc.beta2 <- function(MSY.input, # FmsyiFtargetj‚Å‹™Šl‚·‚é‚æ‚¤‚È«—ˆ—\‘ª‚Ìˆø”
+calc.beta2 <- function(MSY.input, # Fmsyï¼ˆFtargetï¼‰ã§æ¼ç²ã™ã‚‹ã‚ˆã†ãªå°†æ¥äºˆæ¸¬ã®å¼•æ•°
                        mY=5,prob.beta=c(0.5,0.9),beta=1,delta=1,
                        beta.est=TRUE,beta.range=c(0,1),
-                       Btar=res$Btar, # ŠeíŠÇ—Šî€’l‚ÍŠO‚©‚ç—^‚¦‚é
+                       Btar=res$Btar, # å„ç¨®ç®¡ç†åŸºæº–å€¤ã¯å¤–ã‹ã‚‰ä¸ãˆã‚‹
                        Blim=res$Blim,
                        Bban=res$Bban,
                        Fmsy=res$Fmsy)
@@ -4583,7 +4583,7 @@ calc.beta2 <- function(MSY.input, # FmsyiFtargetj‚Å‹™Šl‚·‚é‚æ‚¤‚È«—ˆ—\‘ª‚Ìˆø
 #    beta <- floor(beta * 100)/100
   }
 
-  ## ƒOƒ‰ƒt‚É‚æ‚é}¦
+  ## ã‚°ãƒ©ãƒ•ã«ã‚ˆã‚‹å›³ç¤º
 #  ssb.msy <- apply(targ$ssb,c(2,3),sum)[5,]
 #  plot(density(ssb.msy),type="l",title="SSB")
 #  abline(v=Blim,lty=2,col=2)
@@ -4601,9 +4601,9 @@ calc.beta2 <- function(MSY.input, # FmsyiFtargetj‚Å‹™Šl‚·‚é‚æ‚¤‚È«—ˆ—\‘ª‚Ìˆø
   invisible(list(out,future.pred))
 }
 
-#############################@‚±‚±‚Ü‚Å
+#############################ã€€ã“ã“ã¾ã§
 
-### dynamics MSY‚ğŒvZ‚µ‚Ä‚İ‚é                                                                                  
+### dynamics MSYã‚’è¨ˆç®—ã—ã¦ã¿ã‚‹                                                                                  
 dyn.msy <- function(naa.past,naa.init=NULL,fmsy,a,b,resid,resid.year,waa,maa,M,SR=TRUE){
     nyear <- length(resid)
     if(is.null(naa.init)) nage <- nrow(naa.past) else nage <- length(naa.init)
