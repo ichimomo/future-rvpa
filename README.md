@@ -14,3 +14,33 @@
 ## バグ報告など
 - できればissuesを使っての報告がありがたいです
 
+## ファイル説明
+- rvpa1.9.2.r : VPA計算用の関数群。管理は岡村さん担当になります。
+- future2.1.r : 将来予測用の関数群。fit.SR関係は西嶋さん、それ以外は市野川の担当です。
+- utilities.r : ggplot等を使って科学者会議用のグラフを作成するユーティリティ。市野川担当
+- sample/ : サンプルコード置き場（Rのコードがあるのでこちらをいろいろ見てください）
+- docs/ : htmlコード置き場（特に見る必要はありません）
+
+## サンプルコード(sample/以下)
+### simple: 2012年太平洋マアジの資源評価データを用いたfuture2.1.rの使用例
+- 再生産関係のあてはめ
+- 将来予測の実施
+- MSY管理基準値の計算
+- コードの解説：https://ichimomo.github.io/future-rvpa/future-doc-abc.html   
+など
+
+### make_report1: 科学者会議用のサンプルコード
+
+内容はこちらのREADMEを読んでください
+https://ichimomo.github.io/future-rvpa/sample/make_report1/
+
+### SRR: 再生産関係推定のさいのモデル診断ツールの使用例
+- 再生産関係のあてはめ
+- 残差の正規性や自己相関のチェック
+- ブートストラップや尤度プロファイルを用いたパラメータの信頼区間の推定
+- コードの解説：https://ichimomo.github.io/future-rvpa/SRR-guidline.html   
+など
+
+### nsk2012: 2012年日本海スケトウダラの資源評価結果をもとにした実施例
+- データと素のRコードのみです
+

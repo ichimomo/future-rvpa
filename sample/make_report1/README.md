@@ -1,4 +1,7 @@
+## サンプルデータ・コードの格納場所です
 # 会議用の資料の作成手順
+内容はこちらのREADMEを読んでください
+https://ichimomo.github.io/future-rvpa/sample/make_report1/
 
 ## 1. VPA，MSY推定，管理基準値選択，kobe II matrixまでの計算方法のダイジェスト版
 - Rのみのスクリプト https://github.com/ichimomo/future-rvpa/blob/master/sample/make_report1/1do_MSYestimation.R
