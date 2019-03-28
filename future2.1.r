@@ -308,7 +308,7 @@ future.vpa <-
            # list(year=, rec=)‚Å—^‚¦‚éê‡‚ÍA‘Î‰ž‚·‚é”N‚Ì‰Á“ü‚ð’u‚«Š·‚¦‚éB
            ##--- ‰Á“üŠÖ”
            recfunc=HS.recAR, # Ä¶ŽYŠÖŒW‚ÌŠÖ”
-           rec.arg=list(a=1,b=1,rho=0,sd=0,bias.correction=TRUE,
+           rec.arg=list(a=1,b=1,rho=0,sd=0,c=1,bias.correction=TRUE,
                         resample=FALSE,resid=0,resid.year=NULL), # ‰Á“ü‚ÌŠeŽíÝ’è
            ##--- FrecƒIƒvƒVƒ‡ƒ“GFrecŒvŽZ‚Ì‚½‚ß‚ÌÝ’èƒŠƒXƒg‚ð—^‚¦‚é‚ÆAŽw’è‚³‚ê‚½Ý’è‚Å‚ÌFrec‚É‘Î‰ž‚·‚éF‚Å«—ˆ—\‘ª‚ðs‚¤
            Frec=NULL,
@@ -1049,6 +1049,58 @@ RI.recAR <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
     new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
     return(list(rec=rec,rec.resample=new.resid))
 }
+
+## Allee effect (decompensation) ‚ ‚è‚ÌÄ¶ŽYŠÖŒW
+# Hockey-stick
+HS.recAR2 <- function(ssb,vpares,#deterministic=FALSE,
+                     rec.resample=NULL,
+                     rec.arg=list(a=1000,b=1000,
+                                  sd=0.1, rho=0, c=1,
+                                  resid=0)#, bias.correction=TRUE)
+){
+  ## Ä¶ŽYŠÖŒW‚©‚ç‚Ì—\‘ª’l
+  #    rec0 <- rec.arg$a*(ssb+sqrt(rec.arg$b^2+(rec.arg$gamma^2)/4)-sqrt((ssb-rec.arg$b)^2+(rec.arg$gamma^2)/4))
+  a <- rec.arg$a
+  b <- rec.arg$b
+  c <- rec.arg$c
+  rec0 <- ifelse(ssb>b,b*a,a*b*(ssb/b)^c)
+  # rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb)     
+  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # Ž©ŒÈ‘ŠŠÖž‚Ý‚Ì—\‘ª’l
+  
+  rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
+  new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
+  return(list(rec=rec,rec.resample=new.resid))
+}
+
+
+# Beverton-Holt
+BH.recAR2 <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
+                     rec.arg=list(a=1000,b=1000,sd=0.1,rho=0,c=1,bias.correction=TRUE)){
+  a <- rec.arg$a
+  b <- rec.arg$b
+  c <- rec.arg$c
+  rec0 <- (a/b)/(1+1/(b*ssb)^c)
+  # rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
+  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # Ž©ŒÈ‘ŠŠÖž‚Ý‚Ì—\‘ª’l
+  rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
+  new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
+  return(list(rec=rec,rec.resample=new.resid))
+}
+
+# Ricker 
+RI.recAR2 <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
+                     rec.arg=list(a=1000,b=1000,sd=0.1,rho=0,c=1,bias.correction=TRUE)){                   
+  a <- rec.arg$a
+  b <- rec.arg$b
+  c <- rec.arg$c
+  rec0 <- a/(b*exp(1))*(b*ssb)^c*exp(c*(1-b*ssb))
+  # rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb) 
+  rec <- rec0*exp(rec.arg$rho*rec.arg$resid) # Ž©ŒÈ‘ŠŠÖž‚Ý‚Ì—\‘ª’l
+  rec <- rec*exp(rnorm(length(ssb),-0.5*rec.arg$sd2^2,rec.arg$sd))
+  new.resid <- log(rec/rec0)+0.5*rec.arg$sd2^2
+  return(list(rec=rec,rec.resample=new.resid))
+}
+
 
 
 plot.futures <- function(fres.list,conf=c(0.1,0.5,0.9),target="SSB",legend.text="",xlim.tmp=NULL,y.scale=1){
@@ -3233,7 +3285,143 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
   Res$BIC <- -2*loglik+k*log(N)
   return(Res)
 }
-# Hockey-stick
+
+### ¼“ˆ‰Á•M
+# Allee effect (decompensation)‚ ‚è‚ÌÄ¶ŽYŠÖŒW‚Ì„’è—pŠÖ” (c.est=FALSE‚Æ‚·‚ê‚Îfit.SR‚Æ“¯‚¶)
+fit.SR2 <- function(SRdata,
+                    SR="HS",
+                    method="L2",
+                    AR=1,
+                    hessian=FALSE,
+                    w=rep(1,length(SRdata$year)),
+                    length=20, #parameter (a,b) ‚Ì‰Šú’l‚ðŒˆ‚ß‚é‚Æ‚«‚Égrid search‚·‚é”
+                    c.est = TRUE #Allee effect‚ð„’è‚·‚é‚©‚Ç‚¤‚©(c>1‚Ådepensation (Allee-like), c<1‚Åcompensation)
+){
+  
+  argname <- ls()
+  arglist <- lapply(argname,function(xx) eval(parse(text=xx)))
+  names(arglist) <- argname
+  
+  rec <- SRdata$R
+  ssb <- SRdata$SSB
+  
+  N <- length(rec)
+  
+  if (SR=="HS") SRF <- function(x,a,b,c) ifelse(x>b,b*a,a*b*(x/b)^c)
+  if (SR=="BH") SRF <- function(x,a,b,c) (a/b)/(1+1/(b*x)^c)
+  if (SR=="RI") SRF <- function(x,a,b,c) a/(b*exp(1))*(b*x)^c*exp(c*(1-b*x))
+  
+  obj.f <- function(a,b,rho,c){
+    resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b,c)))
+    resid2 <- NULL
+    for (i in 1:N) {
+      resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid2[i-1])
+    }
+    
+    if (method == "L2") {
+      sd <- sqrt(sum(resid2^2)/(N-rho^2))
+      sd2 <- c(sd/sqrt(1-rho^2), rep(sd,N-1))
+      obj <- -sum(w*dnorm(resid2,0,sd2,log=TRUE))
+    } else {
+      sd <- sum(abs(resid2))/(N-rho^2)
+      sd2 <- c(sd/sqrt(1-rho^2), rep(sd,N-1))
+      obj <- -sum(w*sapply(1:N, function(i){-log(2*sd2[i])-abs(resid2[i]/sd2[i])}))
+    }
+    return(obj)
+  }
+  
+  a.range <- range(rec/ssb)
+  b.range <- range(1/ssb)
+  if (SR == "HS") b.range <- range(ssb)
+  grids <- as.matrix(expand.grid(
+    seq(a.range[1],a.range[2],len=length),
+    seq(b.range[1],b.range[2],len=length)
+  ))
+  init <- as.numeric(grids[which.min(sapply(1:nrow(grids),function(i) obj.f(grids[i,1],grids[i,2],0,1))),])
+  init[1] <- log(init[1])
+  init[2] <- ifelse (SR == "HS",-log(max(0.000001,(max(ssb)-min(ssb))/max(init[2]-min(ssb),0.000001)-1)),log(init[2]))
+  if (AR != 0 || isTRUE(c.est)) init[3] <- 0
+  if (AR != 0 && isTRUE(c.est)) init[4] <- 0
+  
+  if (SR == "HS") { 
+    if (AR == 0) {
+      if (c.est) {
+        obj.f2 <- function(x) obj.f(exp(x[1]),min(ssb)+(max(ssb)-min(ssb))/(1+exp(-x[2])),0,exp(x[3]))
+      } else {
+        obj.f2 <- function(x) obj.f(exp(x[1]),min(ssb)+(max(ssb)-min(ssb))/(1+exp(-x[2])),0,1)
+      }
+    } else {
+      if (c.est) {
+        obj.f2 <-  function(x) obj.f(exp(x[1]),min(ssb)+(max(ssb)-min(ssb))/(1+exp(-x[2])),1/(1+exp(-x[3])),exp(x[4]))
+      } else {
+        obj.f2 <-  function(x) obj.f(exp(x[1]),min(ssb)+(max(ssb)-min(ssb))/(1+exp(-x[2])),1/(1+exp(-x[3])),1)
+      }
+    }
+  } else {
+    if (AR == 0) {
+      if (c.est) {
+        obj.f2 <- function(x) obj.f(exp(x[1]),exp(x[2]),0,exp(x[3]))
+      } else {
+        obj.f2 <- function(x) obj.f(exp(x[1]),exp(x[2]),0,1)
+      }
+    } else {
+      if (c.est) {
+        obj.f2 <-  function(x) obj.f(exp(x[1]),exp(x[2]),1/(1+exp(-x[3])),exp(x[4]))
+      } else {
+        obj.f2 <-  function(x) obj.f(exp(x[1]),exp(x[2]),1/(1+exp(-x[3])),1)
+      }
+    }
+  }
+  
+  opt <- optim(init,obj.f2)
+  opt <- optim(opt$par,obj.f2,method="BFGS",hessian=hessian)
+  
+  Res <- list()
+  Res$input <- arglist
+  Res$opt <- opt
+  
+  a <- exp(opt$par[1])
+  b <- ifelse(SR=="HS",min(ssb)+(max(ssb)-min(ssb))/(1+exp(-opt$par[2])),exp(opt$par[2]))
+  rho <- ifelse(AR==0,0,1/(1+exp(-opt$par[3])))
+  c <- ifelse(c.est, exp(rev(opt$par)[1]),1)
+  resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b,c)))
+  resid2 <- NULL
+  for (i in 1:N) {
+    resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
+  }
+  sd <- ifelse(method=="L2",sqrt(sum(resid2^2)/(N-rho^2)),sqrt(2)*sum(abs(resid2))/(N-rho^2))
+  
+  Res$resid <- resid
+  Res$resid2 <- resid2
+  
+  Res$pars <- c(a,b,sd,rho,c)
+  
+  if (method!="L2") {
+    if (AR!=0) {
+      arres <- ar(resid,aic=FALSE,order.max=1)
+      Res$pars[3] <- sqrt(arres$var.pred)
+      Res$pars[4] <- arres$ar
+    }
+  }
+  
+  Res$loglik <- loglik <- -opt$value
+  
+  names(Res$pars) <- c("a","b","sd","rho","c")
+  Res$pars <- data.frame(t(Res$pars))
+  
+  ssb.tmp <- seq(from=0,to=max(ssb)*1.3,length=100)
+  R.tmp <- sapply(1:length(ssb.tmp), function(i) SRF(ssb.tmp[i],a,b,c))
+  pred.data <- data.frame(SSB=ssb.tmp,R=R.tmp)
+  Res$pred <- pred.data
+  
+  Res$k <- k <- length(opt$par)+1
+  Res$AIC <- -2*loglik+2*k
+  Res$AICc <- Res$AIC+2*k*(k+1)/(N-k-1)
+  Res$BIC <- -2*loglik+k*log(N)
+  return(Res)
+}
+
+
 
 plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",
                       ylab.tmp=ifelse(yaxis=="U","U/Umsy","F/Fmsy"),
