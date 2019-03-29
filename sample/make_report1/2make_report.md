@@ -484,7 +484,7 @@ Fを定義したかを書く)
                        Blow=derive_RP_value(refs.base,"Blow0")$SSB,
                        Bban=derive_RP_value(refs.base,"Bban0")$SSB,
                        biomass.unit=10000,  # バイオマスの単位(100, 1000, or 10000トン)
-                       font.size=18) # フォントサイズ
+                       font.size=12) # フォントサイズ
     (g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測\n(実線：平均値、範囲：80パーセント信頼区間)")+ylab("トン"))
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-4-1.png)

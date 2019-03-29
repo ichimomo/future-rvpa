@@ -71,7 +71,7 @@ g5 <- plot_futures(res.pma, # vpaの結果
                    Blow=derive_RP_value(refs.base,"Blow0")$SSB,
                    Bban=derive_RP_value(refs.base,"Bban0")$SSB,
                    biomass.unit=10000,  # バイオマスの単位(100, 1000, or 10000トン)
-                   font.size=18) # フォントサイズ
+                   font.size=12) # フォントサイズ
 (g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測\n(実線：平均値、範囲：80パーセント信頼区間)")+ylab("トン"))
 
 g6 <- plot_Fcurrent(res.pma,year.range=2000:2017)
