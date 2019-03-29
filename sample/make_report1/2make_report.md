@@ -441,8 +441,8 @@ style="display: inline-block; direction: rtl; border-radius: 4px; padding-right:
     # 将来予測と過去の漁獲量を追記する場合
     g2.3 <- plot_yield(MSY.base$trace,refs.base,
                        future=list(future.Fcurrent,future.default),
-                       past=res.pma,AR=FALSE,xlim.scale=0.5,ylim.scale=1.3)
-    g2.3 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値 (with 将来予測)")
+                       past=res.pma,AR=FALSE,xlim.scale=0.4,ylim.scale=1.3)
+    g2.3 + ggtitle("図2. 漁獲量曲線とさまざまな管理基準値 (with 将来予測)") 
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-3-3.png)
 
@@ -482,8 +482,10 @@ Fを定義したかを書く)
                        Btarget=derive_RP_value(refs.base,"Btarget0")$SSB,
                        Blimit=derive_RP_value(refs.base,"Blimit0")$SSB,
                        Blow=derive_RP_value(refs.base,"Blow0")$SSB,
-                       Bban=derive_RP_value(refs.base,"Bban0")$SSB)
-    (g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測\n(実線：平均値、範囲：90パーセント信頼区間)")+ylab("トン"))
+                       Bban=derive_RP_value(refs.base,"Bban0")$SSB,
+                       biomass.unit=10000,  # バイオマスの単位(100, 1000, or 10000トン)
+                       font.size=18) # フォントサイズ
+    (g5 <- g5+ggtitle("図5. 現行のFとデフォルトのHCRを用いた時の将来予測\n(実線：平均値、範囲：80パーセント信頼区間)")+ylab("トン"))
 
 ![](2make_report_files/figure-markdown_strict/unnamed-chunk-4-1.png)
 

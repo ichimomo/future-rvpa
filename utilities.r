@@ -5,7 +5,7 @@ convert_df <- function(df,name){
         gather(key=year, value=value, -age, convert=TRUE) %>%
         group_by(year) %>%
 #        summarise(value=sum(value)) %>%
-        mutate(type="vpa",sim="s0",stat=name)    
+        mutate(type="VPA",sim="s0",stat=name)    
 }
 
 convert_future_table <- function(fout,label="tmp"){
@@ -48,7 +48,7 @@ convert_vector <- function(vector,name){
     vector %>%
         as_tibble %>%  
         mutate(year = as.integer(names(vector))) %>% 
-        mutate(type="vpa",sim="s0",stat=name,age=NA) 
+        mutate(type="VPA",sim="s0",stat=name,age=NA) 
 } 
 
 convert_vpa_tibble <- function(vpares){
@@ -455,22 +455,53 @@ plot_futures <- function(vpares,
                          future.list,
                          future.name=names(future.list),
                          CI_range=c(0.1,0.9),
-                         maxyear=NULL,
-                         Btarget=0,Blimit=0,Bban=0,Blow=0){
-    
+                         maxyear=NULL,font.size=18,
+                         biomass.unit=1,
+                         Btarget=0,Blimit=0,Bban=0,Blow=0,
+                         n_example=3, # number of examples
+                         seed=1 # seed for selecting the above example
+                         ){
+
+    junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
     require(tidyverse,quietly=TRUE)
+    rename_list <- tibble(stat=c("SSB","biomass","catch","Fsakugen"),
+                          jstat=c(str_c("親魚量 (",junit,"トン)"),
+                                  str_c("資源量 (",junit,"トン)"),
+                                  str_c("漁獲量 (",junit,"トン)"),
+                                  "努力量の削減率"))
+    
     if(is.null(future.name)) future.name <- 1:length(future.list)
     names(future.list) <- as.character(future.name)
     
-    future.table <- purrr::map_dfr(future.list,convert_future_table,.id="scenario")
+    future.table <-
+        purrr::map_dfr(future.list,convert_future_table,.id="scenario") %>%
+        dplyr::filter(stat%in%rename_list$stat) %>%
+        mutate(stat=factor(stat,levels=rename_list$stat))
+
+    set.seed(seed)
+    future.example <- future.table %>%
+        filter(sim==sample(1:max(future.table$sim),n_example)) %>%
+        mutate(value=ifelse(stat=="Fsakugen",value,value/biomass.unit)) %>%
+        left_join(rename_list) %>%
+        group_by(sim,scenario)
+        
+
     if(is.null(maxyear)) maxyear <- min(future.table$year)+32
     
     vpa_tb <- convert_vpa_tibble(vpares) %>%
         dplyr::filter(stat=="SSB"|stat=="biomass"|stat=="catch") %>%
         mutate(scenario=type,year=as.numeric(year),
-               stat=stat,mean=value,sim=0)
+               stat=factor(stat,levels=rename_list$stat),
+               mean=value,sim=0)
+    tmp <- vpa_tb %>% group_by(stat) %>%
+        summarise(value=tail(value[!is.na(value)],n=1,na.rm=T),year=tail(year[!is.na(value)],n=1,na.rm=T),sim=0) 
+    future.dummy <- purrr::map_dfr(future.name,function(x) mutate(tmp,scenario=x))
 
-    future.table <- bind_rows(future.table,vpa_tb) 
+    org.warn <- options()$warn
+    options(warn=-1)
+    future.table <- bind_rows(future.table,vpa_tb,future.dummy) %>%
+        mutate(stat=factor(stat,levels=rename_list$stat)) %>%
+        mutate(value=ifelse(stat=="Fsakugen",value,value/biomass.unit))
 
     future.table.qt <- future.table %>% group_by(scenario,year,stat) %>%
         summarise(low=quantile(value,CI_range[1]),
@@ -489,27 +520,40 @@ plot_futures <- function(vpares,
                year=min(future.table$year)) %>%
         select(-max)
 
-    rename_list <- tibble(stat=c("SSB","catch","biomass"),
-                          jstat=c("親魚量","漁獲量","総資源量"))
-    future.table.qt <- left_join(future.table.qt,rename_list)
+
+    future.table.qt <- left_join(future.table.qt,rename_list) %>%
+        mutate(jstat=factor(jstat,levels=rename_list$jstat))
+
+   
     dummy <- left_join(dummy,rename_list)
     dummy2 <- left_join(dummy2,rename_list)
-    dummy3 <- tibble(jstat="親魚量",
-                     value=c(Btarget,Blimit,Blow,Bban))
-
-    future.table.qt %>%
+    dummy3 <- tibble(jstat=rename_list$jstat[1],
+                     value=c(Btarget,Blimit,Blow,Bban)/biomass.unit,
+                     RP_name=c("Btarget","Blimit","Blow","Bban"))
+    
+    options(warn=org.warn)
+    
+    g1 <- future.table.qt %>% 
         ggplot() +
-        facet_wrap(.~jstat,scales="free",ncol=2)+
+        facet_wrap(factor(jstat,levels=rename_list$jstat)~.,scales="free",ncol=2)+
         geom_ribbon(aes(x=year,ymin=low,ymax=high,fill=scenario),alpha=0.5)+        
-        geom_line(aes(x=year,y=mean,color=scenario),lwd=2)+
-        geom_line(aes(x=year,y=mean,color=scenario),linetype=2,lwd=2)+               geom_blank(data=dummy,mapping=aes(y=value,x=year))+
+        geom_line(aes(x=year,y=mean,color=scenario),lwd=1)+
+        geom_line(aes(x=year,y=mean,color=scenario),linetype=2,lwd=1)+
+        geom_blank(data=dummy,mapping=aes(y=value,x=year))+
         geom_blank(data=dummy2,mapping=aes(y=value,x=year))+
-        theme_bw() +
+        theme_bw(base_size=font.size) +
         coord_cartesian(expand=0)+
         theme(legend.position="bottom",panel.grid = element_blank())+
-        xlab("年")+
-        geom_hline(data=dummy3,aes(yintercept=value),linetype=2)
-                         
+        xlab("年")+ylab("")+ labs(fill = "",linetype="",color="")+
+        geom_hline(data=dummy3,aes(yintercept=value,linetype=RP_name)) 
+
+
+    if(n_example>0){
+        g1 <- g1 + geom_line(data=future.example,
+                       mapping=aes(x=year,y=value,alpha=factor(sim),color=scenario)) + scale_alpha_discrete(guide=FALSE)
+            
+    }
+    return(g1)
 }
 
 plot_Fcurrent <- function(vpares,
