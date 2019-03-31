@@ -1050,7 +1050,7 @@ RI.recAR <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
     return(list(rec=rec,rec.resample=new.resid))
 }
 
-## Allee effect (decompensation) ありの再生産関係
+## Allee effect (depensation) ありの再生産関係
 # Hockey-stick
 HS.recAR2 <- function(ssb,vpares,#deterministic=FALSE,
                      rec.resample=NULL,
