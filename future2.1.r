@@ -3287,7 +3287,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
 }
 
 ### 西嶋加筆
-# Allee effect (decompensation)ありの再生産関係の推定用関数 (c.est=FALSEとすればfit.SRと同じ)
+# Allee effect (depensation)ありの再生産関係の推定用関数 (c.est=FALSEとすればfit.SRと同じ)
 fit.SR2 <- function(SRdata,
                     SR="HS",
                     method="L2",
