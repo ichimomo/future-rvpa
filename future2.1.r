@@ -412,23 +412,14 @@ future.vpa <-
          nage <- sum(!is.na(res0$naa[,ncol(res0$naa)])) # nage:将来予測で考慮すべき年の数
      }
      else{
-         nage <- sum(!is.na(res0$naa[,year.overlap])) # nage:将来予測で考慮すべき年の数
+         nage <- sum(!is.na(res0$naa[,year.overlap])) 
      }}
     
       if(!silent){
           arglist.tmp <-  arglist
           arglist.tmp$res0 <- NULL
           arglist.tmp$Bban <- arglist.tmp$Bblim <- arglist.tmp$beta <- arglist.tmp$ssb0 <- arglist.tmp$strategy <- NULL
-#          arglist.tmp <- arglist.tmp[sapply(arglist.tmp,!is.null)]
           print(arglist.tmp)
-#          cat("F multiplier= ", multi,"seed=",seed,"\n")
-#          cat("ABC year= ", ABC.year,"\n")
-#          if(is.null(HCR)) cat("HCR is null")
-#          else{
-#              cat("HCR= ", HCR$Blimit,"(target)\n")
-#              cat("HCR= ", HCR$Bban,"(limit)\n")
-#              cat("HCR= ", HCR$beta,"(beta)\n")
-#          }
       }
     
     # シードの設定
@@ -438,7 +429,6 @@ future.vpa <-
     if(!is.null(Frec)){
       multi.org <- multi
       if(is.null(Frec$stochastic)) Frec$stochastice <- TRUE
-#      if(is.null(Frec$method)) Frec$method <- "optimize"
       if(is.null(Frec$target.probs)) Frec$target.probs <- 50
       if(is.null(Frec$scenario)) Frec$scenario <- "blimit" # 2017/12/25追記 
       if(is.null(Frec$Frange)) Frec$Frange <- c(0.01,multi.org*2)   # 2017/12/25追記(探索するFの範囲の指定)
@@ -563,31 +553,24 @@ future.vpa <-
     
       set.seed(arglist$seed)        
 
-      # 1年目の年齢組成を入れる
+      # 将来予測の最初の年の設定；バリエーションがありややこしいのでここで設定される
       if(!start.year%in%years){
-          # VPA結果が2011年まで、将来予測が2012年の場合
-          # 将来予測の最初の年の設定；バリエーションがありややこしいのでここで設定される
+          # VPA結果が2011年までで、将来予測の開始年が2012年の場合      
           if(start.year==(max(years)+1)){
             {if(is.null(res0$input$dat$M)){
                 M.lastyear <- M.org
             }
             else{
                 M.lastyear <- res0$input$dat$M[,length(years)]
-            }}            
+            }}
+            # 1年分forwardさせた年齢構成を初期値とする
             tmp <- forward.calc.simple(res0$faa[1:nage,length(years)],
                                      res0$naa[1:nage,length(years)],
-#                                     res0$input$dat$M[,length(years)],
                                      M.lastyear[1:nage],
                                      plus.group=plus.group)
             naa[1:nage,1,] <- tmp
 
-            # naa0がgivenの場合、ここで上書き
-            if(!is.null(naa0)){
-                naa[,1,] <- naa0
-                if(is.null(faa0)) faa0 <- res0$Fc.at.age
-                faa[] <- faa0*multi
-            }
-            
+           
             if(fyears[1]-min.age < start.year){
                 thisyear.ssb <- sum(res0$ssb[,as.character(fyears[1]-min.age)],na.rm=T)
                 thisyear.ssb <- rep(thisyear.ssb,N)
@@ -620,9 +603,16 @@ future.vpa <-
         }
       }
       else{
+          # VPA期間と将来予測期間が被っている場合にはVPAの結果を初期値として入れる
           naa[,1,] <- res0$naa[,start.year==years]
       }
 
+      # もし引数naa0が与えられている場合にはそれを用いる
+      if(!is.null(naa0)){
+          naa[,1,] <- naa0
+          if(is.null(faa0)) faa0 <- res0$Fc.at.age
+          faa[] <- faa0*multi
+      }      
     
       if(!is.null(rec.new)){
         if(!is.list(rec.new)){
@@ -631,7 +621,8 @@ future.vpa <-
         else{ # rec.newがlistの場合
           naa[1,fyears%in%rec.new$year,] <- rec.new$rec
         }}
-      
+
+      # 2年目以降の将来予測
       for(i in 1:(ntime-1)){
        
         #漁獲量がgivenの場合
