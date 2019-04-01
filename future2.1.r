@@ -292,6 +292,7 @@ future.vpa <-
            seed=NULL,
            strategy="F", # F: 漁獲係数一定, E: 漁獲割合一定、C: 漁獲量一定（pre.catchで漁獲量を指定）
            HCR=NULL,# HCRを使う場合、list(Blim=154500, Bban=49400,beta=1,year.lag=0)のように指定するか、以下の引数をセットする,year.lag=0で将来予測年の予測SSBを使う。-2の場合は２年遅れのSSBを使う
+           use.MSE=FALSE,
            beta=NULL,delta=NULL,Blim=0,Bban=0,
            plus.group=res0$input$plus.group,
            N=1000,# 確率的なシミュレーションをする場合の繰り返し回数。
@@ -486,6 +487,17 @@ future.vpa <-
     
     faa <- naa <- waa <- waa.catch <- maa <- M <- caa <- 
         array(NA,dim=c(length(ages),ntime,N),dimnames=list(age=ages,year=fyears,nsim=1:N))
+      
+    allyears <- sort(unique(c(fyears,years)))
+
+    # 全部のデータを記録したフレーム  
+    naa_all <- waa_all <- waa_catch_all <- maa_all <- array(NA,dim=c(length(ages),length(allyears),N),dimnames=list(age=ages,year=allyears,nsim=1:N))
+    naa_all[,1:length(years),] <- unlist(res0$naa)
+    waa_all[,1:length(years),] <- unlist(res0$input$dat$waa)
+    if(is.null(res0$input$dat$waa.catch))  waa_catch_all[,1:length(years),] <- unlist(res0$input$dat$waa) else waa_catch_all[,1:length(years),] <- unlist(res0$input$dat$waa.catch)
+    maa_all[,1:length(years),] <- unlist(res0$input$dat$maa)      
+    i_all <- which(allyears%in%start.year)
+      
     alpha <- thisyear.ssb <- array(1,dim=c(ntime,N),dimnames=list(year=fyears,nsim=1:N))
       
     # future biological patameter
@@ -568,7 +580,7 @@ future.vpa <-
                                      res0$naa[1:nage,length(years)],
                                      M.lastyear[1:nage],
                                      plus.group=plus.group)
-            naa[1:nage,1,] <- tmp
+            naa[1:nage,1,] <- naa_all[1:nage,i_all,] <- tmp
 
            
             if(fyears[1]-min.age < start.year){
@@ -592,7 +604,7 @@ future.vpa <-
             rec.arg$resid <- rec.tmp$rec.resample # ARオプションに対応
             
             if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg
-            naa[1,1,] <- rec.tmp$rec
+            naa[1,1,] <- naa_all[1,i_all,] <- rec.tmp$rec
             if (waa.fun) {
               waa[1,1,] <- as.numeric(exp(WAA.b0[1]+WAA.b1[1]*log(naa[1,1,])+waa.rand[1,1,])) 
             }
@@ -604,27 +616,27 @@ future.vpa <-
       }
       else{
           # VPA期間と将来予測期間が被っている場合にはVPAの結果を初期値として入れる
-          naa[,1,] <- res0$naa[,start.year==years]
+          naa[,1,] <- naa_all[,i_all,] <- res0$naa[,start.year==years]
       }
 
       # もし引数naa0が与えられている場合にはそれを用いる
       if(!is.null(naa0)){
-          naa[,1,] <- naa0
+          naa[,1,] <- naa_all[,i_all,] <- naa0
           if(is.null(faa0)) faa0 <- res0$Fc.at.age
           faa[] <- faa0*multi
       }      
     
       if(!is.null(rec.new)){
         if(!is.list(rec.new)){
-          naa[1,1,] <- rec.new
+          naa[1,1,] <- naa_all[1,i_all,] <- rec.new
         }
         else{ # rec.newがlistの場合
-          naa[1,fyears%in%rec.new$year,] <- rec.new$rec
+          naa[1,fyears%in%rec.new$year,] <- naa_all[,allyears%in%rec.new$year,] <- rec.new$rec
         }}
 
       # 2年目以降の将来予測
       for(i in 1:(ntime-1)){
-       
+          
         #漁獲量がgivenの場合
         if(!is.null(pre.catch) && fyears[i]%in%pre.catch$year){
           if(!is.null(pre.catch$wcatch)){
@@ -675,14 +687,20 @@ future.vpa <-
               alpha[i,] <- ifelse(ssb.tmp<HCR$Blim,HCR$beta*(ssb.tmp-HCR$Bban)/(HCR$Blim-HCR$Bban),HCR$beta)
               faa[,i,] <- sweep(faa[,i,],2,alpha[i,],FUN="*")
               faa[,i,] <- ifelse(faa[,i,]<0,0,faa[,i,])
-          }          
+          }
+
+          if(isTRUE(use.MSE)){
+              aa <- get_ABC_inMSE(naa_all,waa_all,maa_all,faa,M,res0,
+                                  i_all-2,2,recfunc,rec.arg,Pope,HCR,plus.group,min.age)
+              browser()
+          }
        
           ## 漁獲して１年分前進（加入はまだいれていない）
           tmp <- forward.calc.mat2(faa[,i,],naa[,i,],M[,i,],plus.group=plus.group)
           # 既に値が入っているところ（１年目の加入量）は除いて翌年のNAAを入れる
           naa.tmp <- naa[,i+1,]
           naa.tmp[is.na(naa.tmp)] <- tmp[is.na(naa.tmp)]          
-          naa[,i+1, ] <- naa.tmp
+          naa[,i+1, ] <- naa_all[,i_all+1,] <- naa.tmp
         
           ## 当年の加入の計算
           if(fyears[i+1]-min.age < start.year){
@@ -705,12 +723,13 @@ future.vpa <-
           rec.tmp <- recfunc(thisyear.ssb[i+1,],res0,
                              rec.resample=rec.tmp$rec.resample,
                              rec.arg=rec.arg)
-          if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- rec.tmp$rec          
+          if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- naa_all[1,i_all+1,] <- rec.tmp$rec          
 #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg      
           rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb[i+1,]
           eaa[i+1,] <- rec.tmp$rec.resample[1:N]
           rec.arg$resid <- rec.tmp$rec.resample # ARオプションに対応
-
+          
+          i_all <- i_all+1
       }
       
       if (!is.null(rec.arg$rho)) rec.tmp$rec.resample <- NULL
@@ -720,7 +739,9 @@ future.vpa <-
       }
       else{
           caa[] <- naa*(1-exp(-faa-M))*faa/(faa+M)
-      }      
+      }
+
+      
    
       caa <- caa[,-ntime,,drop=F]
       waa.catch <- waa.catch[,-ntime,,drop=F]
@@ -747,7 +768,7 @@ future.vpa <-
                    maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
                    eaa=eaa,alpha=alpha,thisyear.ssb=thisyear.ssb,
                    waa=waa,waa.catch=waa.catch,currentF=currentF,
-                   vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
+                   vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,naa_all=naa_all,
                    years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,rec.arg=rec.arg,
                    waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
                    Frec=Frec,rec.new=rec.new,pre.catch=pre.catch,input=arglist)
