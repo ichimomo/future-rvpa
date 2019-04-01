@@ -486,7 +486,7 @@ future.vpa <-
     
     faa <- naa <- waa <- waa.catch <- maa <- M <- caa <- 
         array(NA,dim=c(length(ages),ntime,N),dimnames=list(age=ages,year=fyears,nsim=1:N))
-    alpha <- array(1,dim=c(ntime,N),dimnames=list(year=fyears,nsim=1:N))
+    alpha <- thisyear.ssb <- array(1,dim=c(ntime,N),dimnames=list(year=fyears,nsim=1:N))
       
     # future biological patameter
     if(!is.null(M.org))  M[] <- M.org  else M[] <- apply(as.matrix(res0$input$dat$M[,years %in% M.year]),1,mean)
@@ -572,20 +572,20 @@ future.vpa <-
 
            
             if(fyears[1]-min.age < start.year){
-                thisyear.ssb <- sum(res0$ssb[,as.character(fyears[1]-min.age)],na.rm=T)
-                thisyear.ssb <- rep(thisyear.ssb,N)
+                thisyear.ssb[1,] <- sum(res0$ssb[,as.character(fyears[1]-min.age)],na.rm=T)
+#                thisyear.ssb <- rep(thisyear.ssb,N)
             }
             else{
                 if(waa.fun){
                     waa[2:nage,1,] <- t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,1,])+waa.rand[ii,1,]))))
                 }
-                thisyear.ssb <- colSums(naa[,1,]*waa[,1,]*maa[,1,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom                           }
+                thisyear.ssb[1,] <- colSums(naa[,1,]*waa[,1,]*maa[,1,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom                           }
             
-            thisyear.ssb <- thisyear.ssb+(1e-10)
+            thisyear.ssb[1,] <- thisyear.ssb[1,]+(1e-10)
             
-            if(!is.null(ssb0)) thisyear.ssb <- colSums(ssb0)
+            if(!is.null(ssb0)) thisyear.ssb[1,] <- colSums(ssb0)
                         
-            rec.tmp <- recfunc(thisyear.ssb,res0,
+            rec.tmp <- recfunc(thisyear.ssb[1,],res0,
                                rec.resample=rec.tmp$rec.resample,
                                rec.arg=rec.arg)
             eaa[1,] <- rec.tmp$rec.resample[1:N]
@@ -596,7 +596,7 @@ future.vpa <-
             if (waa.fun) {
               waa[1,1,] <- as.numeric(exp(WAA.b0[1]+WAA.b1[1]*log(naa[1,1,])+waa.rand[1,1,])) 
             }
-            rps.mat[1,] <- naa[1,1,]/thisyear.ssb          
+            rps.mat[1,] <- naa[1,1,]/thisyear.ssb[1,]          
         }
         else{
           stop("ERROR Set appropriate year to start projection\n")
@@ -687,9 +687,9 @@ future.vpa <-
           ## 当年の加入の計算
           if(fyears[i+1]-min.age < start.year){
               # 参照する親魚資源量がVPA期間である場合、VPA期間のSSBをとってくる
-              thisyear.ssb <- sum(res0$ssb[,as.character(fyears[i+1]-min.age)],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom
-              thisyear.ssb <- rep(thisyear.ssb,N)              
-              if(!is.null(ssb0)) thisyear.ssb <- colSums(ssb0)
+              thisyear.ssb[i+1,] <- sum(res0$ssb[,as.character(fyears[i+1]-min.age)],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom
+#              thisyear.ssb <- rep(thisyear.ssb,N)              
+              if(!is.null(ssb0)) thisyear.ssb[i+1,] <- colSums(ssb0)
           }
           else{
               # そうでない場合
@@ -698,16 +698,16 @@ future.vpa <-
                 waa[2:nage,i+1-min.age,] <- t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,i+1-min.age,])+waa.rand[ii,i+1-min.age,]))))
 
             }
-            thisyear.ssb <- colSums(naa[,i+1-min.age,]*waa[,i+1-min.age,]*maa[,i+1-min.age,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom            
+            thisyear.ssb[i+1,] <- colSums(naa[,i+1-min.age,]*waa[,i+1-min.age,]*maa[,i+1-min.age,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom            
           }
 
-          thisyear.ssb <- thisyear.ssb+(1e-10)
-          rec.tmp <- recfunc(thisyear.ssb,res0,
+          thisyear.ssb[i+1,] <- thisyear.ssb[i+1,]+(1e-10)
+          rec.tmp <- recfunc(thisyear.ssb[i+1,],res0,
                              rec.resample=rec.tmp$rec.resample,
                              rec.arg=rec.arg)
           if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- rec.tmp$rec          
 #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg      
-          rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb
+          rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb[i+1,]
           eaa[i+1,] <- rec.tmp$rec.resample[1:N]
           rec.arg$resid <- rec.tmp$rec.resample # ARオプションに対応
 
@@ -724,6 +724,7 @@ future.vpa <-
    
       caa <- caa[,-ntime,,drop=F]
       waa.catch <- waa.catch[,-ntime,,drop=F]
+      thisyear.ssb <- thisyear.ssb[-ntime,,drop=F]      
       waa <- waa[,-ntime,,drop=F]
       maa <- maa[,-ntime,,drop=F]                
       naa <- naa[,-ntime,,drop=F]
@@ -744,7 +745,7 @@ future.vpa <-
     
       fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,
                    maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
-                   eaa=eaa,alpha=alpha,
+                   eaa=eaa,alpha=alpha,thisyear.ssb=thisyear.ssb,
                    waa=waa,waa.catch=waa.catch,currentF=currentF,
                    vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
                    years=fyears,fyear.year=fyear.year,ABC=ABC,recfunc=recfunc,rec.arg=rec.arg,
