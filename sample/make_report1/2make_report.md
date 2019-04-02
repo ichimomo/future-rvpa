@@ -26,6 +26,10 @@
 
 <!-- -->
 
+    source("../../rvpa1.9.2.r")
+    source("../../future2.1.r")
+    source("../../utilities.r", encoding = "UTF-8")  # ggplotを使ったグラフ作成用の関数
+
     library(tidyverse)
     # 再生産関係のプロット
     g1 <- SRplot_gg(SRmodel.base)
@@ -48,69 +52,69 @@
 
 **表：さまざまな管理基準値**
 
-<table style="width:93%;">
+<table>
 <colgroup>
-<col width="18%" />
-<col width="26%" />
-<col width="48%" />
+<col style="width: 18%" />
+<col style="width: 28%" />
+<col style="width: 53%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left">ラベル</th>
-<th align="left">管理基準値</th>
-<th align="left">説明</th>
+<th style="text-align: left;">ラベル</th>
+<th style="text-align: left;">管理基準値</th>
+<th style="text-align: left;">説明</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Btarget0</td>
-<td align="left">目標</td>
-<td align="left">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
+<td style="text-align: left;">Btarget0</td>
+<td style="text-align: left;">目標</td>
+<td style="text-align: left;">最大の平均漁獲量を得る時の親魚量(<strong>Bmsy</strong>)。過去最大親魚量の2倍となり、SSB&gt;SSB_maxの範囲における不確実性が大きい懸念がある。</td>
 </tr>
 <tr class="even">
-<td align="left">Btarget1</td>
-<td align="left">目標(代替値候補1)</td>
-<td align="left">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
+<td style="text-align: left;">Btarget1</td>
+<td style="text-align: left;">目標(代替値候補1)</td>
+<td style="text-align: left;">漁獲がないときの親魚資源量の20%に相当する親魚量。<br> 米国では浮魚類のMSY代替値の下限としても利用されている。<br>このケースではMSYの90%以上の平均漁獲量を得られる親魚レベルは確保されているため、漁獲量の観点からはBmsyに遜色ないパフォーマンスが得られることが期待される。</td>
 </tr>
 <tr class="odd">
-<td align="left">Btarget2</td>
-<td align="left">目標(代替値候補2)</td>
-<td align="left">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベル。(あくまで例であり、ABCルールでこういう管理基準値が選べるということではないです。)</td>
+<td style="text-align: left;">Btarget2</td>
+<td style="text-align: left;">目標(代替値候補2)</td>
+<td style="text-align: left;">MSYの95%の平均漁獲量を得るときの親魚資源量。 MSYには至らないがMSYの95%の平均漁獲量を得られる親魚レベル。(あくまで例であり、ABCルールでこういう管理基準値が選べるということではないです。)</td>
 </tr>
 <tr class="even">
-<td align="left">Blow0</td>
-<td align="left">高位・中位の境界</td>
-<td align="left">MSYの90%の平均漁獲量を得るときの親魚資源量</td>
+<td style="text-align: left;">Blow0</td>
+<td style="text-align: left;">高位・中位の境界</td>
+<td style="text-align: left;">MSYの90%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="odd">
-<td align="left">Blimit0</td>
-<td align="left">限界</td>
-<td align="left">MSYの60%の平均漁獲量を得るときの親魚資源量</td>
+<td style="text-align: left;">Blimit0</td>
+<td style="text-align: left;">限界</td>
+<td style="text-align: left;">MSYの60%の平均漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td align="left">Blimit1</td>
-<td align="left">限界(代替値候補1)</td>
-<td align="left">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。（が、Blimitで代替値候補がある場合の例として、ここではこれも代替値候補としてみる）</td>
+<td style="text-align: left;">Blimit1</td>
+<td style="text-align: left;">限界(代替値候補1)</td>
+<td style="text-align: left;">今まで利用していたBlimit。この水準ではMSYの50%以上の漁獲量が失われるため、Blimitとしては推奨できない。（が、Blimitで代替値候補がある場合の例として、ここではこれも代替値候補としてみる）</td>
 </tr>
 <tr class="odd">
-<td align="left">Bban0</td>
-<td align="left">禁漁</td>
-<td align="left">MSYの10%の平衡漁獲量を得るときの親魚資源量</td>
+<td style="text-align: left;">Bban0</td>
+<td style="text-align: left;">禁漁</td>
+<td style="text-align: left;">MSYの10%の平衡漁獲量を得るときの親魚資源量</td>
 </tr>
 <tr class="even">
-<td align="left">Bmax</td>
-<td align="left">経験値</td>
-<td align="left">過去最大親魚量　</td>
+<td style="text-align: left;">Bmax</td>
+<td style="text-align: left;">経験値</td>
+<td style="text-align: left;">過去最大親魚量　</td>
 </tr>
 <tr class="odd">
-<td align="left">B_HS</td>
-<td align="left">経験値</td>
-<td align="left">HS再生産関係の折れ点　</td>
+<td style="text-align: left;">B_HS</td>
+<td style="text-align: left;">経験値</td>
+<td style="text-align: left;">HS再生産関係の折れ点　</td>
 </tr>
 <tr class="even">
-<td align="left">B_current</td>
-<td align="left">経験値</td>
-<td align="left">最近年の親魚量　</td>
+<td style="text-align: left;">B_current</td>
+<td style="text-align: left;">経験値</td>
+<td style="text-align: left;">最近年の親魚量　</td>
 </tr>
 </tbody>
 </table>
@@ -7746,7 +7750,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d9e2c7">0.4306009</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f0f4e9">0.2938507</span>
 </td>
 </tr>
 <tr>
@@ -7759,7 +7763,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d0dbba">0.4763534</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #edf1e5">0.3093949</span>
 </td>
 </tr>
 <tr>
@@ -7772,7 +7776,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c5d3aa">0.5320292</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #eaefe0">0.3271384</span>
 </td>
 </tr>
 <tr>
@@ -7785,7 +7789,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b8c996">0.6017384</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e6ecda">0.3478960</span>
 </td>
 </tr>
 <tr>
@@ -7798,7 +7802,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #a6bb7b">0.6921492</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e1e8d3">0.3727564</span>
 </td>
 </tr>
 <tr>
@@ -7811,7 +7815,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #8ea958">0.8149655</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dce4cb">0.4032906</span>
 </td>
 </tr>
 <tr>
@@ -7824,7 +7828,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f0f3e8">0.3150939</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f7f9f3">0.2598543</span>
 </td>
 </tr>
 <tr>
@@ -7837,7 +7841,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e9eede">0.3509704</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f4f6ee">0.2764743</span>
 </td>
 </tr>
 <tr>
@@ -7850,7 +7854,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e0e7d2">0.3939822</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f0f3e9">0.2952152</span>
 </td>
 </tr>
 <tr>
@@ -7863,7 +7867,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #d6e0c2">0.4471237</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ecf0e3">0.3167217</span>
 </td>
 </tr>
 <tr>
@@ -7876,7 +7880,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c9d5af">0.5152715</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e7eddc">0.3422802</span>
 </td>
 </tr>
 <tr>
@@ -7889,7 +7893,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #b7c894">0.6068322</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e1e8d3">0.3734457</span>
 </td>
 </tr>
 <tr>
@@ -7902,7 +7906,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ebf0e2">0.3385104</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f7f9f3">0.2585963</span>
 </td>
 </tr>
 <tr>
@@ -7915,7 +7919,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e3ead6">0.3777031</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f4f6ef">0.2744462</span>
 </td>
 </tr>
 <tr>
@@ -7928,7 +7932,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dae3c9">0.4244571</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f1f4ea">0.2916813</span>
 </td>
 </tr>
 <tr>
@@ -7941,7 +7945,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cfdab8">0.4824449</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #edf1e4">0.3114034</span>
 </td>
 </tr>
 <tr>
@@ -7954,7 +7958,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #c1cfa2">0.5571418</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e9eede">0.3347932</span>
 </td>
 </tr>
 <tr>
@@ -7967,7 +7971,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #adc085">0.6582308</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e3ead6">0.3636903</span>
 </td>
 </tr>
 <tr>
@@ -7980,7 +7984,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #00
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.2385939</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">0.2186822</span>
 </td>
 </tr>
 <tr>
@@ -7993,7 +7997,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #33
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f8faf5">0.2721242</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #fbfcf9">0.2378201</span>
 </td>
 </tr>
 <tr>
@@ -8006,7 +8010,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #65
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f1f4ea">0.3102262</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f7f9f4">0.2574970</span>
 </td>
 </tr>
 <tr>
@@ -8019,7 +8023,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #99
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e8eddd">0.3556967</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #f3f6ee">0.2785887</span>
 </td>
 </tr>
 <tr>
@@ -8032,7 +8036,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #cc
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #dde5cc">0.4131856</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #eef2e7">0.3031694</span>
 </td>
 </tr>
 <tr>
@@ -8045,7 +8049,7 @@ style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ff
 </td>
 <td style="text-align:right;">
 <span
-style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ced9b6">0.4897960</span>
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #e9eede">0.3329914</span>
 </td>
 </tr>
 </tbody>

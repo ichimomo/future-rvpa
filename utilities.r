@@ -39,8 +39,14 @@ convert_future_table <- function(fout,label="tmp"){
         mutate(year=rownames(Fsakugen)) %>%
         gather(key=sim, value=value, -year, convert=TRUE) %>%
         mutate(year=as.numeric(year),stat="Fsakugen",label=label)
+
+    Recruitment <- fout$naa[1,,] %>%                                    #追加
+        as_tibble %>%                                                   #追加
+        mutate(year=colnames(fout$naa)) %>%                             #追加
+        gather(key=sim, value=value, -year, convert=TRUE) %>%           #追加
+        mutate(year=as.numeric(year),stat="Recruitment",label=label)   
     
-    bind_rows(ssb,catch,biomass,alpha_value,Fsakugen)
+    bind_rows(ssb,catch,biomass,alpha_value,Fsakugen,Recruitment)
 }
         
     
@@ -62,6 +68,8 @@ convert_vpa_tibble <- function(vpares){
         dplyr::filter(value>0&!is.na(value))
     FAA <- convert_df(vpares$faa,"fishing_mortality") %>%
         dplyr::filter(value>0&!is.na(value))
+    Recruitment <- convert_vector(colSums(vpares$naa[1,,drop=F]),"Recruitment") %>%
+        dplyr::filter(value>0&!is.na(value))    
     
     all_table <- bind_rows(SSB,
                            Biomass,
@@ -71,7 +79,8 @@ convert_vpa_tibble <- function(vpares){
                            FAA, 
                            convert_df(vpares$input$dat$waa,"weight"),
                            convert_df(vpares$input$dat$maa,"maturity"),
-                           convert_df(vpares$input$dat$caa,"catch_number"))
+                           convert_df(vpares$input$dat$caa,"catch_number"),
+                           Recruitment)
 }
 
 SRplot_gg <- function(SR_result,refs=NULL){
@@ -464,11 +473,12 @@ plot_futures <- function(vpares,
 
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
     require(tidyverse,quietly=TRUE)
-    rename_list <- tibble(stat=c("SSB","biomass","catch","Fsakugen"),
-                          jstat=c(str_c("親魚量 (",junit,"トン)"),
-                                  str_c("資源量 (",junit,"トン)"),
-                                  str_c("漁獲量 (",junit,"トン)"),
-                                  "努力量の削減率"))
+    rename_list <- tibble(stat=c("Recruitment","SSB","biomass","catch","Fsakugen"),
+                          jstat=c(str_c("加入尾数 (",junit,"尾)"),
+                              str_c("親魚量 (",junit,"トン)"),
+                              str_c("資源量 (",junit,"トン)"),
+                              str_c("漁獲量 (",junit,"トン)"),
+                              "努力量の削減率"))
     
     if(is.null(future.name)) future.name <- 1:length(future.list)
     names(future.list) <- as.character(future.name)
@@ -480,16 +490,17 @@ plot_futures <- function(vpares,
 
     set.seed(seed)
     future.example <- future.table %>%
-        filter(sim==sample(1:max(future.table$sim),n_example)) %>%
+        dplyr::filter(sim%in%sample(1:max(future.table$sim),n_example)) %>%
         mutate(value=ifelse(stat=="Fsakugen",value,value/biomass.unit)) %>%
         left_join(rename_list) %>%
         group_by(sim,scenario)
         
 
     if(is.null(maxyear)) maxyear <- min(future.table$year)+32
-    
+
+    min.age <- as.numeric(rownames(vpares$naa)[1])
     vpa_tb <- convert_vpa_tibble(vpares) %>%
-        dplyr::filter(stat=="SSB"|stat=="biomass"|stat=="catch") %>%
+        dplyr::filter(stat=="SSB"|stat=="biomass"|stat=="catch"|stat=="Recruitment") %>%
         mutate(scenario=type,year=as.numeric(year),
                stat=factor(stat,levels=rename_list$stat),
                mean=value,sim=0)
@@ -527,7 +538,7 @@ plot_futures <- function(vpares,
    
     dummy <- left_join(dummy,rename_list)
     dummy2 <- left_join(dummy2,rename_list)
-    dummy3 <- tibble(jstat=rename_list$jstat[1],
+    dummy3 <- tibble(jstat=rename_list$jstat[2],
                      value=c(Btarget,Blimit,Blow,Bban)/biomass.unit,
                      RP_name=c("Btarget","Blimit","Blow","Bban"))
     
@@ -535,7 +546,6 @@ plot_futures <- function(vpares,
     
     g1 <- future.table.qt %>% 
         ggplot() +
-        facet_wrap(factor(jstat,levels=rename_list$jstat)~.,scales="free",ncol=2)+
         geom_ribbon(aes(x=year,ymin=low,ymax=high,fill=scenario),alpha=0.5)+        
         geom_line(aes(x=year,y=mean,color=scenario),lwd=1)+
         geom_line(aes(x=year,y=mean,color=scenario),linetype=2,lwd=1)+
@@ -544,6 +554,7 @@ plot_futures <- function(vpares,
         theme_bw(base_size=font.size) +
         coord_cartesian(expand=0)+
         theme(legend.position="bottom",panel.grid = element_blank())+
+        facet_wrap(~factor(jstat,levels=rename_list$jstat),scales="free")+        
         xlab("年")+ylab("")+ labs(fill = "",linetype="",color="")+
         geom_hline(data=dummy3,aes(yintercept=value,linetype=RP_name)) 
 

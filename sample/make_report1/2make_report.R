@@ -11,11 +11,17 @@ opts_chunk$set(prompt=FALSE,
                warning=FALSE)
 
 
+
 ## ------------------------------------------------------------------------
+source("../../rvpa1.9.2.r")
+source("../../future2.1.r")
+source("../../utilities.r",encoding="UTF-8") # ggplotを使ったグラフ作成用の関数
+
 library(tidyverse)
 # 再生産関係のプロット
 g1 <- SRplot_gg(SRmodel.base)
 g1 + ggtitle("図1. 再生産関係")
+
 
 ## ------------------------------------------------------------------------
 # 管理基準値表
@@ -59,6 +65,7 @@ g4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=6,Blow="Btarget0")
 (g4 <- g4 + ggtitle("図4. 神戸チャート（6区分）"))
 
 
+
 ## ------------------------------------------------------------------------
 # 親魚資源量と漁獲量の時系列の図示
 g5 <- plot_futures(res.pma, # vpaの結果
@@ -78,6 +85,7 @@ g6 <- plot_Fcurrent(res.pma,year.range=2000:2017)
 (g6 <- g6+ggtitle("図6. MSY計算とHCRで仮定されたcurrent Fの定義（赤線)"))
 
 
+
 ## ------------------------------------------------------------------------
 library(formattable)
 catch.table %>%  select(-stat_name) %>%
@@ -85,6 +93,7 @@ catch.table %>%  select(-stat_name) %>%
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
 
 ## ------------------------------------------------------------------------
 library(formattable)
@@ -94,12 +103,14 @@ Fsakugen.table %>%  select(-stat_name) %>%
                                   HCR_name=formatter("span", 
     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
+
 ## ------------------------------------------------------------------------
 ssbtarget.table %>% select(-stat_name) %>%
     formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
                                                      style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
 
 
 ## ------------------------------------------------------------------------
@@ -111,14 +122,6 @@ ssblow.table %>% select(-stat_name) %>%
                                                      style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
 
 
-## ------------------------------------------------------------------------
-
-ssblimit.table %>% select(-stat_name) %>%
-    formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
-                                  beta=color_tile("white","blue"),
-                                  HCR_name=formatter("span", 
-                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
-
 
 ## ------------------------------------------------------------------------
 
@@ -127,6 +130,17 @@ ssblimit.table %>% select(-stat_name) %>%
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
                                                      style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
+
+
+## ------------------------------------------------------------------------
+
+ssblimit.table %>% select(-stat_name) %>%
+    formattable::formattable(list(area(col=-1)~color_tile("white","olivedrab"),
+                                  beta=color_tile("white","blue"),
+                                  HCR_name=formatter("span", 
+                                                     style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
 
 
 ## ------------------------------------------------------------------------
@@ -136,6 +150,7 @@ ssbmin.table %>% select(-stat_name) %>%
                                   beta=color_tile("white","blue"),
                                   HCR_name=formatter("span", 
                                                      style = ~ style(color = ifelse(HCR_name == "Btarget0-Blimit0-Bban0" & beta==0.8, "red", "black")))))
+
 
 
 

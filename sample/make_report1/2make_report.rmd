@@ -44,6 +44,10 @@ opts_chunk$set(prompt=FALSE,
 
 
 ```{r}
+source("../../rvpa1.9.2.r")
+source("../../future2.1.r")
+source("../../utilities.r",encoding="UTF-8") # ggplotを使ったグラフ作成用の関数
+
 library(tidyverse)
 # 再生産関係のプロット
 g1 <- SRplot_gg(SRmodel.base)
