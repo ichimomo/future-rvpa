@@ -66,11 +66,12 @@ head(SRdata)
     [22] 1081.8343 1265.0456 1023.9650  753.1901  764.0987  876.6335  500.9416
     [29]  549.3746
 
-再生産モデルのフィット
+## 再生産モデルのフィット
 
 ``` r
 # 網羅的なパラメータ設定
-SRmodel.list <- expand.grid(SR.rel = c("HS","BH","RI"), AR.type = c(0, 1), L.type = c("L1", "L2"))
+SRmodel.list <- expand.grid(SR.rel = c("HS", "BH", "RI"), AR.type = c(0, 1), 
+    L.type = c("L1", "L2"))
 SR.list <- list()
 for (i in 1:nrow(SRmodel.list)) {
     SR.list[[i]] <- fit.SR(SRdata, SR = SRmodel.list$SR.rel[i], method = SRmodel.list$L.type[i], 
@@ -80,7 +81,7 @@ for (i in 1:nrow(SRmodel.list)) {
 SRmodel.list$AICc <- sapply(SR.list, function(x) x$AICc)
 SRmodel.list$delta.AIC <- SRmodel.list$AICc - min(SRmodel.list$AICc)
 SR.list <- SR.list[order(SRmodel.list$AICc)]  # AICの小さい順に並べたもの
-(SRmodel.list <- SRmodel.list[order(SRmodel.list$AICc), ]) # 結果
+(SRmodel.list <- SRmodel.list[order(SRmodel.list$AICc), ])  # 結果
 ```
 
 ``` 
@@ -101,16 +102,20 @@ SR.list <- SR.list[order(SRmodel.list$AICc)]  # AICの小さい順に並べた�
 
 ``` r
 # HSのうちR0が低いケース（12番）とAIC最小ケースとの比較
-plot(SR.list[[1]]$pred,type="l",ylim=c(0,2000))
-points(SR.list[[12]]$pred,type="l",col=2)
+plot(SR.list[[1]]$pred, type = "l", ylim = c(0, 2000))
+points(SR.list[[12]]$pred, type = "l", col = 2)
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
 ``` r
-SRmodel.base <- SR.list[[1]] # AIC最小モデルを今後使っていく
-SRmodel.R1 <- SR.list[[12]] # 別の加入シナリオ
+SRmodel.base <- SR.list[[1]]  # AIC最小モデルを今後使っていく
+SRmodel.R1 <- SR.list[[12]]  # 別の加入シナリオ
+```
 
+## 将来予測の実施
+
+``` r
 future.Fcurrent <- future.vpa(res.pma,
                       multi=1,
                       nyear=50, # 将来予測の年数
@@ -122,7 +127,7 @@ future.Fcurrent <- future.vpa(res.pma,
                       M.year=2015:2017,
                       is.plot=TRUE, # 結果をプロットするかどうか
                       seed=1,
-                      silent=FALSE,
+                      silent=TRUE,
                       recfunc=HS.recAR, # 再生産関係の関数
                       # recfuncに対する引数
                       rec.arg=list(a=SRmodel.base$pars$a,b=SRmodel.base$pars$b,
@@ -130,153 +135,7 @@ future.Fcurrent <- future.vpa(res.pma,
                                    sd=SRmodel.base$pars$sd,resid=SRmodel.base$resid))
 ```
 
-    $ABC.year
-    [1] 2019
-    
-    $Blim
-    [1] 0
-    
-    $F.sigma
-    [1] 0
-    
-    $Frec
-    NULL
-    
-    $HCR
-    NULL
-    
-    $M
-    NULL
-    
-    $M.year
-    [1] 2015 2016 2017
-    
-    $MSE.options
-    NULL
-    
-    $N
-    [1] 100
-    
-    $Pope
-    [1] TRUE
-    
-    $add.year
-    [1] 0
-    
-    $currentF
-    NULL
-    
-    $delta
-    NULL
-    
-    $det.run
-    [1] TRUE
-    
-    $eaa0
-    NULL
-    
-    $faa0
-    NULL
-    
-    $is.plot
-    [1] TRUE
-    
-    $maa
-    NULL
-    
-    $maa.year
-    [1] 2015 2016 2017
-    
-    $multi
-    [1] 1
-    
-    $multi.year
-    [1] 1
-    
-    $naa0
-    NULL
-    
-    $nyear
-    [1] 50
-    
-    $outtype
-    [1] "FULL"
-    
-    $plus.group
-    [1] TRUE
-    
-    $pre.catch
-    NULL
-    
-    $random.select
-    NULL
-    
-    $rec.arg
-    $rec.arg$a
-    [1] 0.02864499
-    
-    $rec.arg$b
-    [1] 51882.06
-    
-    $rec.arg$rho
-    [1] 0
-    
-    $rec.arg$sd
-    [1] 0.2624895
-    
-    $rec.arg$resid
-     [1]  0.15003999  0.13188525  0.23168312 -0.15352429  0.49544035
-     [6]  0.23597319 -0.35721137 -0.16965875 -0.02705374  0.13375295
-    [11] -0.28506140  0.76090931  0.11611132  0.29373043  0.22330688
-    [16] -0.01847747 -0.02781840 -0.16723995 -0.30046800  0.13088282
-    [21] -0.24773256 -0.12321799  0.09662881 -0.09504603 -0.37695727
-    [26] -0.34187713  0.10535290 -0.26881174 -0.14558152
-    
-    
-    $rec.new
-    NULL
-    
-    $recfunc
-    function (ssb, vpares, rec.resample = NULL, rec.arg = list(a = 1000, 
-        b = 1000, sd = 0.1, rho = 0, resid = 0)) 
-    {
-        rec0 <- ifelse(ssb > rec.arg$b, rec.arg$a * rec.arg$b, rec.arg$a * 
-            ssb)
-        rec <- rec0 * exp(rec.arg$rho * rec.arg$resid)
-        rec <- rec * exp(rnorm(length(ssb), -0.5 * rec.arg$sd2^2, 
-            rec.arg$sd))
-        new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
-        return(list(rec = rec, rec.resample = new.resid))
-    }
-    
-    $replace.rec.year
-    [1] 2012
-    
-    $seed
-    [1] 1
-    
-    $silent
-    [1] FALSE
-    
-    $start.year
-    [1] 2018
-    
-    $use.MSE
-    [1] FALSE
-    
-    $waa
-    NULL
-    
-    $waa.catch
-    NULL
-    
-    $waa.fun
-    [1] FALSE
-    
-    $waa.year
-    [1] 2015 2016 2017
-
-![](README_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
 
 ``` r
 future.Fcurrent_R1 <- future.vpa(res.pma,
@@ -290,7 +149,7 @@ future.Fcurrent_R1 <- future.vpa(res.pma,
                       M.year=2015:2017,
                       is.plot=TRUE, # 結果をプロットするかどうか
                       seed=1,
-                      silent=FALSE,
+                      silent=TRUE,
                       recfunc=HS.recAR, # 再生産関係の関数
                       # recfuncに対する引数
                       rec.arg=list(a=SRmodel.R1$pars$a,b=SRmodel.R1$pars$b,
@@ -298,168 +157,21 @@ future.Fcurrent_R1 <- future.vpa(res.pma,
                                    sd=SRmodel.R1$pars$sd,resid=SRmodel.R1$resid))
 ```
 
-    $ABC.year
-    [1] 2019
-    
-    $Blim
-    [1] 0
-    
-    $F.sigma
-    [1] 0
-    
-    $Frec
-    NULL
-    
-    $HCR
-    NULL
-    
-    $M
-    NULL
-    
-    $M.year
-    [1] 2015 2016 2017
-    
-    $MSE.options
-    NULL
-    
-    $N
-    [1] 1000
-    
-    $Pope
-    [1] TRUE
-    
-    $add.year
-    [1] 0
-    
-    $currentF
-    NULL
-    
-    $delta
-    NULL
-    
-    $det.run
-    [1] TRUE
-    
-    $eaa0
-    NULL
-    
-    $faa0
-    NULL
-    
-    $is.plot
-    [1] TRUE
-    
-    $maa
-    NULL
-    
-    $maa.year
-    [1] 2015 2016 2017
-    
-    $multi
-    [1] 1
-    
-    $multi.year
-    [1] 1
-    
-    $naa0
-    NULL
-    
-    $nyear
-    [1] 50
-    
-    $outtype
-    [1] "FULL"
-    
-    $plus.group
-    [1] TRUE
-    
-    $pre.catch
-    NULL
-    
-    $random.select
-    NULL
-    
-    $rec.arg
-    $rec.arg$a
-    [1] 0.02785911
-    
-    $rec.arg$b
-    [1] 49274.13
-    
-    $rec.arg$rho
-    [1] 0.08763593
-    
-    $rec.arg$sd
-    [1] 0.2719476
-    
-    $rec.arg$resid
-     [1]  1.778584e-01  1.597037e-01  2.595015e-01 -1.257059e-01  5.232588e-01
-     [6]  2.637916e-01 -3.293930e-01 -1.418403e-01  7.646767e-04  2.131451e-01
-    [11] -2.056692e-01  7.887277e-01  1.955035e-01  3.215488e-01  3.026991e-01
-    [16]  6.091473e-02  1.770836e-08 -1.394215e-01 -2.210758e-01  2.102750e-01
-    [21] -2.199142e-01 -9.539957e-02  1.244472e-01 -6.722762e-02 -3.491389e-01
-    [26] -3.140587e-01  1.331713e-01 -2.409933e-01 -1.177631e-01
-    
-    
-    $rec.new
-    NULL
-    
-    $recfunc
-    function (ssb, vpares, rec.resample = NULL, rec.arg = list(a = 1000, 
-        b = 1000, sd = 0.1, rho = 0, resid = 0)) 
-    {
-        rec0 <- ifelse(ssb > rec.arg$b, rec.arg$a * rec.arg$b, rec.arg$a * 
-            ssb)
-        rec <- rec0 * exp(rec.arg$rho * rec.arg$resid)
-        rec <- rec * exp(rnorm(length(ssb), -0.5 * rec.arg$sd2^2, 
-            rec.arg$sd))
-        new.resid <- log(rec/rec0) + 0.5 * rec.arg$sd2^2
-        return(list(rec = rec, rec.resample = new.resid))
-    }
-    <bytecode: 0x8c61578>
-    
-    $replace.rec.year
-    [1] 2012
-    
-    $seed
-    [1] 1
-    
-    $silent
-    [1] FALSE
-    
-    $start.year
-    [1] 2018
-    
-    $use.MSE
-    [1] FALSE
-    
-    $waa
-    NULL
-    
-    $waa.catch
-    NULL
-    
-    $waa.fun
-    [1] FALSE
-    
-    $waa.year
-    [1] 2015 2016 2017
-
-![](README_files/figure-gfm/unnamed-chunk-3-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
 
 ``` r
 plot.futures(list(future.Fcurrent,future.Fcurrent_R1))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-3-4.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-4-3.png)<!-- -->
 
-MSY管理基準値の計算;
+## MSY管理基準値の計算;
 
 ``` r
 # MSYはbase caseのシナリオをもとにする
 MSY.base <- est.MSY(res.pma, # VPAの計算結果
                  future.Fcurrent$input, # 将来予測で使用した引数
-                 resid.year=0, # ARありの場合、最近何年分の残差を平均するかをここで指定する。ARありの設定を反映させたい場合必ずここを１以上とすること（とりあえず１としておいてください）。
+                 resid.year=0, 
                  N=100, # 確率的計算の繰り返し回数=>実際の計算では1000~5000回くらいやってください
                  calc.yieldcurve=TRUE,
                  PGY=c(0.6,0.1), # 計算したいPGYレベル。上限と下限の両方が計算される
@@ -476,46 +188,20 @@ MSY.base <- est.MSY(res.pma, # VPAの計算結果
     Estimating PGY  10 %
     F multiplier= 1.076097 
 
-![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
-(refs.all <- MSY.base$summary_tb)
-```
-
-    # A tibble: 8 x 15
-      RP_name   AR       SSB SSB2SSB0      B     U  Catch Catch.CV `Fref/Fcur`
-      <chr>     <lgl>  <dbl>    <dbl>  <dbl> <dbl>  <dbl>    <dbl>       <dbl>
-    1 MSY       FALSE 1.25e5   0.256  2.21e5 0.325 71794.    0.141       0.490
-    2 B0        FALSE 4.88e5   1.00   5.93e5 0.        0.  NaN           0.   
-    3 PGY_0.6_… FALSE 3.55e4   0.0727 9.37e4 0.460 43065.    0.463       1.01 
-    4 PGY_0.1_… FALSE 5.56e3   0.0114 1.52e4 0.473  7175.    1.41        1.08 
-    5 MSY       TRUE  1.26e5   0.256  2.21e5 0.326 72004.    0.147       0.490
-    6 B0        TRUE  4.93e5   1.00   5.97e5 0.        0.  NaN           0.   
-    7 PGY_0.6_… TRUE  3.62e4   0.0727 9.45e4 0.460 43509.    0.476       1.01 
-    8 PGY_0.1_… TRUE  5.65e3   0.0114 1.56e4 0.470  7363.    1.71        1.08 
-    # ... with 6 more variables: Fref2Fcurrent <dbl>, F0 <dbl>, F1 <dbl>,
-    #   F2 <dbl>, F3 <dbl>, RP.definition <chr>
-
-``` r
-# refs.allの中からRP.definitionで指定された行だけを抜き出す
-(refs.base <- refs.all %>%
+refs.all <- MSY.base$summary_tb
+refs.base <- refs.all %>%
     dplyr::filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
     arrange(desc(SSB)) %>% # SSBを大きい順に並び替え
-    select(RP.definition,RP_name,SSB,SSB2SSB0,Catch,Catch.CV,U,Fref2Fcurrent)) #　列を並び替え
+    select(RP.definition,RP_name,SSB,SSB2SSB0,Catch,Catch.CV,U,Fref2Fcurrent) #　列を並び替え
 ```
 
-    # A tibble: 3 x 8
-      RP.definition RP_name           SSB SSB2SSB0  Catch Catch.CV     U
-      <chr>         <chr>           <dbl>    <dbl>  <dbl>    <dbl> <dbl>
-    1 Btarget0      MSY           124683.   0.256  71794.    0.141 0.325
-    2 Blimit0       PGY_0.6_lower  35482.   0.0727 43065.    0.463 0.460
-    3 Bban0         PGY_0.1_lower   5564.   0.0114  7175.    1.41  0.473
-    # ... with 1 more variable: Fref2Fcurrent <dbl>
-
-将来予測比較
+## 簡易MSEの実施
 
 ``` r
-# HCRによる将来予測
+# 通常の将来予測（デフォルトHCR）
 input.abc <- future.Fcurrent$input  # Fcurrentにおける将来予測の引数をベースに将来予測します
 input.abc$multi <- derive_RP_value(refs.base, "Btarget0")$Fref2Fcurrent  # currentFへの乗数を'Btarget0'で指定した値に
 input.abc$silent <- TRUE
@@ -525,22 +211,23 @@ input.abc$N <- 1000
 future.default <- do.call(future.vpa, input.abc)  # デフォルトルールの結果→図示などに使う
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
 
 ``` r
-# MSEによる将来予測
+# 簡易MSEによる将来予測(加入の仮定はベースケースと同じ)
 source("future-diff.r")
 input.mse <- input.abc
-input.mse$N <- 10
-input.mse$use.MSE <- TRUE  # MSE仕様での将来予測
+input.mse$N <- 100
+input.mse$use.MSE <- TRUE  # use.MSEをTRUEにする
 input.mse$is.plot <- FALSE
 future.mse <- do.call(future.vpa, input.mse)
 
-# use.MSEオプションで、ARありバージョンには十分対応していない→今後の課題
+# 異なる加入の仮定を使う場合 MSE.optionsに入れる
+# !!use.MSEオプションで、ARありバージョンには十分対応していない→今後の課題!!
 input.mse_R1 <- input.mse
 input.mse_R1$MSE.options$recfunc <- future.Fcurrent_R1$recfunc
 input.mse_R1$MSE.options$rec.arg <- future.Fcurrent_R1$rec.arg
-input.mse_R1$N <- 10
+input.mse_R1$N <- 100
 future.mse_R1 <- do.call(future.vpa, input.mse)
 
 
@@ -549,7 +236,7 @@ plot_futures(res.pma, list(future.default, future.mse, future.mse_R1), future.na
     "mse", "mse_R1"))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
 
 ``` r
 # 直近の漁獲量の比較
@@ -559,4 +246,4 @@ all.table %>% dplyr::filter(stat == "catch", year < 2025, year > 2018) %>% ggplo
     geom_boxplot(aes(x = factor(year), y = value, fill = scenario))
 ```
 
-![](README_files/figure-gfm/unnamed-chunk-5-3.png)<!-- -->
+![](README_files/figure-gfm/unnamed-chunk-6-3.png)<!-- -->
