@@ -75,48 +75,12 @@ future.vpa <-
         if(is.null(M.year)) M.year <- rev(years)[1]
         if(is.null(start.year)) start.year <- rev(years)[1]+1
         if(is.null(ABC.year)) ABC.year <- rev(years)[1]+1
-        ##    if(!is.null(Bban)) Bban$is.Bban <- rep(FALSE,N)        
         arglist$ABC.year <- ABC.year
-        ##-------------
 
-        ##---- set S-R functin option -----
-        ## 使う関数によっては必要ないオプションもあるが、使わないオプションを入れてもエラーは出ないので、
-        # rec.arg$resampleがNULLかどうかで、パラメトリックな誤差分布かそうでないか（残差リサンプリング）を判別する
-        if(is.null(rec.arg$rho)){
-            rec.arg$rho <- 0
-            if(!silent) cat("rec.arg$rho is assumed to be 0...\n")
-        }
-        if(is.null(rec.arg$sd2)) rec.arg$sd2 <- sqrt(rec.arg$sd^2/(1-rec.arg$rho^2)) #rho込み平均補正用SD # HS.recAR
+        ##------------- set SR options
+        rec.arg <- set_SR_options(rec.arg,N=N,silent=silent,eaa0=eaa0)
 
-        ## resampling optionを使わない場合
-        if(is.null(rec.arg$resample)|!isTRUE(rec.arg$resample)){
-            if(is.null(rec.arg$bias.correction)) rec.arg$bias.correction <- TRUE # HS.recAR, HS.rec0
-            if(is.null(rec.arg$rho)){
-                rec.arg$rho <- 0 # HS.recAR, HS.rec0
-                rec.arg$resid <- 0
-            }
-            if(!is.null(rec.arg$rho)){
-                if(rec.arg$rho>0){
-                    if(is.null(eaa0)){
-                        if(is.null(rec.arg$resid.year)) rec.arg$resid <- rep(rev(rec.arg$resid)[1],N)
-                        else rec.arg$resid <- rep(mean(rev(rec.arg$resid)[1:rec.arg$resid.year]),N)
-                    }
-                    else{
-                        rec.arg$resid <- eaa0
-                    }
-                }
-                else{
-                    rec.arg$resid <- rep(0,N)
-                }
-            }
-        }
-        else{
-            if(rec.arg$rho>0) stop("You set rho is >0. You cannot use resample=TRUE option when rho>0") # resamplingの場合に自己相関は考慮できないのでrhoは強制的にゼロ
-        }
-        
-        if(!is.null(rec.arg$sd)) rec.arg$sd <- c(0,rep(rec.arg$sd,N-1))
-        if(!is.null(rec.arg$sd2)) rec.arg$sd2 <- c(0,rep(rec.arg$sd2,N-1))
-        ##---------------------------------
+        ##------------- set HCR options
         
         if(!is.null(HCR) && is.null(HCR$year.lag)) HCR$year.lag <- 0
         if(!is.null(beta)){
@@ -126,14 +90,14 @@ future.vpa <-
         }
 
         ##------------- set options for MSE
-        if(isTRUE(use.MSE) && is.null(MSE.options)){
-            MSE.options$recfunc <- recfunc
-            MSE.options$rec.arg <- rec.arg
-            if(MSE.options$rec.arg$rho>0){
-                MSE.options$rec.arg$sd2 <- sqrt(MSE.options$rec.arg$sd^2/(1-MSE.options$rec.arg$rho^2))
-                MSE.options$rec.arg$sd2 <- c(0,rep(rec.arg$sd2,N-1))
-                MSE.options$rec.arg$resid <- rep(mean(rev(MSE.options$rec.arg$resid)[1:3]),N)
-                
+        if(isTRUE(use.MSE)){
+            if(is.null(MSE.options)){
+                MSE.options$recfunc <- recfunc
+                MSE.options$rec.arg <- rec.arg
+            }
+            else{
+                MSE.options$rec.arg <- set_SR_options(MSE.options$rec.arg,
+                                                      N=N,silent=silent,eaa0=eaa0)
             }
         }
         ##-------------        
@@ -644,4 +608,45 @@ get_ABC_inMSE <- function(naa_all,waa_all,maa_all,faa,M,res0,start_year,nyear,re
     
     return(ABC.all)
 
+}
+
+set_SR_options <- function(rec.arg,N=100, silent=TRUE,eaa0=NULL){
+        ##---- set S-R functin option -----
+        ## 使う関数によっては必要ないオプションもあるが、使わないオプションを入れてもエラーは出ないので、
+        # rec.arg$resampleがNULLかどうかで、パラメトリックな誤差分布かそうでないか（残差リサンプリング）を判別する
+        if(is.null(rec.arg$rho)){
+            rec.arg$rho <- 0
+            if(!silent) cat("rec.arg$rho is assumed to be 0...\n")
+        }
+        if(is.null(rec.arg$sd2)) rec.arg$sd2 <- sqrt(rec.arg$sd^2/(1-rec.arg$rho^2)) #rho込み平均補正用SD # HS.recAR
+
+        ## resampling optionを使わない場合
+        if(is.null(rec.arg$resample)|!isTRUE(rec.arg$resample)){
+            if(is.null(rec.arg$bias.correction)) rec.arg$bias.correction <- TRUE # HS.recAR, HS.rec0
+            if(is.null(rec.arg$rho)){
+                rec.arg$rho <- 0 # HS.recAR, HS.rec0
+                rec.arg$resid <- 0
+            }
+            if(!is.null(rec.arg$rho)){
+                if(rec.arg$rho>0){
+                    if(is.null(eaa0)){
+                        if(is.null(rec.arg$resid.year)) rec.arg$resid <- rep(rev(rec.arg$resid)[1],N)
+                        else rec.arg$resid <- rep(mean(rev(rec.arg$resid)[1:rec.arg$resid.year]),N)
+                    }
+                    else{
+                        rec.arg$resid <- eaa0
+                    }
+                }
+                else{
+                    rec.arg$resid <- rep(0,N)
+                }
+            }
+        }
+        else{
+            if(rec.arg$rho>0) stop("You set rho is >0. You cannot use resample=TRUE option when rho>0") # resamplingの場合に自己相関は考慮できないのでrhoは強制的にゼロ
+        }
+        
+    if(!is.null(rec.arg$sd)) rec.arg$sd <- c(0,rep(rec.arg$sd,N-1))
+    if(!is.null(rec.arg$sd2)) rec.arg$sd2 <- c(0,rep(rec.arg$sd2,N-1))
+    return(rec.arg)
 }

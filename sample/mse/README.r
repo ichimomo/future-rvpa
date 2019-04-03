@@ -42,8 +42,7 @@ res.pma <- vpa(dat,fc.year=2015:2017,
                term.F="max",stat.tf="mean",Pope=TRUE,
                tune=FALSE,p.init=1.0)
 # VPA結果を使って再生産データを作る
-SRdata <- get.SRdata(res.pma, years=1988:2016) 
-head(SRdata)
+SRdata <- get.SRdata(res.pma, years=1988:2016)
 
 #' ## 再生産モデルのフィット
 #'
@@ -61,13 +60,8 @@ SRmodel.list$AICc <- sapply(SR.list, function(x) x$AICc)
 SRmodel.list$delta.AIC <- SRmodel.list$AICc - min(SRmodel.list$AICc)
 SR.list <- SR.list[order(SRmodel.list$AICc)]  # AICの小さい順に並べたもの
 (SRmodel.list <- SRmodel.list[order(SRmodel.list$AICc), ]) # 結果
-
-# HSのうちR0が低いケース（12番）とAIC最小ケースとの比較
-plot(SR.list[[1]]$pred,type="l",ylim=c(0,2000))
-points(SR.list[[12]]$pred,type="l",col=2)
-
 SRmodel.base <- SR.list[[1]] # AIC最小モデルを今後使っていく
-SRmodel.R1 <- SR.list[[12]] # 別の加入シナリオ
+
 
 #' ## 将来予測の実施
 #'
@@ -78,12 +72,12 @@ future.Fcurrent <- future.vpa(res.pma,
                       multi=1,
                       nyear=50, # 将来予測の年数
                       start.year=2018, # 将来予測の開始年
-                      N=100, # 確率的計算の繰り返し回数=>実際の計算では1000~5000回くらいやってください
+                      N=1000, # 確率的計算の繰り返し回数=>実際の計算では1000~5000回くらいやってください
                       ABC.year=2019, # ABCを計算する年
                       waa.year=2015:2017, # 生物パラメータの参照年
                       maa.year=2015:2017,
                       M.year=2015:2017,
-                      is.plot=TRUE, # 結果をプロットするかどうか
+                      is.plot=FALSE, # 結果をプロットするかどうか
                       seed=1,
                       silent=TRUE,
                       recfunc=HS.recAR, # 再生産関係の関数
@@ -92,6 +86,9 @@ future.Fcurrent <- future.vpa(res.pma,
                                    rho=SRmodel.base$pars$rho, # ここではrho=0なので指定しなくてもOK
                                    sd=SRmodel.base$pars$sd,resid=SRmodel.base$resid))
 
+# たとえば、bをbest modelの半分と仮定してみる
+SRmodel.R1 <- SRmodel.base
+SRmodel.R1$pars$b <- SRmodel.R1$pars$b/2
 future.Fcurrent_R1 <- future.vpa(res.pma,
                       multi=1,
                       nyear=50, # 将来予測の年数
@@ -101,7 +98,7 @@ future.Fcurrent_R1 <- future.vpa(res.pma,
                       waa.year=2015:2017, # 生物パラメータの参照年
                       maa.year=2015:2017,
                       M.year=2015:2017,
-                      is.plot=TRUE, # 結果をプロットするかどうか
+                      is.plot=FALSE, # 結果をプロットするかどうか
                       seed=1,
                       silent=TRUE,
                       recfunc=HS.recAR, # 再生産関係の関数
@@ -110,7 +107,9 @@ future.Fcurrent_R1 <- future.vpa(res.pma,
                                    rho=SRmodel.R1$pars$rho, # ここではrho=0なので指定しなくてもOK
                                    sd=SRmodel.R1$pars$sd,resid=SRmodel.R1$resid))
 
+par(mfrow=c(1,2))
 plot.futures(list(future.Fcurrent,future.Fcurrent_R1))
+plot.futures(list(future.Fcurrent,future.Fcurrent_R1),target="Recruit")
 
 #' ## MSY管理基準値の計算; 
 #'
@@ -144,10 +143,11 @@ refs.base <- refs.all %>%
 input.abc <- future.Fcurrent$input # Fcurrentにおける将来予測の引数をベースに将来予測します
 input.abc$multi <- derive_RP_value(refs.base,"Btarget0")$Fref2Fcurrent # currentFへの乗数を"Btarget0"で指定した値に
 input.abc$silent <- TRUE
+input.abc$is.plot <- FALSE
 input.abc$HCR <- list(Blim=derive_RP_value(refs.base,"Blimit0")$SSB,
                       Bban=derive_RP_value(refs.base,"Bban0")$SSB,
                       beta=0.8,year.lag=0) # BlimitはBlimit0, BbanはBban0の値
-input.abc$N <- 1000
+input.abc$N <- 100
 future.default <- do.call(future.vpa,input.abc) # デフォルトルールの結果→図示などに使う
 
 # 簡易MSEによる将来予測(加入の仮定はベースケースと同じ)
@@ -162,15 +162,32 @@ future.mse <- do.call(future.vpa,input.mse)
 # MSE.optionsに入れる
 ### !!use.MSEオプションで、ARありバージョンには十分対応していない→今後の課題!!
 input.mse_R1 <- input.mse
-input.mse_R1$MSE.options$recfunc <- future.Fcurrent_R1$recfunc
-input.mse_R1$MSE.options$rec.arg <- future.Fcurrent_R1$rec.arg
-input.mse_R1$N <- 100
-future.mse_R1 <- do.call(future.vpa,input.mse)  
+# 真の加入関数
+input.mse_R1$recfunc <- future.Fcurrent_R1$input$recfunc
+input.mse_R1$rec.arg <- future.Fcurrent_R1$input$rec.arg
+# ABC計算上仮定する関数
+input.mse_R1$MSE.options$recfunc <- future.Fcurrent$input$recfunc
+input.mse_R1$MSE.options$rec.arg <- future.Fcurrent$input$rec.arg
+input.mse_R1$N <- 300
+future.mse_R1 <- do.call(future.vpa,input.mse_R1)
 
+# smaller beta
+input.mse_R2 <- input.mse_R1
+input.mse_R2$HCR$beta <- 0.6
+input.mse_R2$N <- 300
+future.mse_R2 <- do.call(future.vpa,input.mse_R2)  
 
 # 結果の比較
+plot_futures(res.pma,list(future.default,future.mse),
+             future.name=c("default","mse"),n_example=0,font.size=13)
+
 plot_futures(res.pma,list(future.default,future.mse,future.mse_R1),
-             future.name=c("default","mse","mse_R1"))
+             future.name=c("default","mse","mse_R1"),n_example=0,font.size=13)
+
+
+#' - default: 通常の将来予測
+#' - mse: 2年分将来予測を実施したときの漁獲量の平均値をABCとし、それをきっちり守るやり方 (将来予測の不確実性が導入)→親魚量のや資源量の期待値は変わらないが分布の幅は広くなっている
+#' - mse_R1: 実際の親子関係が間違っていた場合（真のR0は仮定したR0の半分くらいしかなかった）→毎年加入量を過大評価するABCを算定するため、常にABCは過大であった
 
 # 直近の漁獲量の比較
 all.table <- purrr::map_dfr(list(future.mse,future.default,future.mse_R1),convert_future_table,.id="scenario")
