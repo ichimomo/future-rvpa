@@ -447,7 +447,8 @@ future.vpa <-
                 # そうでない場合
                 if(waa.fun){
                     # 動的なwaaは対応する年のwaaを書き換えた上で使う？
-                    waa[2:nage,i+1-min.age,] <- waa[2:nage,i_all+1-min.age,] <- t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,i+1-min.age,])+waa.rand[ii,i+1-min.age,]))))
+                    waa[2:nage,i+1-min.age,] <- waa_all[2:nage,i_all+1-min.age,] <-
+                        t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,i+1-min.age,])+waa.rand[ii,i+1-min.age,]))))
 
                 }
                 thisyear.ssb[i+1,] <- colSums(naa[,i+1-min.age,]*waa[,i+1-min.age,]*maa[,i+1-min.age,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom            
