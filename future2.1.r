@@ -860,7 +860,7 @@ caa.est.mat <- function(naa,saa,waa,M,catch.obs,Pope){
 # HS用; ARには対応していないが、残差リサンプリングには対応している
 HS.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
+                   rec.arg=list(a=1000,b=1000,sd=0.1, 
                                         resample=FALSE,resid=0, # 残差リサンプリングする場合、resample=TRUEにして、residにリサンプリングする残差（対数）を入れる
                                         bias.correction=TRUE)){
 
@@ -887,7 +887,7 @@ HS.rec <- function(ssb,vpares,#deterministic=FALSE,
 # RI用; ARには対応していないが、残差リサンプリングには対応している
 RI.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
+                   rec.arg=list(a=1000,b=1000,sd=0.1, 
                                         resample=FALSE,resid=0, # 残差リサンプリングする場合、resample=TRUEにして、residにリサンプリングする残差（対数）を入れる
                                         bias.correction=TRUE)){
 
@@ -916,7 +916,7 @@ RI.rec <- function(ssb,vpares,#deterministic=FALSE,
 # RI用; ARには対応していないが、残差リサンプリングには対応している
 BH.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
+                   rec.arg=list(a=1000,b=1000,sd=0.1, 
                                         resample=FALSE,resid=0, # 残差リサンプリングする場合、resample=TRUEにして、residにリサンプリングする残差（対数）を入れる
                                         bias.correction=TRUE)){
     rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
@@ -943,7 +943,7 @@ BH.rec <- function(ssb,vpares,#deterministic=FALSE,
 # リサンプリング用(HS.rec, BH.rec, RI.recと同等)
 resample.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
+                   rec.arg=list(a=1000,b=1000,sd=0.1, 
                                 resid=0, # 残差リサンプリングする場合、resample=TRUEにして、residにリサンプリングする残差（対数）を入れる
                                 SR="HS",# or "BH","RI"
                                 bias.correction=TRUE)){
@@ -974,7 +974,7 @@ resample.rec <- function(ssb,vpares,#deterministic=FALSE,
 # しきい値を設定し、その境界前後でリサンプリングする残差を変える
 resample_2block.rec <- function(ssb,vpares,#deterministic=FALSE,
                    rec.resample=NULL,
-                   rec.arg=list(a=1000,b=1000,sd=0.1, # Mesnil関数のparameter
+                   rec.arg=list(a=1000,b=1000,sd=0.1, 
                                 resid.lower=0, # しきい値よりも小さいときの残差のセット
                                 resid.higher=0, # しきい値よりも大きいときの残差のセット
                                 ssb.threshold=0, # しきい値
@@ -1022,8 +1022,6 @@ resample_2block.rec <- function(ssb,vpares,#deterministic=FALSE,
 #    }
     return(list(rec=rec,rec.resample=rec.arg$resid)) # 暫定的変更
 }
-
-
 
 # Hockey-stick(bias.correctionのオプションは削除。どうせするので）
 HS.recAR <- function(ssb,vpares,#deterministic=FALSE,
