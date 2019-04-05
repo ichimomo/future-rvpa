@@ -10,15 +10,16 @@ output:
 
 ```{r, echo=FALSE}
 library(rmdformats)
+library(rmarkdown)
 ## Global options
 options(max.print="75")
-opts_chunk$set(echo=TRUE,
+#opts_chunk$set(echo=TRUE,
 #                     cache=TRUE,
-               prompt=FALSE,
-               tidy=TRUE,
-               comment=NA,
-               message=FALSE,
-               warning=FALSE)
+#               prompt=FALSE,
+               #tidy=TRUE,
+               #comment=NA,
+               #message=FALSE,
+               #warning=FALSE)
 #opts_knit$set(width=75)
 
 
