@@ -10,6 +10,7 @@ output:
 
 ```{r, echo=FALSE}
 library(rmdformats)
+library(knitr)
 ## Global options
 options(max.print="75")
 opts_chunk$set(echo=TRUE,
