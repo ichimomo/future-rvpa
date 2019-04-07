@@ -875,7 +875,9 @@ HS.rec <- function(ssb,vpares,#deterministic=FALSE,
     }
     else{
         if(isTRUE(rec.arg$bias.correction)){
-            rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE))/mean(exp(rec.arg$resid)))
+            rec <- c(rec0[1],
+                     exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE))/mean(exp(rec.arg$resid))
+                     )
         }
         else{
             rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)))
@@ -931,7 +933,9 @@ BH.rec <- function(ssb,vpares,#deterministic=FALSE,
     }
     else{
         if(isTRUE(rec.arg$bias.correction)){
-            rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)/mean(exp(rec.arg$resid))))
+            rec <- c(rec0[1],
+                     exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE))/mean(exp(rec.arg$resid))
+                     )
         }
         else{
             rec <- c(rec0[1],exp(log(rec0[-1])+sample(rec.arg$resid,length(ssb)-1,replace=TRUE)))
