@@ -164,7 +164,7 @@ plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.sca
             geom_point(data=tmpdata,
                        mapping=aes(x=ssb.future,y=catch.future,color=year,
                                    shape=factor(scenario))) +
-            geom_line(data=tmpdata,
+            geom_path(data=tmpdata,
                       mapping=aes(x=ssb.future,y=catch.future,
                                   linetype=factor(scenario)))
     }
@@ -179,7 +179,7 @@ plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.sca
         g1 <- g1 +
             geom_point(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past,
                                                 alpha=year),shape=2) +
-            geom_line(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past),color="gray")
+            geom_path(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past),color="gray")
     }
     
     g1 <- g1 + geom_area(aes(x=ssb.mean,y=value,fill=age),col="gray",alpha=0.5) +
