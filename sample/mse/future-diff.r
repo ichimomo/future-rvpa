@@ -651,3 +651,35 @@ set_SR_options <- function(rec.arg,N=100, silent=TRUE,eaa0=NULL){
     if(!is.null(rec.arg$sd2)) rec.arg$sd2 <- c(0,rep(rec.arg$sd2,N-1))
     return(rec.arg)
 }
+
+# リサンプリングする残差の年数をどんどん増やしていく
+resample_backward.rec <- function(ssb,vpares,#deterministic=FALSE,
+                   rec.resample=NULL,
+                   rec.arg=list(a=1000,b=1000,sd=0.1, 
+                                resid=0,duration=5,
+                                resid.list=list(),
+                                SR="HS",# or "BH","RI"
+                                bias.correction=TRUE)){
+
+    rec.arg$resid[1] <- rec.arg$resid[1]+1
+    bias.factor <- mean(exp(unlist(rec.arg$resid.list)))
+    
+    if(rec.arg$SR=="HS") rec0 <- ifelse(ssb>rec.arg$b,rec.arg$a*rec.arg$b,rec.arg$a*ssb)
+    if(rec.arg$SR=="BH") rec0 <- rec.arg$a*ssb/(1+rec.arg$b*ssb)
+    if(rec.arg$SR=="RI") rec0 <- rec.arg$a*ssb*exp(-rec.arg$b*ssb)
+
+    if(rec.arg$resid[1]%%5==1){
+        max.sample <- min(ceiling(rec.arg$resid[1]/5),6)
+        rec.arg$resid[-1] <- sample(1:max.sample,length(rec.arg$resid)-1,replace=TRUE)
+    }
+
+    resampled.resid <- sapply(rec.arg$resid[-1],function(x) sample(rec.arg$resid.list[[x]],1))
+    
+    if(isTRUE(rec.arg$bias.correction)){
+        rec <- c(rec0[1],exp(log(rec0[-1])+resampled.resid)/bias.factor)
+    }
+    else{
+        rec <- c(rec0[1],exp(log(rec0[-1])+resampled.resid))
+    }
+  return(list(rec=rec,rec.resample=rec.arg$resid))
+}

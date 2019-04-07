@@ -480,8 +480,8 @@ plot_futures <- function(vpares,
                               str_c("漁獲量 (",junit,"トン)"),
                               "努力量の削減率"))
     
-    if(is.null(future.name)) future.name <- 1:length(future.list)
-    names(future.list) <- as.character(future.name)
+    if(is.null(future.name)) future.name <- str_c("s",1:length(future.list))
+    names(future.list) <- future.name
     
     future.table <-
         purrr::map_dfr(future.list,convert_future_table,.id="scenario") %>%
