@@ -722,12 +722,15 @@ future.vpa <-
             rec.tmp <- recfunc(thisyear.ssb[i+1,],res0,
                                rec.resample=rec.tmp$rec.resample,
                                rec.arg=rec.arg)
-            if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- naa_all[1,i_all+1,] <- rec.tmp$rec          
+            if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- naa_all[1,i_all+1,] <- rec.tmp$rec
+            if (waa.fun) {
+                waa[1,i+1,] <- as.numeric(exp(WAA.b0[1]+WAA.b1[1]*log(naa[1,1,])+waa.rand[1,1,])) 
+            }            
             #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg      
             rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb[i+1,]
             eaa[i+1,] <- rec.tmp$rec.resample[1:N]
             rec.arg$resid <- rec.tmp$rec.resample # ARオプションに対応
-            
+
             i_all <- i_all+1
         }
         
