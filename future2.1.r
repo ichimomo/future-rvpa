@@ -744,7 +744,12 @@ future.vpa <-
         
         
         caa <- caa[,-ntime,,drop=F]
-        waa.catch <- waa.catch[,-ntime,,drop=F]
+        if(waa.fun==TRUE){ ## アドホックな対応！ waa.fun=TRUEかつwaa.catchが与えられているとき動かない。また、pre.catchが与えられていてwaa.fun=TRUEの場合も不具合おこる！
+            waa.catch <- waa.catch[,-ntime,,drop=F]
+        }
+        else{
+            waa.catch <- waa[,-ntime,,drop=F]            
+            }
         thisyear.ssb <- thisyear.ssb[-ntime,,drop=F]      
         waa <- waa[,-ntime,,drop=F]
         maa <- maa[,-ntime,,drop=F]                
