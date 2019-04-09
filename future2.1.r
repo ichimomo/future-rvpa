@@ -692,7 +692,6 @@ future.vpa <-
             if(isTRUE(use.MSE)){
                 aa <- get_ABC_inMSE(naa_all,waa_all,maa_all,faa,M,res0,
                                     i_all-2,2,recfunc,rec.arg,Pope,HCR,plus.group,min.age)
-                browser()
             }
             
             ## 漁獲して１年分前進（加入はまだいれていない）
@@ -744,11 +743,11 @@ future.vpa <-
         
         
         caa <- caa[,-ntime,,drop=F]
-        if(waa.fun==TRUE){ ## アドホックな対応！ waa.fun=TRUEかつwaa.catchが与えられているとき動かない。また、pre.catchが与えられていてwaa.fun=TRUEの場合も不具合おこる！
-            waa.catch <- waa.catch[,-ntime,,drop=F]
+        if(isTRUE(waa.fun)){ ## アドホックな対応！ waa.fun=TRUEかつwaa.catchが与えられているとき動かない。また、pre.catchが与えられていてwaa.fun=TRUEの場合も不具合おこる！
+            waa.catch <- waa[,-ntime,,drop=F]
         }
         else{
-            waa.catch <- waa[,-ntime,,drop=F]            
+            waa.catch <- waa.catch[,-ntime,,drop=F]            
             }
         thisyear.ssb <- thisyear.ssb[-ntime,,drop=F]      
         waa <- waa[,-ntime,,drop=F]
