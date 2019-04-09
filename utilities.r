@@ -251,7 +251,7 @@ calc_kobeII_matrix <- function(fres_base,
     #        beta=beta)
 
     refs.unique <- unique(c(Btarget,Blimit,Blow,Bban))
-    tmp <- !refs.unique%in%refs.base$RP.definition    
+    tmp <- !refs.unique%in%refs_base$RP.definition    
     if(sum(tmp)>0) stop(refs.unique[tmp]," does not appear in column of RP.definition\n")
 
     HCR_candidate1 <- expand.grid(
