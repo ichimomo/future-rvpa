@@ -1,5 +1,6 @@
 ##----------------------- 将来予測関数 ----------------------------
 ## multiのオプションは管理後のFのmultiplier（管理前後でselectivityが同じ）
+
 future.vpa <-
     function(res0,
              currentF=NULL, # 管理前のF
@@ -47,7 +48,7 @@ future.vpa <-
              waa=NULL,waa.catch=NULL,maa=NULL,M=NULL, # 季節毎の生物パラメータ、または、生物パラメータを外から与える場合
              replace.rec.year=2012, # 加入量を暦年の将来予測での加入量に置き換えるか？
              F.sigma=0,
-             waa.fun=FALSE, #waaをnaaのfunctionとするか
+             waa.fun=FALSE, #waaをnaaのfunctionとするか(waa.catchが別に与えられているときには機能しない)
              naa0=NULL,eaa0=NULL,ssb0=NULL,faa0=NULL,
              add.year=0, # 岡村オプションに対応。=1で1年分余計に計算する
              det.run=TRUE # 1回めのランは決定論的将来予測をする（完璧には対応していない）
@@ -459,7 +460,10 @@ future.vpa <-
                                rec.resample=rec.tmp$rec.resample,
                                rec.arg=rec.arg)
             if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- naa_all[1,i_all+1,] <- rec.tmp$rec          
-            #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg      
+            #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg
+            if (waa.fun) {
+                waa[1,i+1,] <- as.numeric(exp(WAA.b0[1]+WAA.b1[1]*log(naa[1,i+1,])+waa.rand[1,i+1,])) 
+            }                        
             rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb[i+1,]
             eaa[i+1,] <- rec.tmp$rec.resample[1:N]
             rec.arg$resid <- rec.tmp$rec.resample # ARオプションに対応
@@ -479,7 +483,12 @@ future.vpa <-
         
         
         caa <- caa[,-ntime,,drop=F]
-        waa.catch <- waa.catch[,-ntime,,drop=F]
+        if(isTRUE(waa.fun)){ ## アドホックな対応！ waa.fun=TRUEかつwaa.catchが与えられているとき動かない。また、pre.catchが与えられていてwaa.fun=TRUEの場合も不具合おこる！
+            waa.catch <- waa[,-ntime,,drop=F]            
+        }
+        else{
+            waa.catch <- waa.catch[,-ntime,,drop=F]           
+            }
         thisyear.ssb <- thisyear.ssb[-ntime,,drop=F]      
         waa <- waa[,-ntime,,drop=F]
         maa <- maa[,-ntime,,drop=F]                
