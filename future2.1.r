@@ -1408,7 +1408,7 @@ out.vpa <- function(res=NULL, # VPA result
                     ){
   old.par <- par()  
   exit.func <- function(){
-#    par(old.par)    
+#    par(old.par)    
     dev.off()
     options(warn=0)      
   }
@@ -2352,7 +2352,7 @@ plot.SRdata <- function(SRdata){
 }
 
 est.MSY <- function(vpares,farg,
-                   seed=1,
+                   seed=farg$seed,
                    nyear=NULL,
                    eyear=0, # 将来予測の最後のeyear+1年分を平衡状態とする
 #                   FUN=median, # 漁獲量の何を最大化するか？
@@ -2377,7 +2377,7 @@ est.MSY <- function(vpares,farg,
 
     require(tidyverse)
   
-  f.arg$seed <- seed
+#  f.arg$seed <- seed
 
 ### 内部で使うための関数定義
     ## 最小化のための関数
