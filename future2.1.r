@@ -2376,6 +2376,8 @@ est.MSY <- function(vpares,farg,
                    ){
 
     require(tidyverse)
+  
+  f.arg$seed <- seed
 
 ### 内部で使うための関数定義
     ## 最小化のための関数
