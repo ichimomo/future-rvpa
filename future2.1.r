@@ -773,6 +773,7 @@ future.vpa <-
         
         fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,
                      maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
+                     recruit=naa[1,,],
                      eaa=eaa,alpha=alpha,thisyear.ssb=thisyear.ssb,
                      waa=waa,waa.catch=waa.catch,currentF=currentF,
                      vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,naa_all=naa_all,
@@ -798,9 +799,9 @@ future.vpa <-
         }
 
         if(outtype=="short"){
-            fres <- list(recruit=naa[1,,],eaa=eaa,baa=biom,
+            fres <- list(recruit=naa[1,,],eaa=eaa,#baa=biom,
                          vbiom=apply(biom,c(2,3),sum,na.rm=T),
-                         currentF=currentF,
+                         currentF=currentF,alpha=alpha,
                          vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
                          years=fyears,fyear.year=fyear.year,ABC=ABC,
                          waa.year=waa.year,maa.year=maa.year,multi=multi,multi.year=multi.year,
@@ -1129,7 +1130,10 @@ plot.futures <- function(fres.list,conf=c(0.1,0.5,0.9),target="SSB",legend.text=
     if(target=="SSB")  aa <- lapply(fres.list,function(x) apply(x$vssb[,-1],1,quantile,probs=conf))
     if(target=="Biomass") aa <- lapply(fres.list,function(x) apply(x$vbiom[,-1],1,quantile,probs=conf))
     if(target=="Catch") aa <- lapply(fres.list,function(x) apply(x$vwcaa[,-1],1,quantile,probs=conf))
-    if(target=="Recruit") aa <- lapply(fres.list,function(x) apply(x$naa[1,,-1],1,quantile,probs=conf))    
+    if(target=="Recruit"){
+        if(is.null(x$recruit)) x$recruit <- x$naa
+        aa <- lapply(fres.list,function(x) apply(x$recruit[,-1],1,quantile,probs=conf))
+    }
 
     if(is.null(xlim.tmp)) xlim.tmp <- as.numeric(range(unlist(sapply(aa,function(x) colnames(x)))))
     plot(0,max(unlist(aa)),type="n",xlim=xlim.tmp,
@@ -1148,7 +1152,7 @@ plot.future <- function(fres0,ylim.tmp=NULL,xlim.tmp=NULL,vpares=NULL,what=c(TRU
         if(add==TRUE) matpoints(rownames(x),x,type="l",lty=c(2,1,2),col=col,xlab="Year",...)    
     }
 
-    if(is.null(xlim.tmp)) xlim.tmp <- range(as.numeric(colnames(fres0$naa)))
+    if(is.null(xlim.tmp)) xlim.tmp <- range(as.numeric(rownames(fres0$vssb)))
     
     if(what[1]){
         matplot2(x <- t(apply(fres0$vbiom[,-1],1,quantile,probs=c(conf,0.5,1-conf))),

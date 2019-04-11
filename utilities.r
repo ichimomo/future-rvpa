@@ -33,16 +33,17 @@ convert_future_table <- function(fout,label="tmp"){
         gather(key=sim, value=value, -year, convert=TRUE) %>%
         mutate(year=as.numeric(year),stat="alpha",label=label)
 
-    Fsakugen <- -(1-fout$faa[1,,]/fout$input$res0$Fc.at.age[1])
-    Fsakugen <- Fsakugen %>%
+    if(is.null(fout$Fsakugen)) fout$Fsakugen <- -(1-fout$faa[1,,]/fout$input$res0$Fc.at.age[1])
+    Fsakugen <- fout$Fsakugen %>%
         as_tibble %>%
-        mutate(year=rownames(Fsakugen)) %>%
+        mutate(year=rownames(fout$Fsakugen)) %>%
         gather(key=sim, value=value, -year, convert=TRUE) %>%
         mutate(year=as.numeric(year),stat="Fsakugen",label=label)
 
-    Recruitment <- fout$naa[1,,] %>%                                    #追加
+    if(is.null(fout$recruit)) fout$recruit <- fout$naa[1,,]
+    Recruitment <- fout$recruit %>%                                    #追加
         as_tibble %>%                                                   #追加
-        mutate(year=colnames(fout$naa)) %>%                             #追加
+        mutate(year=rownames(fout$recruit)) %>%                             #追加
         gather(key=sim, value=value, -year, convert=TRUE) %>%           #追加
         mutate(year=as.numeric(year),stat="Recruitment",label=label)   
     
