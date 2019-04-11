@@ -305,10 +305,11 @@ HCR.simulation <- function(finput,HCRtable,year.lag=year.lag){
         finput$silent <- TRUE
         fres_base <- do.call(future.vpa,finput) # デフォルトルールの結果→図示などに使う
         tmp <- convert_future_table(fres_base,label=HCRtable$HCR_name[i]) %>%
-            rename(HCR_name=label)
+            rename(HCR_name=label) 
         tmp$beta <- HCR_base$beta
         tb <- bind_rows(tb,tmp)
     }
+    tb <- tb %>% mutate(scenario=str_c(HCR_name,beta))
     return(tb)
 }
 
@@ -462,8 +463,9 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
 }
 
 plot_futures <- function(vpares,
-                         future.list,
+                         future.list=NULL,
                          future.name=names(future.list),
+                         future_tibble=NULL,
                          CI_range=c(0.1,0.9),
                          maxyear=NULL,font.size=18,
                          biomass.unit=1,
@@ -481,11 +483,18 @@ plot_futures <- function(vpares,
                               str_c("漁獲量 (",junit,"トン)"),
                               "努力量の削減率"))
     
-    if(is.null(future.name)) future.name <- str_c("s",1:length(future.list))
-    names(future.list) <- future.name
-    
+    if(!is.null(future.list)){
+        if(is.null(future.name)) future.name <- str_c("s",1:length(future.list))
+        names(future.list) <- future.name
+    }
+    else{
+        if(is.null(future.name)) future.name <- str_c("s",1:length(unique(future_tibble$HCR_name)))
+    }
+
+    if(is.null(future_tibble)) future_tibble <- purrr::map_dfr(future.list,convert_future_table,.id="scenario")
+
     future.table <-
-        purrr::map_dfr(future.list,convert_future_table,.id="scenario") %>%
+        future_tibble %>%
         dplyr::filter(stat%in%rename_list$stat) %>%
         mutate(stat=factor(stat,levels=rename_list$stat))
 
