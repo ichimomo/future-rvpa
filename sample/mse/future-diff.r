@@ -411,12 +411,16 @@ future.vpa <-
 
                 }
                 else{
+                    if(is.null(MSE.options$max.ER)) MSE.options$max.ER <- 0.8
                     ABC.tmp <- get_ABC_inMSE(naa_all,waa_all,maa_all,faa_all,M[,(i-2):(i),],res0,
                                              start_year=i_all-2,nyear=2,
                                              recfunc=MSE.options$recfunc,
                                              rec.arg=MSE.options$rec.arg,
                                              Pope=Pope,HCR=HCR,plus.group=plus.group,lag=min.age)
-#                    if(fyears[i]==2020) browser()
+                    y <- colSums(naa[,i,] * waa[,i,])
+                    ABC.tmp <- ifelse(ABC.tmp>y*MSE.options$max.ER,y*MSE.options$max.ER,ABC.tmp)
+#                    browser()
+                    
                     ####
                     saa.tmp <- sweep(faa[,i,],2,apply(faa[,i,],2,max),FUN="/")
                     est.result <- lapply(1:dim(naa)[[3]],
@@ -425,7 +429,8 @@ future.vpa <-
                     fmulti_to_saa <- sapply(est.result,function(x) x$x)
                     faa.new2 <- sweep(saa.tmp,2,fmulti_to_saa,FUN="*")
                     caa[,i,] <- sapply(est.result,function(x) x$caa)
-                    faa[,i,] <- faa_all[,i_all,] <- faa.new2                    
+                    faa[,i,] <- faa_all[,i_all,] <- faa.new2
+
                     ####                    
                     }
             }
@@ -508,7 +513,7 @@ future.vpa <-
 
         if(!is.null(rec.arg$resample)) if(rec.arg$resample==TRUE) eaa[] <- NA # resamplingする場合にはeaaにはなにも入れない
         
-        fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,
+        fres <- list(faa=faa,naa=naa,biom=biom,baa=biom,ssb=ssb,wcaa=wcaa,caa=caa,M=M,rps=rps.mat,recruit=naa[1,,],
                      maa=maa,vbiom=apply(biom,c(2,3),sum,na.rm=T),
                      eaa=eaa,alpha=alpha,thisyear.ssb=thisyear.ssb,
                      waa=waa,waa.catch=waa.catch,currentF=currentF,
@@ -535,7 +540,8 @@ future.vpa <-
         }
 
         if(outtype=="short"){
-            fres <- list(recruit=naa[1,,],eaa=eaa,baa=biom,
+            fres <- list(recruit=naa[1,,],eaa=eaa,alpha=alpha,
+                         Fsakugen=-(1-faa[1,,]/currentF[1]),
                          vbiom=apply(biom,c(2,3),sum,na.rm=T),
                          currentF=currentF,
                          vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
@@ -593,6 +599,7 @@ get_ABC_inMSE <- function(naa_all,waa_all,maa_all,faa,M,res0,start_year,nyear,re
             res0$input$unit.waa/res0$input$unit.biom    
         alpha <- ifelse(ssb.tmp<HCR$Blim,HCR$beta*(ssb.tmp-HCR$Bban)/(HCR$Blim-HCR$Bban),HCR$beta)
         faa_dummy[,lastyear,] <- sweep(faa[,lastyear,],2,alpha,FUN="*")
+        #faa_dummy[,lastyear,] <- sweep(faa_dummy[,lastyear,],2,alpha,FUN="*")        
     
         if(Pope){
             ABC <- naa_dummy[,lastyear,]*(1-exp(-faa_dummy[,lastyear,]))*exp(-M[,nyear,]/2)*waa_all[,lastyear,]
