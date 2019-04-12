@@ -1,5 +1,5 @@
 # future-rvpa
-<a href="http://www.jsfo.jp/contents/pdf/78-2/78-2-104.pdf">RVPA</a>の中で実装されている将来予測関数のコードを集めたプログラムになります．MSY管理基準値の計算コードなども入っています．
+<a href="http://www.jsfo.jp/contents/pdf/78-2/78-2-104.pdf">RVPA</a>の中で実装されている将来予測関数のコードを集めたプログラムになります．MSY管理基準値の計算コードなども入っています．関数の新機能や重要なバグ修正などをまとめたwikiページ　https://github.com/ichimomo/future-rvpa/wiki/%E5%B0%8F%E6%8A%80%E3%83%BB%E6%96%B0%E6%A9%9F%E8%83%BD%E9%9B%86 を作りました．
 
 ## githubを使ったことがない人の使い方
 - 右上の「clone or downlowd」→「Download ZIP」からzipファイルをダウンロードしてください
