@@ -3210,7 +3210,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
     resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
   }
   
-  sd <- ifelse(method=="L2",sqrt(sum(resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(resid2))/(NN-rho^2))
+  sd <- ifelse(method=="L2",sqrt(sum(w*resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(w*resid2))/(NN-rho^2))
   
   Res$resid <- resid
   Res$resid2 <- resid2
@@ -3421,7 +3421,7 @@ fit.SR2 <- function(SRdata,
   for (i in 1:N) {
     resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
   }
-  sd <- ifelse(method=="L2",sqrt(sum(resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(resid2))/(NN-rho^2))
+  sd <- ifelse(method=="L2",sqrt(sum(w*resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(w*resid2))/(NN-rho^2))
   
   Res$resid <- resid
   Res$resid2 <- resid2
