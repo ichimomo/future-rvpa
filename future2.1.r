@@ -1412,7 +1412,8 @@ out.vpa <- function(res=NULL, # VPA result
                     ){
   old.par <- par()  
   exit.func <- function(){
-#    par(old.par)    
+#    par(old.par)    
+
     dev.off()
     options(warn=0)      
   }
@@ -3141,6 +3142,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
   ssb <- SRdata$SSB
   
   N <- length(rec)
+  NN <- sum(w) #likelihoodを計算するサンプル数
   
   #  if (SR=="HS") SRF <- function(x,a,b) a*(x+sqrt(b^2+gamma^2/4)-sqrt((x-b)^2+gamma^2/4))
   if (SR=="HS") SRF <- function(x,a,b) ifelse(x>b,b*a,x*a)
@@ -3155,11 +3157,11 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
     }
     
     if (method == "L2") {
-      sd <- sqrt(sum(resid2^2)/(N-rho^2))
+      sd <- sqrt(sum(w*resid2^2)/(NN-rho^2))
       sd2 <- c(sd/sqrt(1-rho^2), rep(sd,N-1))
       obj <- -sum(w*dnorm(resid2,0,sd2,log=TRUE))
     } else {
-      sd <- sum(abs(resid2))/(N-rho^2)
+      sd <- sum(abs(w*resid2))/(NN-rho^2)
       sd2 <- c(sd/sqrt(1-rho^2), rep(sd,N-1))
       obj <- -sum(w*sapply(1:N, function(i){-log(2*sd2[i])-abs(resid2[i]/sd2[i])}))
     }
@@ -3207,7 +3209,8 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
   for (i in 1:N) {
     resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
   }
-  sd <- ifelse(method=="L2",sqrt(sum(resid2^2)/(N-rho^2)),sqrt(2)*sum(abs(resid2))/(N-rho^2))
+  
+  sd <- ifelse(method=="L2",sqrt(sum(w*resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(w*resid2))/(NN-rho^2))
   
   Res$resid <- resid
   Res$resid2 <- resid2
@@ -3309,8 +3312,8 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
   
   Res$k <- k <- sum(Res$pars>0)
   Res$AIC <- -2*loglik+2*k
-  Res$AICc <- Res$AIC+2*k*(k+1)/(N-k-1)
-  Res$BIC <- -2*loglik+k*log(N)
+  Res$AICc <- Res$AIC+2*k*(k+1)/(NN-k-1)
+  Res$BIC <- -2*loglik+k*log(NN)
   return(Res)
 }
 
@@ -3334,6 +3337,7 @@ fit.SR2 <- function(SRdata,
   ssb <- SRdata$SSB
   
   N <- length(rec)
+  NN <- sum(w) #sample size for likelihood calculation
   
   if (SR=="HS") SRF <- function(x,a,b,c) ifelse(x>b,b*a,a*b*(x/b)^c)
   if (SR=="BH") SRF <- function(x,a,b,c) (a/b)/(1+1/(b*x)^c)
@@ -3347,11 +3351,11 @@ fit.SR2 <- function(SRdata,
     }
     
     if (method == "L2") {
-      sd <- sqrt(sum(resid2^2)/(N-rho^2))
+      sd <- sqrt(sum(w*resid2^2)/(NN-rho^2))
       sd2 <- c(sd/sqrt(1-rho^2), rep(sd,N-1))
       obj <- -sum(w*dnorm(resid2,0,sd2,log=TRUE))
     } else {
-      sd <- sum(abs(resid2))/(N-rho^2)
+      sd <- sum(abs(w*resid2))/(NN-rho^2)
       sd2 <- c(sd/sqrt(1-rho^2), rep(sd,N-1))
       obj <- -sum(w*sapply(1:N, function(i){-log(2*sd2[i])-abs(resid2[i]/sd2[i])}))
     }
@@ -3417,7 +3421,7 @@ fit.SR2 <- function(SRdata,
   for (i in 1:N) {
     resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
   }
-  sd <- ifelse(method=="L2",sqrt(sum(resid2^2)/(N-rho^2)),sqrt(2)*sum(abs(resid2))/(N-rho^2))
+  sd <- ifelse(method=="L2",sqrt(sum(w*resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(w*resid2))/(NN-rho^2))
   
   Res$resid <- resid
   Res$resid2 <- resid2
@@ -3444,8 +3448,8 @@ fit.SR2 <- function(SRdata,
   
   Res$k <- k <- length(opt$par)+1
   Res$AIC <- -2*loglik+2*k
-  Res$AICc <- Res$AIC+2*k*(k+1)/(N-k-1)
-  Res$BIC <- -2*loglik+k*log(N)
+  Res$AICc <- Res$AIC+2*k*(k+1)/(NN-k-1)
+  Res$BIC <- -2*loglik+k*log(NN)
   return(Res)
 }
 
