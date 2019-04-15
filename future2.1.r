@@ -685,6 +685,7 @@ future.vpa <-
                     ssb.tmp <- sum(res0$ssb[as.character(vpayear)])
                 }
                 alpha[i,] <- ifelse(ssb.tmp<HCR$Blim,HCR$beta*(ssb.tmp-HCR$Bban)/(HCR$Blim-HCR$Bban),HCR$beta)
+                alpha[i,] <- ifelse(alpha[i,]<0,0,alpha[i,])                
                 faa[,i,] <- sweep(faa[,i,],2,alpha[i,],FUN="*")
                 faa[,i,] <- ifelse(faa[,i,]<0,0,faa[,i,])
             }
