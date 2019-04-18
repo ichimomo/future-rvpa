@@ -28,7 +28,7 @@
 ### make_report1: 科学者会議用のサンプルコード
 
 内容はこちらのREADMEを読んでください
-https://ichimomo.github.io/future-rvpa/sample/make_report1/
+https://github.com/ichimomo/future-rvpa/tree/master/sample/make_report1
 
 ### SRR: 再生産関係推定のさいのモデル診断ツールの使用例
 - 再生産関係のあてはめ
