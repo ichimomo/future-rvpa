@@ -79,6 +79,7 @@ future.vpa <-
         arglist$ABC.year <- ABC.year
 
         ##------------- set SR options
+        rec.arg.org <- rec.arg
         rec.arg <- set_SR_options(rec.arg,N=N,silent=silent,eaa0=eaa0)
 
         ##------------- set HCR options
@@ -92,14 +93,17 @@ future.vpa <-
 
         ##------------- set options for MSE
         if(isTRUE(use.MSE)){
-            if(is.null(MSE.options)){
-                MSE.options$recfunc <- recfunc
-                MSE.options$rec.arg <- rec.arg
+            if(is.null(MSE.options$N)) MSE.options$N <- N            
+            if(is.null(MSE.options$recfunc)) MSE.options$recfunc <- recfunc
+            if(is.null(MSE.options$rec.arg)){
+                MSE.options$rec.arg <- set_SR_options(rec.arg.org,
+                                                      N=MSE.options$N,silent=silent,eaa0=eaa0)
             }
             else{
                 MSE.options$rec.arg <- set_SR_options(MSE.options$rec.arg,
-                                                      N=N,silent=silent,eaa0=eaa0)
+                                                      N=MSE.options$N,silent=silent,eaa0=eaa0)
             }
+            if(is.null(MSE.options$max.ER)) MSE.options$max.ER <- 0.7            
         }
         ##-------------        
         
@@ -258,7 +262,7 @@ future.vpa <-
         #  vpa.multi <- ifelse(is.null(vpa.mode),1,vpa.mode$multi)
         # rps assumption
         rps.mat <- array(NA,dim=c(ntime,N),dimnames=list(fyears,1:N))
-        eaa <- matrix(0,ntime,N)
+        eaa <- ABC.mat <- matrix(0,ntime,N)
         rec.tmp <- list(rec.resample=NULL,tmparg=NULL)
         
         if (waa.fun){ #年齢別体重の予測関数
@@ -381,7 +385,8 @@ future.vpa <-
                 saa.tmp <- sweep(faa[,i,],2,apply(faa[,i,],2,max),FUN="/")
                 tmp <- lapply(1:dim(naa)[[3]],
                               function(x) caa.est.mat(naa[,i,x],saa.tmp[,x],
-                                                      waa.catch[,i,x],M[,i,x],tmpcatch,Pope=Pope))
+                                                      #                                                      waa.catch[,i,x],M[,i,x],tmpcatch,Pope=Pope))
+                                                      waa[,i,x],M[,i,x],tmpcatch,Pope=Pope))                                                      
                 faa.new <- sweep(saa.tmp,2,sapply(tmp,function(x) x$x),FUN="*")
                 caa[,i,] <- sapply(tmp,function(x) x$caa)
                 faa[,i,] <- faa.new
@@ -394,7 +399,6 @@ future.vpa <-
             if(!is.null(HCR) && fyears[i]>=ABC.year
                && is.null(faa.new)) # <- pre.catchで漁獲量をセットしていない
             {
-
                 if(!isTRUE(use.MSE)){
                     tmp <- i+HCR$year.lag
                     if(tmp>0){
@@ -406,21 +410,21 @@ future.vpa <-
                         ssb.tmp <- sum(res0$ssb[as.character(vpayear)])
                     }
                     alpha[i,] <- ifelse(ssb.tmp<HCR$Blim,HCR$beta*(ssb.tmp-HCR$Bban)/(HCR$Blim-HCR$Bban),HCR$beta)
+                    alpha[i,] <- ifelse(alpha[i,]<0,0,alpha[i,])
                     faa[,i,] <- sweep(faa[,i,],2,alpha[i,],FUN="*")
                     faa[,i,] <- faa_all[,i,] <- ifelse(faa[,i,]<0,0,faa[,i,])
 
                 }
-                else{
-                    if(is.null(MSE.options$max.ER)) MSE.options$max.ER <- 0.8
+                else{ # when using MSE option
                     ABC.tmp <- get_ABC_inMSE(naa_all,waa_all,maa_all,faa_all,M[,(i-2):(i),],res0,
                                              start_year=i_all-2,nyear=2,
+                                             N=MSE.options$N,
                                              recfunc=MSE.options$recfunc,
                                              rec.arg=MSE.options$rec.arg,
                                              Pope=Pope,HCR=HCR,plus.group=plus.group,lag=min.age)
                     y <- colSums(naa[,i,] * waa[,i,])
                     ABC.tmp <- ifelse(ABC.tmp>y*MSE.options$max.ER,y*MSE.options$max.ER,ABC.tmp)
-#                    browser()
-                    
+                    ABC.mat[i,] <- ABC.tmp
                     ####
                     saa.tmp <- sweep(faa[,i,],2,apply(faa[,i,],2,max),FUN="/")
                     est.result <- lapply(1:dim(naa)[[3]],
@@ -430,7 +434,6 @@ future.vpa <-
                     faa.new2 <- sweep(saa.tmp,2,fmulti_to_saa,FUN="*")
                     caa[,i,] <- sapply(est.result,function(x) x$caa)
                     faa[,i,] <- faa_all[,i_all,] <- faa.new2
-
                     ####                    
                     }
             }
@@ -441,6 +444,14 @@ future.vpa <-
             naa.tmp <- naa[,i+1,]
             naa.tmp[is.na(naa.tmp)] <- tmp[is.na(naa.tmp)]          
             naa[,i+1, ] <- naa_all[,i_all+1,] <- naa.tmp
+
+            # naaを更新するタイミングですかさずwaaを更新するようにしないといけない
+            if(waa.fun){
+                # 動的なwaaは対応する年のwaaを書き換えた上で使う？
+                waa[2:nage,i+1,] <- waa.catch[2:nage,i+1,] <- 
+                    waa_all[2:nage,i_all+1,] <-
+                    t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,i+1,])+waa.rand[ii,i+1,]))))
+            }            
             
             ## 当年の加入の計算
             if(fyears[i+1]-min.age < start.year){
@@ -451,12 +462,6 @@ future.vpa <-
             }
             else{
                 # そうでない場合
-                if(waa.fun){
-                    # 動的なwaaは対応する年のwaaを書き換えた上で使う？
-                    waa[2:nage,i+1-min.age,] <- waa_all[2:nage,i_all+1-min.age,] <-
-                        t(sapply(2:nage, function(ii) as.numeric(exp(WAA.b0[ii]+WAA.b1[ii]*log(naa[ii,i+1-min.age,])+waa.rand[ii,i+1-min.age,]))))
-
-                }
                 thisyear.ssb[i+1,] <- colSums(naa[,i+1-min.age,]*waa[,i+1-min.age,]*maa[,i+1-min.age,],na.rm=T)*res0$input$unit.waa/res0$input$unit.biom            
             }
 
@@ -467,7 +472,8 @@ future.vpa <-
             if(is.na(naa[1,i+1,1]))  naa[1,i+1,] <- naa_all[1,i_all+1,] <- rec.tmp$rec          
             #          if(!is.null(rec.tmp$rec.arg)) rec.arg <- rec.tmp$rec.arg
             if (waa.fun) {
-                waa[1,i+1,] <- as.numeric(exp(WAA.b0[1]+WAA.b1[1]*log(naa[1,i+1,])+waa.rand[1,i+1,])) 
+                waa[1,i+1,] <- waa.catch[1,i+1,] <- waa_all[1,i_all+1,] <- 
+                    as.numeric(exp(WAA.b0[1]+WAA.b1[1]*log(naa[1,i+1,])+waa.rand[1,i+1,])) 
             }                        
             rps.mat[i+1,] <- naa[1,i+1,]/thisyear.ssb[i+1,]
             eaa[i+1,] <- rec.tmp$rec.resample[1:N]
@@ -484,8 +490,6 @@ future.vpa <-
         else{
             caa[] <- naa*(1-exp(-faa-M))*faa/(faa+M)
         }
-
-        
         
         caa <- caa[,-ntime,,drop=F]
         if(isTRUE(waa.fun)){ ## アドホックな対応！ waa.fun=TRUEかつwaa.catchが与えられているとき動かない。また、pre.catchが与えられていてwaa.fun=TRUEの場合も不具合おこる！
@@ -541,7 +545,7 @@ future.vpa <-
 
         if(outtype=="short"){
             fres <- list(recruit=naa[1,,],eaa=eaa,alpha=alpha,
-                         Fsakugen=-(1-faa[1,,]/currentF[1]),
+                         Fsakugen=-(1-faa[1,,]/currentF[1]),ABC.mat=ABC.mat,
                          vbiom=apply(biom,c(2,3),sum,na.rm=T),
                          currentF=currentF,
                          vssb=apply(ssb,c(2,3),sum,na.rm=T),vwcaa=vwcaa,
@@ -569,22 +573,29 @@ future.vpa <-
     }
 
 
-get_ABC_inMSE <- function(naa_all,waa_all,maa_all,faa,M,res0,start_year,nyear,recfunc,rec.arg,Pope,HCR,
+get_ABC_inMSE <- function(naa_all,waa_all,maa_all,faa_all,M,res0,start_year,nyear,N,recfunc,rec.arg,Pope,HCR,
                           plus.group=plus.group,lag=0){
     ABC.all <- numeric()
-    N <- dim(naa_all)[[3]]
-    naa_dummy <- naa_all
-    naa_dummy[] <- NA
-    faa_dummy <- faa
+#    N <- dim(naa_all)[[3]]
+#    naa_dummy <- naa_all
+    #    naa_dummy[] <- NA
+    naa_dummy <- array(NA,c(dim(naa_all)[[1]],dim(naa_all)[[2]],N))
+    faa_dummy <- array(NA,c(dim(faa_all)[[1]],dim(faa_all)[[2]],N))
+    M_dummy <- array(M,c(dim(naa_all)[[1]],dim(naa_all)[[2]],N))
+
+#    faa_all_dummy <- faa
+#    waa_dummy <- waa_all    
     rec.tmp <- list(rec.resample=NULL,tmparg=NULL)
     
-    for(s in 1:N){
+    for(s in 1:dim(naa_all)[[3]]){
         naa_dummy[,1:start_year,] <- naa_all[,1:start_year,s]
-        faa_dummy[,1:start_year,] <- faa[,1:start_year,s]        
+        faa_dummy[] <- faa_all[,,s]
+        #        waa_dummy[,,s] <- waa_all[,,s]
+        #        waa_dummy[] <- waa_all[]        
         for(j in 1:nyear){
             sj <- start_year+j
-            naa_dummy[,sj,] <- forward.calc.mat2(faa_dummy[,sj-1,],naa_dummy[,sj-1,],M[,j,],
-                                                          plus.group=plus.group)
+            naa_dummy[,sj,] <- forward.calc.mat2(faa_dummy[,sj-1,],naa_dummy[,sj-1,],M_dummy[,sj-1,],
+                                                 plus.group=plus.group)
             thisyear.ssb <- colSums(naa_dummy[,sj-lag,] * waa_all[,sj-lag,s] *
                                     maa_all[,sj-lag,s],na.rm=T)
             naa_dummy[1,sj,] <- recfunc(thisyear.ssb,res0,
@@ -593,19 +604,21 @@ get_ABC_inMSE <- function(naa_all,waa_all,maa_all,faa,M,res0,start_year,nyear,re
         }
 
         lastyear <- start_year+nyear
-        ssb.tmp <- colSums(naa_dummy[,lastyear,]*
-                           waa_all[,lastyear,]*
-                           maa_all[,lastyear,],na.rm=T)*
+        ssb.tmp <-  colSums(naa_dummy[,lastyear,]*
+                           waa_all[,lastyear,s]*
+                           maa_all[,lastyear,s],na.rm=T)*
             res0$input$unit.waa/res0$input$unit.biom    
         alpha <- ifelse(ssb.tmp<HCR$Blim,HCR$beta*(ssb.tmp-HCR$Bban)/(HCR$Blim-HCR$Bban),HCR$beta)
-        faa_dummy[,lastyear,] <- sweep(faa[,lastyear,],2,alpha,FUN="*")
-        #faa_dummy[,lastyear,] <- sweep(faa_dummy[,lastyear,],2,alpha,FUN="*")        
+        alpha <- ifelse(alpha<0,0,alpha)        
+        #faa_dummy[,lastyear,] <- sweep(faa_all[,lastyear,],2,alpha,FUN="*")
+        faa_dummy[,lastyear,] <- sweep(faa_dummy[,lastyear,],2,alpha,FUN="*")
+
     
         if(Pope){
-            ABC <- naa_dummy[,lastyear,]*(1-exp(-faa_dummy[,lastyear,]))*exp(-M[,nyear,]/2)*waa_all[,lastyear,]
+            ABC <- naa_dummy[,lastyear,]*(1-exp(-faa_dummy[,lastyear,]))*exp(-M_dummy[,lastyear,]/2)*waa_all[,lastyear,s]
         }
         else{
-            ABC <- naa_dummy[,lastyear,]*(1-exp(-faa_dummy[,lastyear,]-M[,nyear,]))*faa_dummy[,lastyear,]/(faa_dummy[,lastyear,]+M[,nyear,])*waa_all[,lastyear,] 
+            ABC <- naa_dummy[,lastyear,]*(1-exp(-faa_dummy[,lastyear,]-M_dummy[,lastyear,]))*faa_dummy[,lastyear,]/(faa_dummy[,lastyear,]+M_dummy[,lastyear,])*waa_all[,lastyear,s] 
         }
         
         ABC.all[s] <- mean(colSums(ABC))

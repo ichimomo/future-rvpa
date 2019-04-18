@@ -281,7 +281,7 @@ calc_kobeII_matrix <- function(fres_base,
     HCR_candidate$HCR_name <- str_c(HCR_candidate$Btarget_name,
                                     HCR_candidate$Blimit_name,
                                     HCR_candidate$Bban_name,sep="-")
-    
+    fres_base$input$outtype <- "FULL"
     kobeII_table <- HCR.simulation(fres_base$input,HCR_candidate,year.lag=year.lag)
 
     cat(length(unique(HCR_candidate$HCR_name)), "HCR is calculated: ",
@@ -422,7 +422,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
-        ylab("U/Umsy") + xlab("SSB/SSBmsy")  +
+        ylab("U/Umsy") + xlab("SB/SBmsy")  +
         geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
                          size=3,box.padding=2,segment.color="gray")
@@ -431,7 +431,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
-        ylab("U/Umsy") + xlab("SSB/SSBmsy")  +
+        ylab("U/Umsy") + xlab("SB/SBmsy")  +
         geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
                          size=3,box.padding=2,segment.color="gray")
@@ -590,21 +590,22 @@ plot_Fcurrent <- function(vpares,
     fc_at_age_current <- tibble(F=vpares$Fc.at.age,age=as.numeric(rownames(vpares$naa)),
                                 year="currentF")
     fc_at_age <- bind_rows(fc_at_age,fc_at_age_current) %>%
-        mutate(color=c("gray","tomato")[as.numeric(year=="currentF")+1]) %>%
+        mutate(F_name=c("gray","tomato")[as.numeric(year=="currentF")+1]) %>%
         group_by(year)
     
     g <- fc_at_age %>% ggplot() +
-        geom_line(aes(x=age,y=as.numeric(F),alpha=year,
-                      color=color),lwd=1.5) +
+        geom_line(aes(x=age,y=as.numeric(F),alpha=year,linetype=F_name,color=F_name),lwd=1.5) +
+        #        geom_line(data=fc_at_age_current,mapping=aes(x=age,y=as.numeric(F)),color="tomato",lwd=1.5)+        
+        #        geom_point(data=fc_at_age_current,mapping=aes(x=age,y=as.numeric(F)),color="tomato",size=2)+
+        #        scale_color_gradient(low="gray",high="blue")+
         scale_colour_identity()+
-#        geom_line(data=fc_at_age_current,
-#                  mapping=aes(x=age,y=F),
-#                  alpha=0.5,lwd=2) +    
-        theme_bw()+
+        theme_bw()+theme(legend.position="none")+
         coord_cartesian(expand=0,ylim=c(0,max(fc_at_age$F)*1.1),xlim=range(fc_at_age$age)+c(-0.5,0.5))+
-#        theme(#legend.position="bottom",
-#            panel.grid = element_blank())+
-    xlab("Ages")+ylab("Fishing mortality")#+
+        labs(year="年",color="",labels=c(gray="",tomato="Current F"))+
+        #        theme(#legend.position="bottom",
+        #            panel.grid = element_blank())+
+        xlab("年齢")+ylab("漁獲係数(F)")#+
+#    scale_color_discrete(name="F type",breaks=c())
 #    scale_colour_manual(
 #        values = c(
 #            col1  = "gray",
@@ -613,3 +614,4 @@ plot_Fcurrent <- function(vpares,
     #            col4  = "yellow3")    )
     return(g)
 }
+
