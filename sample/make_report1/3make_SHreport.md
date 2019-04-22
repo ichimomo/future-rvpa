@@ -1,27 +1,11 @@
----
-title: "会議用資料"
-author: ""
-date: "`r Sys.Date()`"
-output: github_document
----
+会議用資料
+================
+2019-04-23
 
-```{r, echo=FALSE}
+SH会議用の出力
+==============
 
-## Global options
-library(rmarkdown)
-library(knitr)
-options(max.print="75")
-opts_chunk$set(prompt=FALSE,
-               tidy=TRUE,
-               comment=NA,
-               message=FALSE,
-               warning=FALSE)
-
-
-```
-
-# SH会議用の出力
-```{r}
+``` r
 source("../../rvpa1.9.2.r")
 source("../../future2.1.r")
 source("../../utilities.r",encoding="UTF-8") # ggplotを使ったグラフ作成用の関数
@@ -31,9 +15,18 @@ options(scipen=100) # 桁数表示の調整(1E+9とかを抑制する)
 library(tidyverse)
 ## 再生産関係のプロット(x,yの単位やスケールを入れて下さい)
 (g1_SRplot <- SRplot_gg(SRmodel.base,xscale=1000,xlabel="千トン",yscale=1,ylabel="尾"))
+```
 
+![](3make_SHreport_files/figure-markdown_github/unnamed-chunk-2-1.png)
+
+``` r
 (g1_SRplot <- SRplot_gg(SRmodel.base,xscale=1000,xlabel="千トン",yscale=1,ylabel="尾",
                         labeling.year=c(1990,2000,2010,2017))) # 何年のデータにラベルを入れるか指定もできる
+```
+
+![](3make_SHreport_files/figure-markdown_github/unnamed-chunk-2-2.png)
+
+``` r
 ggsave("g1_SRplot.png",g1_SRplot,width=6,height=3,dpi=600)
 
 ## yield curve
@@ -44,6 +37,11 @@ refs.plot <- filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bban0"))
                               future=list(future.default),
                               past=res.pma,
                               AR=FALSE,xlim.scale=0.4,ylim.scale=1.3))
+```
+
+![](3make_SHreport_files/figure-markdown_github/unnamed-chunk-2-3.png)
+
+``` r
 ggsave("g2_yield_curve.png",g2_yield_curve,width=6,height=3,dpi=600)
 
 ## kobe plot
@@ -51,11 +49,21 @@ ggsave("g2_yield_curve.png",g2_yield_curve,width=6,height=3,dpi=600)
 (g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
                    Blow="Btarget0", # Btargeと同じ値を入れておいてください
                    Btarget="Btarget0")) # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
+```
+
+![](3make_SHreport_files/figure-markdown_github/unnamed-chunk-2-4.png)
+
+``` r
 ggsave("g3_kobe4-1.png",g3_kobe4,width=6,height=3,dpi=600)
 
 # write.vline=FALSEで、縦の管理基準値の線を書かないようにもできます（水産庁からの要望？）
 (g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
                           Blow="Btarget0",Btarget="Btarget0",write.vline=FALSE))
+```
+
+![](3make_SHreport_files/figure-markdown_github/unnamed-chunk-2-5.png)
+
+``` r
 ggsave("g3_kobe4-2.png",g3_kobe4,width=6,height=3,dpi=600)
 
 ## 将来予測の図
@@ -75,6 +83,11 @@ ggsave("g3_kobe4-2.png",g3_kobe4,width=6,height=3,dpi=600)
                    biomass.unit=10000,  # バイオマスの単位(100, 1000, or 10000トン)
                    n_example=5,seed=2, # どのシミュレーションをピックアップするかはseedの値を変えて調整してください
                    font.size=14)) # フォントサイズ
+```
+
+![](3make_SHreport_files/figure-markdown_github/unnamed-chunk-2-6.png)
+
+``` r
 ggsave("g5_future.png",g5_future,width=9,height=11,dpi=600)
 
 (g6_hcr <- plot_HCR(SBtarget=derive_RP_value(refs.base,"Btarget0")$SSB,
@@ -82,5 +95,10 @@ ggsave("g5_future.png",g5_future,width=9,height=11,dpi=600)
          SBban=derive_RP_value(refs.base,"Bban0")$SSB,
          Ftarget=1,biomass.unit=1000,
          beta=0.8))
+```
+
+![](3make_SHreport_files/figure-markdown_github/unnamed-chunk-2-7.png)
+
+``` r
 ggsave("g6_hcr.png",g6_hcr,width=8,height=4,dpi=600)
 ```

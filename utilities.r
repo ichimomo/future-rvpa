@@ -1,3 +1,12 @@
+
+col.SBtarget <- "#00533E"
+col.SBlim <- "#edb918"
+col.SBban <- "#C73C2E"
+col.Ftarget <- "#714C99"
+col.betaFtarget <- "#505596"
+
+
+
 convert_df <- function(df,name){
     df %>%
         as_tibble %>%  
@@ -143,15 +152,21 @@ get.trace <- function(trace){
     return(trace)
 }
     
-plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
-    
+plot_yield <- function(MSY_obj,refs_base,
+                       refs.label=NULL, # label for reference point
+                       refs.color=c("#00533E","#edb918","#C73C2E"),
+                       AR_select=FALSE,xlim.scale=1.1,
+                       ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
+
+   
     if("trace" %in% names(MSY_obj)) trace.msy <- MSY_obj$trace
     else trace.msy <- MSY_obj
         
     require(tidyverse,quietly=TRUE)
     require(ggrepel)    
 
-    trace <- get.trace(trace.msy)
+    trace <- get.trace(trace.msy) %>%
+        mutate("年齢"=age)
 
     refs_base <- refs_base %>%
         mutate(RP.definition=ifelse(is.na(RP.definition),"",RP.definition))
@@ -161,6 +176,7 @@ plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.sca
         group_by(ssb.mean) %>%
         summarise(catch.mean=sum(value))
     ymax <- max(ymax$catch.mean)
+
 
     g1 <- trace %>%   ggplot()
 
@@ -178,12 +194,16 @@ plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.sca
             }
         tmpdata <- tmpdata %>% group_by(scenario)
         g1 <- g1 +
-            geom_point(data=tmpdata,
-                       mapping=aes(x=ssb.future,y=catch.future,color=year,
-                                   shape=factor(scenario))) +
             geom_path(data=tmpdata,
                       mapping=aes(x=ssb.future,y=catch.future,
-                                  linetype=factor(scenario)))
+                                  linetype=factor(scenario)),
+                      lwd=1.5,col="green",alpha=0.7)+            
+            geom_point(data=tmpdata,
+                       mapping=aes(x=ssb.future,y=catch.future,
+                                   shape=factor(scenario)),alpha=0.7,color="darkgreen",
+                       size=3)
+
+
     }
 
     if(!is.null(past)){
@@ -194,23 +214,46 @@ plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.sca
         )
 
         g1 <- g1 +
-            geom_point(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past,
-                                                alpha=year),shape=2) +
-            geom_path(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past),color="gray")
+#            geom_point(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past,
+#                                                alpha=year),shape=2) +
+            geom_path(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past),color="tomato",lwd=1.5,alpha=0.7)
     }
-    
-    g1 <- g1 + geom_area(aes(x=ssb.mean,y=value,fill=age),col="gray",alpha=0.5) +
+
+    if(is.null(refs.label)) refs.label <- str_c(refs_base$RP_name,":",refs_base$RP.definition)
+    refs_base$refs.label <- refs.label
+
+    xmax <- max(trace$ssb.mean,na.rm=T)
+    age.label.position <- trace$ssb.mean[which.min((trace$ssb.mean-xmax*xlim.scale*0.9)^2)]
+    age.label <- trace %>% dplyr::filter(round(age.label.position,1)==round(ssb.mean,1))%>%
+        mutate(cumcatch=cumsum(value)-value/2)
+   
+    g1 <- g1 + geom_area(aes(x=ssb.mean,y=value,fill=年齢),col="black",alpha=0.5) +
 #    geom_line(aes(x=ssb.mean,y=catch.CV,fill=age)) +
 #    scale_y_continuous(sec.axis = sec_axis(~.*5, name = "CV catch"))+
-    scale_fill_brewer() + theme_bw() +
-    geom_point(data=refs_base,aes(y=Catch,x=SSB))+
+    scale_fill_brewer() +
+    theme_bw() +
+    theme(legend.position = 'none') +        
+#    geom_point(data=refs_base,aes(y=Catch,x=SSB,shape=refs.label,color=refs.label),size=4)+
+    #形は塗りつぶしができる形にすること
+    scale_shape_manual(values = c(21, 24,5,10)) +
+    #塗りつぶし色を指定する
+    scale_color_manual(values = c("green", "pink","orange","yellow"))+
     theme(panel.grid = element_blank()) +
-    coord_cartesian(xlim=c(0,max(trace$ssb.mean,na.rm=T)*xlim.scale),
-                    ylim=c(0,ymax*ylim.scale),expand=0) +    
-    geom_label_repel(data=refs_base,
-                     aes(y=Catch,x=SSB,
-                         label=str_c(RP_name,":",RP.definition)),
-                     size=3,box.padding=0.5,segment.color="gray")+
+    coord_cartesian(xlim=c(0,xmax*xlim.scale),
+                    ylim=c(0,ymax*ylim.scale),expand=0) +
+    geom_text(data=refs_base,
+              aes(y=ymax*ylim.scale*0.95,x=SSB,label=refs.label),hjust=0)+
+    geom_text(data=age.label,
+              mapping=aes(y=cumcatch,x=ssb.mean,label=str_c(age,"歳")))+
+#    geom_text_repel(data=refs_base,
+#                     aes(y=Catch,x=SSB,label=refs.label),
+#                     size=4,box.padding=0.5,segment.color="gray",
+#                     hjust=0,nudge_y      = ymax*ylim.scale-refs_base$Catch,
+#    direction    = "y",
+#    angle        = 0,
+#    vjust        = 0,
+#        segment.size = 1)+
+    geom_vline(xintercept=refs_base$SSB,color=refs.color,lty="41",lwd=1)+
     xlab("平均親魚量") + ylab("平均漁獲量")
 
     return(g1)
@@ -589,7 +632,8 @@ plot_futures <- function(vpares,
         theme(legend.position="top",panel.grid = element_blank())+
         facet_wrap(~factor(jstat,levels=rename_list$jstat),scales="free",ncol=ncol)+        
         xlab("年")+ylab("")+ labs(fill = "",linetype="",color="")+
-        geom_hline(data=dummy3,aes(yintercept=value,linetype=RP_name)) 
+        geom_hline(data=dummy3,aes(yintercept=value,linetype=RP_name),
+                   color=c(col.SBtarget,col.SBlim,col.SBban)) 
 
 
     if(n_example>0){
@@ -650,8 +694,8 @@ library(ggplot2)
 
 plot_HCR <- function(SBtarget,SBlim,SBban,Ftarget,
                      biomass.unit=1,
-                     beta=0.8,col.multi2currf="black",col.SBtarget="darkgreen",
-                     col.SBlim="orange",col.SBban="red",col.Ftarget="black",
+                     beta=0.8,col.multi2currf="black",col.SBtarget="#00533E",
+                     col.SBlim="#edb918",col.SBban="#C73C2E",col.Ftarget="black",
                      col.betaFtarget="gray"){
     
   # Arguments; SBtarget,SBlim,SBban,Ftarget,beta,col.multi2currf,col.SBtarget,col.SBlim,col.SBban,col.Ftarget,col.betaFtarget.
@@ -679,11 +723,11 @@ plot_HCR <- function(SBtarget,SBlim,SBban,Ftarget,
   #Drawing of the funciton by ggplot2
     ggplct <- ggplot(data.frame(x = c(0,1.5*SBtarget),y= c(0,1.5*Ftarget)), aes(x=x)) +
         stat_function(fun = h,lwd=2,color=col.multi2currf)
-    g <- ggplct  + geom_vline(xintercept = SBtarget, size = 0.9, linetype = 3, color = col.SBtarget) +
-        geom_vline(xintercept = SBlim, size = 0.9, linetype = 3, color = col.SBlim) +
-        geom_vline(xintercept = SBban, size = 0.9, linetype = 3, color = col.SBban) +
-        geom_hline(yintercept = Ftarget, size = 0.9, linetype = 3, color = col.Ftarget) +
-        geom_hline(yintercept = beta*Ftarget, size = 0.7, linetype = 3, color = col.betaFtarget) +
+    g <- ggplct  + geom_vline(xintercept = SBtarget, size = 0.9, linetype = "41", color = col.SBtarget) +
+        geom_vline(xintercept = SBlim, size = 0.9, linetype = "41", color = col.SBlim) +
+        geom_vline(xintercept = SBban, size = 0.9, linetype = "41", color = col.SBban) +
+        geom_hline(yintercept = Ftarget, size = 0.9, linetype = "43", color = col.Ftarget) +
+        geom_hline(yintercept = beta*Ftarget, size = 0.7, linetype = "43", color = col.betaFtarget) +
         labs(title = "",subtitle = "", caption =  "", x = str_c("親魚量 (",junit,"トン)"),
              y = "努力量の乗数",color = "") +
         annotate("text", label="目標水準", x=SBtarget, y=1.2*Ftarget) +
