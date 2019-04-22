@@ -109,7 +109,7 @@ Shapiro-Wilk検定とKolmogorov-Smirnov 検定を行い、「残差が正規分�
   
 ```{r,warning=FALSE}
 check1 <- shapiro.test(resSR$resid)
-check2 <- ks.test(resSR$resid,y="pnorm")
+check2 <- ks.test(resSR$resid,y="pnorm",sd=resSR$pars$sd)
 
 par(mfrow=c(1,2),mar=c(4,4,2,2))
 hist(resSR$resid,xlab="Residuals",main="Normality test",freq=FALSE)

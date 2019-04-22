@@ -59,7 +59,7 @@ resSR <- resL1 #L1 normを採用
 
 ## ----warning=FALSE-------------------------------------------------------
 check1 <- shapiro.test(resSR$resid)
-check2 <- ks.test(resSR$resid,y="pnorm")
+check2 <- ks.test(resSR$resid,y="pnorm",sd=resSR$pars$sd)
 
 par(mfrow=c(1,2),mar=c(4,4,2,2))
 hist(resSR$resid,xlab="Residuals",main="Normality test",freq=FALSE)
