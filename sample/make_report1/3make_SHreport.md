@@ -36,6 +36,7 @@ refs.plot <- filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bban0"))
                               refs.label=c("目標水準","限界水準","禁漁水準"),
                               future=list(future.default),
                               past=res.pma,
+                              biomass.unit=1000,#資源量の単位
                               AR=FALSE,xlim.scale=0.4,ylim.scale=1.3))
 ```
 
@@ -80,7 +81,7 @@ ggsave("g3_kobe4-2.png",g3_kobe4,width=6,height=3,dpi=600)
 #                   Blow=derive_RP_value(refs.base,"Blow0")$SSB, blowのオプションは削除
                    Bban=derive_RP_value(refs.base,"Bban0")$SSB,
                    RP_name=c("目標水準","限界水準","禁漁水準"),
-                   biomass.unit=10000,  # バイオマスの単位(100, 1000, or 10000トン)
+                   biomass.unit=1000,  # バイオマスの単位(100, 1000, or 10000トン)
                    n_example=5,seed=2, # どのシミュレーションをピックアップするかはseedの値を変えて調整してください
                    font.size=14)) # フォントサイズ
 ```

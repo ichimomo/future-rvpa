@@ -156,8 +156,10 @@ plot_yield <- function(MSY_obj,refs_base,
                        refs.label=NULL, # label for reference point
                        refs.color=c("#00533E","#edb918","#C73C2E"),
                        AR_select=FALSE,xlim.scale=1.1,
+                       biomass.unit=1,
                        ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
-
+    
+    junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
    
     if("trace" %in% names(MSY_obj)) trace.msy <- MSY_obj$trace
     else trace.msy <- MSY_obj
@@ -166,10 +168,11 @@ plot_yield <- function(MSY_obj,refs_base,
     require(ggrepel)    
 
     trace <- get.trace(trace.msy) %>%
-        mutate("年齢"=age)
+        mutate("年齢"=age,ssb.mean=ssb.mean/biomass.unit,value=value/biomass.unit)
 
     refs_base <- refs_base %>%
-        mutate(RP.definition=ifelse(is.na(RP.definition),"",RP.definition))
+        mutate(RP.definition=ifelse(is.na(RP.definition),"",RP.definition)) %>%
+        mutate(SSB=SSB/biomass.unit)
     if("AR"%in%names(refs_base)) refs_base <- refs_base %>% dplyr::filter(AR==AR_select)
 
     ymax <- trace %>%
@@ -188,8 +191,8 @@ plot_yield <- function(MSY_obj,refs_base,
             tmpdata <- bind_rows(tmpdata,
                 tibble(
                 year        =as.numeric(rownames(future[[j]]$vssb)),
-                ssb.future  =apply(future[[j]]$vssb[,-1],1,mean),
-                catch.future=apply(future[[j]]$vwcaa[,-1],1,mean),
+                ssb.future  =apply(future[[j]]$vssb[,-1],1,mean)/biomass.unit,
+                catch.future=apply(future[[j]]$vwcaa[,-1],1,mean)/biomass.unit,
                 scenario=future.name[j]))
             }
         tmpdata <- tmpdata %>% group_by(scenario)
@@ -199,7 +202,7 @@ plot_yield <- function(MSY_obj,refs_base,
                                   linetype=factor(scenario)),
                       lwd=1.5,col="green",alpha=0.7)+            
             geom_point(data=tmpdata,
-                       mapping=aes(x=ssb.future,y=catch.future,
+                       mapping=aes(x=ssb.future/biomass.unit,y=catch.future/biomass.unit,
                                    shape=factor(scenario)),alpha=0.7,color="darkgreen",
                        size=3)
 
@@ -209,14 +212,16 @@ plot_yield <- function(MSY_obj,refs_base,
     if(!is.null(past)){
         tmpdata <- tibble(
             year      =as.numeric(colnames(past$ssb)),
-            ssb.past  =unlist(colSums(past$ssb)),
-            catch.past=unlist(colSums(past$input$dat$caa*past$input$dat$waa))
+            ssb.past  =unlist(colSums(past$ssb))/biomass.unit,
+            catch.past=unlist(colSums(past$input$dat$caa*past$input$dat$waa)/biomass.unit)
         )
 
         g1 <- g1 +
 #            geom_point(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past,
 #                                                alpha=year),shape=2) +
-            geom_path(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past),color="tomato",lwd=1.5,alpha=0.7)
+    geom_path(data=tmpdata,
+              mapping=aes(x=ssb.past,y=catch.past),
+              color="tomato",lwd=1.5,alpha=0.7)
     }
 
     if(is.null(refs.label)) refs.label <- str_c(refs_base$RP_name,":",refs_base$RP.definition)
@@ -254,7 +259,7 @@ plot_yield <- function(MSY_obj,refs_base,
 #    vjust        = 0,
 #        segment.size = 1)+
     geom_vline(xintercept=refs_base$SSB,color=refs.color,lty="41",lwd=1)+
-    xlab("平均親魚量") + ylab("平均漁獲量")
+    xlab(str_c("平均親魚量 (",junit,"トン)")) + ylab(str_c("平均漁獲量 (",junit,"トン)"))
 
     return(g1)
         
