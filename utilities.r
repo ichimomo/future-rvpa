@@ -84,7 +84,8 @@ convert_vpa_tibble <- function(vpares){
                            Recruitment)
 }
 
-SRplot_gg <- function(SR_result,refs=NULL){
+SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=1,ylabel="尾",
+                      labeling.year=NULL){
     require(tidyverse,quietly=TRUE)    
     require(ggrepel)
     
@@ -92,19 +93,34 @@ SRplot_gg <- function(SR_result,refs=NULL){
         mutate(type="obs")
     SRdata.pred <- as_tibble(SR_result$pred) %>%
         mutate(type="pred",year=NA)    
-    alldata <- bind_rows(SRdata,SRdata.pred)
+    alldata <- bind_rows(SRdata,SRdata.pred) %>%
+        mutate(R=R/yscale,SSB=SSB/xscale)
     ymax <- max(alldata$R)
+    year.max <- max(alldata$year,na.rm=T)
+    tmp <- 1950:2030
+    if(is.null(labeling.year)) labeling.year <- c(tmp[tmp%%5==0],year.max)
+    alldata <- alldata %>% mutate(pick.year=ifelse(year%in%labeling.year,year,""))
+
+
     g1 <- ggplot() +
         geom_point(data=dplyr::filter(alldata,type=="obs"),
                    aes(y=R,x=SSB,color=year)) +
-        geom_label_repel(data=dplyr::filter(alldata,type=="obs"),
-                 aes(y=R,x=SSB,label=year),size=3,box.padding=0.5,segment.color="gray") +        
+        geom_path(data=dplyr::filter(alldata,type=="obs"),
+                   aes(y=R,x=SSB),alpha=0.5) +        
+#        geom_label_repel(data=dplyr::filter(alldata,type=="obs" & (year%%10==0|year==year.max)),
+#                         aes(y=R,x=SSB,label=year),
+    #                         size=3,box.padding=3,segment.color="black") +
+    #        geom_text_repel(aes(y=R,x=SSB,label=pickyear)) +
+    geom_text_repel(data=dplyr::filter(alldata,type=="obs"),
+                    segment.alpha=0.5,nudge_y=5,
+                    aes(y=R,x=SSB,label=pick.year)) +                
         geom_line(data=dplyr::filter(alldata,type=="pred"),
                   aes(y=R,x=SSB)) +
-        theme_bw()+
+        theme_bw(base_size=14)+
+    theme(legend.position = 'none') +
         theme(panel.grid = element_blank()) +
-        xlab("親魚資源量")+
-        ylab("加入尾数")+        
+        xlab(str_c("親魚資源量 (",xlabel,")"))+
+        ylab(str_c("加入尾数 (",ylabel,")"))+        
         coord_cartesian(ylim=c(0,ymax*1.05),expand=0) +
         labs(caption=str_c("関数形: ",SR_result$input$SR,", 自己相関: ",SR_result$input$AR,
                            ", 最適化法",SR_result$input$method,", AICc: ",round(SR_result$AICc,2)))
@@ -355,7 +371,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          Btarget=c("Btarget0"),
                          Blimit=c("Blimit0"),
                          Blow=c("Blow0"),
-                         Bban=c("Bban0")){
+                         Bban=c("Bban0"),write.vline=TRUE){
     
     require(tidyverse,quietly=TRUE)
     require(ggrepel,quietly=TRUE)    
@@ -380,7 +396,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     max.B <- max(c(UBdata$Bratio,1.2),na.rm=T)
     max.U <- max(c(UBdata$Uratio,1.2),na.rm=T)
 
-    kobe.6area <- ggplot(data=UBdata) +
+    kobe.6area <- ggplot(data=UBdata) + theme(legend.position="none")+
         geom_polygon(data=tibble(x=c(-1,low.ratio,low.ratio,-1),
                                  y=c(-1,-1,1,1)),
                      aes(x=x,y=y),fill="khaki1")+
@@ -401,7 +417,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                                  y=c(-1,-1,1,1)),aes(x=x,y=y),fill="khaki1")+
         geom_vline(xintercept=c(1,ban.ratio),linetype=2)
 
-    kobe.4area <- ggplot(data=UBdata) +
+    kobe.4area <- ggplot(data=UBdata) +theme(legend.position="none")+
         geom_polygon(data=tibble(x=c(-1,low.ratio,low.ratio,-1),
                                  y=c(-1,-1,1,1)),
                      aes(x=x,y=y),fill="khaki1")+
@@ -422,7 +438,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
-        ylab("U/Umsy") + xlab("SB/SBmsy")  +
+        ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
         geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
                          size=3,box.padding=2,segment.color="gray")
@@ -431,13 +447,14 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
-        ylab("U/Umsy") + xlab("SB/SBmsy")  +
+        ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
         geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
                          aes(x=Bratio,y=Uratio,label=year),
                          size=3,box.padding=2,segment.color="gray")
 
 
-    if(low.ratio<1){
+    if(write.vline){
+     if(low.ratio<1){
         g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
                               y=rep(0.1,4),
                               label=c("Bban","Blimit","Blow","Btarget")),
@@ -450,14 +467,15 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     }else{
         g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
                               y=rep(0.1,3),
-                              label=c("Bban","Blimit","Btarget")),
+                              label=c("禁漁水準","限界水準","目標水準")),
                              aes(x=x,y=y,label=label))
         g4 <- g4 + geom_vline(xintercept=c(ban.ratio,limit.ratio,1),linetype=2)+
             geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
                                   y=rep(0.1,3),
-                                  label=c("Bban","Blimit","Btarget")),
+                                  label=c("禁漁水準","限界水準","目標水準")),
                       aes(x=x,y=y,label=label))        
-    }    
+    }
+    }
     
     if(category==4) return(g4) else return(g6)
 }
@@ -468,8 +486,10 @@ plot_futures <- function(vpares,
                          future_tibble=NULL,
                          CI_range=c(0.1,0.9),
                          maxyear=NULL,font.size=18,
-                         biomass.unit=1,
-                         Btarget=0,Blimit=0,Bban=0,Blow=0,
+                         ncol=3,
+                         what.plot=c("Recruitment","SSB","biomass","catch","Fsakugen"),
+                         biomass.unit=1,RP_name=c("Btarget","Blimit","Bban"),
+                         Btarget=0,Blimit=0,Bban=0,#Blow=0,
                          n_example=3, # number of examples
                          seed=1 # seed for selecting the above example
                          ){
@@ -482,6 +502,8 @@ plot_futures <- function(vpares,
                               str_c("資源量 (",junit,"トン)"),
                               str_c("漁獲量 (",junit,"トン)"),
                               "努力量の削減率"))
+
+    rename_list <- rename_list %>% dplyr::filter(stat%in%what.plot)
     
     if(!is.null(future.list)){
         if(is.null(future.name)) future.name <- str_c("s",1:length(future.list))
@@ -498,9 +520,10 @@ plot_futures <- function(vpares,
         dplyr::filter(stat%in%rename_list$stat) %>%
         mutate(stat=factor(stat,levels=rename_list$stat))
 
+
     set.seed(seed)
     future.example <- future.table %>%
-        dplyr::filter(sim%in%sample(1:max(future.table$sim),n_example)) %>%
+        dplyr::filter(sim%in%sample(2:max(future.table$sim),n_example)) %>%
         mutate(value=ifelse(stat=="Fsakugen",value,value/biomass.unit)) %>%
         left_join(rename_list) %>%
         group_by(sim,scenario)
@@ -525,36 +548,36 @@ plot_futures <- function(vpares,
         mutate(value=ifelse(stat=="Fsakugen",value,value/biomass.unit))
 
     future.table.qt <- future.table %>% group_by(scenario,year,stat) %>%
-        summarise(low=quantile(value,CI_range[1]),
-                  high=quantile(value,CI_range[2]),
-                  median=median(value),
+        summarise(low=quantile(value,CI_range[1],na.rm=T),
+                  high=quantile(value,CI_range[2],na.rm=T),
+                  median=median(value,na.rm=T),
                   mean=mean(value))
 
     # make dummy for y range
     dummy <- future.table %>% group_by(stat) %>% summarise(max=max(value)) %>%
-        mutate(value=0,year=min(future.table$year)) %>%
+        mutate(value=0,year=min(future.table$year,na.rm=T)) %>%
         select(-max)
 
     dummy2 <- future.table %>% group_by(stat) %>%
-        summarise(max=max(quantile(value,CI_range[2]))) %>%
+        summarise(max=max(quantile(value,CI_range[2],na.rm=T))) %>%
         mutate(value=max*1.1,
-               year=min(future.table$year)) %>%
+               year=min(future.table$year,na.rm=T)) %>%
         select(-max)
 
 
     future.table.qt <- left_join(future.table.qt,rename_list) %>%
         mutate(jstat=factor(jstat,levels=rename_list$jstat))
 
-   
-    dummy <- left_join(dummy,rename_list)
-    dummy2 <- left_join(dummy2,rename_list)
+
+    dummy <- left_join(dummy,rename_list) %>% dplyr::filter(!is.na(stat))
+    dummy2 <- left_join(dummy2,rename_list) %>% dplyr::filter(!is.na(stat))
     dummy3 <- tibble(jstat=rename_list$jstat[2],
-                     value=c(Btarget,Blimit,Blow,Bban)/biomass.unit,
-                     RP_name=c("Btarget","Blimit","Blow","Bban"))
+                     value=c(Btarget,Blimit,Bban)/biomass.unit,
+                     RP_name=RP_name)
     
     options(warn=org.warn)
     
-    g1 <- future.table.qt %>% 
+    g1 <- future.table.qt %>% dplyr::filter(!is.na(stat)) %>%
         ggplot() +
         geom_ribbon(aes(x=year,ymin=low,ymax=high,fill=scenario),alpha=0.5)+        
         geom_line(aes(x=year,y=mean,color=scenario),lwd=1)+
@@ -563,8 +586,8 @@ plot_futures <- function(vpares,
         geom_blank(data=dummy2,mapping=aes(y=value,x=year))+
         theme_bw(base_size=font.size) +
         coord_cartesian(expand=0)+
-        theme(legend.position="bottom",panel.grid = element_blank())+
-        facet_wrap(~factor(jstat,levels=rename_list$jstat),scales="free")+        
+        theme(legend.position="top",panel.grid = element_blank())+
+        facet_wrap(~factor(jstat,levels=rename_list$jstat),scales="free",ncol=ncol)+        
         xlab("年")+ylab("")+ labs(fill = "",linetype="",color="")+
         geom_hline(data=dummy3,aes(yintercept=value,linetype=RP_name)) 
 
@@ -615,3 +638,101 @@ plot_Fcurrent <- function(vpares,
     return(g)
 }
 
+
+library(ggplot2)
+
+#Setting parameter values.
+#SBtarget <- 250
+#SBban <- 0.1*SBtarget
+#SBlim <- 0.4*SBtarget
+#Ftarget <-1.5
+#beta <- 0.8
+
+plot_HCR <- function(SBtarget,SBlim,SBban,Ftarget,
+                     biomass.unit=1,
+                     beta=0.8,col.multi2currf="black",col.SBtarget="darkgreen",
+                     col.SBlim="orange",col.SBban="red",col.Ftarget="black",
+                     col.betaFtarget="gray"){
+    
+  # Arguments; SBtarget,SBlim,SBban,Ftarget,beta,col.multi2currf,col.SBtarget,col.SBlim,col.SBban,col.Ftarget,col.betaFtarget.
+  # col.xx means the line color for xx on figure.
+  # beta and col.xx have default values.
+  # Default setting for beta = 0.8, therefore define this as (beta <-0.8) outside this function if the beta-value changes frequently.
+    # Default color setting for each parameter; Function(col.multi2currf="blue"), SBtarget(col.SBtarget = "green"), SBlimit(col.SBlim = "yellow"),SBban(col.SBban = "red"),Ftarget(col.Ftarget = "black"), β Ftarget(col.betaFtarget = "gray")
+
+    junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
+    SBtarget <- SBtarget/biomass.unit
+    SBlim <- SBlim/biomass.unit
+    SBban <- SBban/biomass.unit    
+    
+  #Setting of the function to multiply current F for SSB
+  multi2currF = function(x){ 
+    if(x > SBlim) {multi2currF=beta*Ftarget}
+    else if (x < SBban) {multi2currF=0}
+    else { multi2currF = (x - SBban)* beta*Ftarget/(SBlim - SBban) }
+    return(multi2currF)
+  }
+  
+  #Function setting for drawing.
+  h=Vectorize(multi2currF)
+
+  #Drawing of the funciton by ggplot2
+    ggplct <- ggplot(data.frame(x = c(0,1.5*SBtarget),y= c(0,1.5*Ftarget)), aes(x=x)) +
+        stat_function(fun = h,lwd=2,color=col.multi2currf)
+    g <- ggplct  + geom_vline(xintercept = SBtarget, size = 0.9, linetype = 3, color = col.SBtarget) +
+        geom_vline(xintercept = SBlim, size = 0.9, linetype = 3, color = col.SBlim) +
+        geom_vline(xintercept = SBban, size = 0.9, linetype = 3, color = col.SBban) +
+        geom_hline(yintercept = Ftarget, size = 0.9, linetype = 3, color = col.Ftarget) +
+        geom_hline(yintercept = beta*Ftarget, size = 0.7, linetype = 3, color = col.betaFtarget) +
+        labs(title = "",subtitle = "", caption =  "", x = str_c("親魚量 (",junit,"トン)"),
+             y = "努力量の乗数",color = "") +
+        annotate("text", label="目標水準", x=SBtarget, y=1.2*Ftarget) +
+        annotate("text", label="限界水準", x=SBlim, y=1.1*Ftarget) +
+        annotate("text", label="禁漁水準", x=SBban, y=1.2*Ftarget)+
+        annotate("text", label="Ftarget", x=SBtarget/15, y=0.95*Ftarget)+
+        annotate("text", label=str_c(beta,"Ftarget"), x=SBtarget/15, y=0.95*beta*Ftarget)+
+        theme_bw(base_size=12)+
+        theme(legend.position="none",panel.grid = element_blank())+
+        stat_function(fun = h,lwd=1.5,color=col.multi2currf)        
+
+    return(g)
+  
+  #Drawing in a classical way
+  # curve(h,
+  #       xlim=c(0,2*SBtarget),  # range for x-axis is from 0 to 2*SBtarget
+  #       ylim=c(0,1.2*Ftarget), # range for y-axis is from 0 to 1.2*Ftarget
+  #       main="",
+  #       xlab="SSB(×1000[t])",
+  #       ylab="multipliyer to current F",
+  #       lwd=2,
+  #       col=col.multi2currf
+  # )
+  #Adding extention lines.
+  # abline(v=SBtarget,lty=2,lwd=2,col=col.SBtarget)
+  # abline(v=SBlim,lty=2,lwd=2,col=col.SBlim)
+  # abline(v=SBban,lty=2,lwd=2,col=col.SBban)
+  # abline(h=Ftarget,lty=2,col=col.Ftarget)
+  # abline(h=beta*Ftarget,lty=3,col=col.betaFtarget)
+  
+  #Display legends at bottom right of the figure.
+  # legend("bottomright",
+  #        legend=c("SBtarget","SBlimit","SBban","Ftarget","β Ftarget"),
+  #        lty=c(2,2,2,2,3),
+  #        lwd=c(2,2,2,1,1),
+  #        col=c(col.SBtarget, "yellow", "red","black","gray"),
+  #        bty="n"
+  # )
+  
+  #Setting each legend manually.
+  # legend(SBtarget, 1.1*Ftarget,legend='SBtarget',bty="n")
+  # legend(SBlim, 1.1*Ftarget, legend='SBlimit',bty="n")
+  # legend(SBban, 1.1*Ftarget, legend='SBban',bty="n")
+  # legend(0, Ftarget, legend='Ftarget',bty="n")
+  # legend(0, beta*Ftarget, legend='β Ftarget',bty="n")
+  
+}
+
+# test plot
+#Fig_Fish_Manage_Rule(SBtarget,SBlim,SBban,Ftarget,col.multi2currf = "#093d86", col.SBtarget = "#00533E", col.SBlim = "#edb918",col.SBban = "#C73C2E",col.Ftarget = "#714C99", col.betaFtarget = "#505596")
+# function;ruri-rio, sbtarget;moegi-iro, sblim;koki-ki; sbban;hi-iro, ftarget;sumire-iro, betaftarget;kikyou-iro
+                       
