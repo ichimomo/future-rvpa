@@ -513,7 +513,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                               y=rep(0.1,3),
                               label=c("禁漁水準","限界管理基準値","目標管理基準値")),
                              aes(x=x,y=y,label=label))
-        g4 <- g4 + geom_vline(xintercept=c(ban.ratio,limit.ratio,1),color=refs.color,lty="41",lwd=1)+
+        g4 <- g4 + geom_vline(xintercept=c(1,limit.ratio,ban.ratio),color=refs.color,lty="41",lwd=1)+
             geom_text(data=tibble(x=c(1,limit.ratio,ban.ratio),
                                   y=rep(max.U*1.05,3),
                                   label=c("目標管理基準値","限界管理基準値","禁漁水準")),
