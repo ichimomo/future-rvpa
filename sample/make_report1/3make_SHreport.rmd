@@ -70,6 +70,9 @@ U.history <- unlist(colSums(res.pma$wcaa)/colSums(res.pma$baa))/derive_RP_value(
                             ylab.type="F",Fratio=Fratio))
 ggsave("g3_kobe4_F.png",g3_kobe4_F,width=6,height=3,dpi=600)
 
+g3_kobe4_UF <- grid.arrange(g3_kobe4_U,g3_kobe4_F,ncol=2)
+ggsave("g3_kobe4_UF.png",g3_kobe4_UF,width=6,height=3,dpi=600)
+
 # write.vline=FALSEで、縦の管理基準値の線を書かないようにもできます（水産庁からの要望？）
 #(g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
 #                          Blow="Btarget0",Btarget="Btarget0",write.vline=FALSE))

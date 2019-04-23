@@ -33,6 +33,7 @@ ggsave("g1_SRplot.png",g1_SRplot,width=6,height=3,dpi=600)
 refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bban0"))
 ```
 
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
 # プロットする
@@ -81,6 +82,14 @@ U.history <- unlist(colSums(res.pma$wcaa)/colSums(res.pma$baa))/derive_RP_value(
 ``` r
 ggsave("g3_kobe4_F.png",g3_kobe4_F,width=6,height=3,dpi=600)
 
+g3_kobe4_UF <- grid.arrange(g3_kobe4_U,g3_kobe4_F,ncol=2)
+```
+
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
+
+``` r
+ggsave("g3_kobe4_UF.png",g3_kobe4_UF,width=6,height=3,dpi=600)
+
 # write.vline=FALSEで、縦の管理基準値の線を書かないようにもできます（水産庁からの要望？）
 #(g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
 #                          Blow="Btarget0",Btarget="Btarget0",write.vline=FALSE))
@@ -105,7 +114,7 @@ ggsave("g3_kobe4_F.png",g3_kobe4_F,width=6,height=3,dpi=600)
                    font.size=14)) # フォントサイズ
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->
 
 ``` r
 ggsave("g5_future.png",g5_future,width=7,height=11,dpi=600)
@@ -119,7 +128,7 @@ ggsave("g5_future.png",g5_future,width=7,height=11,dpi=600)
          beta=0.8))
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-9.png)<!-- -->
 
 ``` r
 ggsave("g6_hcr.png",g6_hcr,width=8,height=4,dpi=600)
