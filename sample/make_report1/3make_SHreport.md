@@ -29,12 +29,14 @@ library(tidyverse)
 ggsave("g1_SRplot.png",g1_SRplot,width=6,height=3,dpi=600)
 
 ## yield curve
+# プロットする管理基準値だけ取り出す
 refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bban0"))
 ```
 
 ![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
+# プロットする
 (g2_yield_curve <- plot_yield(MSY.base$trace,
                               refs.plot,
                               refs.label=c("目標管理基準値","限界管理基準値","禁漁水準"),
@@ -50,7 +52,7 @@ refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bb
 ggsave("g2_yield_curve.png",g2_yield_curve,width=6,height=3,dpi=600)
 
 ## kobe plot
-# プロットする管理基準値だけ取り出す
+# betaを指定することでHCRありのバージョンが書けます
 (g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
                    Blow="Btarget0", # Btargeと同じ値を入れておいてください
                    Btarget="Btarget0", # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
@@ -63,14 +65,9 @@ ggsave("g2_yield_curve.png",g2_yield_curve,width=6,height=3,dpi=600)
 ggsave("g3_kobe4-1.png",g3_kobe4,width=6,height=3,dpi=600)
 
 # write.vline=FALSEで、縦の管理基準値の線を書かないようにもできます（水産庁からの要望？）
-(g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
-                          Blow="Btarget0",Btarget="Btarget0",write.vline=FALSE))
-```
-
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
-
-``` r
-ggsave("g3_kobe4-2.png",g3_kobe4,width=6,height=3,dpi=600)
+#(g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
+#                          Blow="Btarget0",Btarget="Btarget0",write.vline=FALSE))
+#ggsave("g3_kobe4-2.png",g3_kobe4,width=6,height=3,dpi=600)
 
 ## 将来予測の図
 # 親魚資源量と漁獲量の時系列の図示
@@ -91,11 +88,13 @@ ggsave("g3_kobe4-2.png",g3_kobe4,width=6,height=3,dpi=600)
                    font.size=14)) # フォントサイズ
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
 
 ``` r
-ggsave("g5_future.png",g5_future,width=7,height=10,dpi=600)
+ggsave("g5_future.png",g5_future,width=7,height=11,dpi=600)
 
+## HCRの図
+# こちらはもう必要ない？
 (g6_hcr <- plot_HCR(SBtarget=derive_RP_value(refs.base,"Btarget0")$SSB,
          SBlim=derive_RP_value(refs.base,"Blimit0")$SSB,
          SBban=derive_RP_value(refs.base,"Bban0")$SSB,
@@ -103,7 +102,7 @@ ggsave("g5_future.png",g5_future,width=7,height=10,dpi=600)
          beta=0.8))
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
 
 ``` r
 ggsave("g6_hcr.png",g6_hcr,width=8,height=4,dpi=600)
