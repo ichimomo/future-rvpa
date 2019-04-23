@@ -33,6 +33,7 @@ ggsave("g1_SRplot.png",g1_SRplot,width=6,height=3,dpi=600)
 refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bban0"))
 ```
 
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
 # プロットする
