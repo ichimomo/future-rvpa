@@ -51,17 +51,35 @@ refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bb
 ggsave("g2_yield_curve.png",g2_yield_curve,width=6,height=3,dpi=600)
 
 ## kobe plot
-# betaを指定することでHCRありのバージョンが書けます
-(g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
+
+# 縦軸を漁獲率にする場合
+(g3_kobe4_U <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
                    Blow="Btarget0", # Btargeと同じ値を入れておいてください
                    Btarget="Btarget0", # <- どの管理基準値を軸に使うのか指定。指定しなければ"0"マークがついた管理基準値が使われます
-                   beta=0.8)) # betaがNULLだとHCRを書かない。betaを指定するとHCRも重ね書きする
+                   ylab.type="U",
+                   beta=NULL)) #縦軸が漁獲率の場合にはHCRを重ね書きできない
 ```
 
 ![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-5.png)<!-- -->
 
 ``` r
-ggsave("g3_kobe4-1.png",g3_kobe4,width=6,height=3,dpi=600)
+ggsave("g3_kobe4_U.png",g3_kobe4_U,width=6,height=3,dpi=600)
+
+## kobe plot(縦軸をF(SPR換算)とする場合)
+Fratio <- unlist(get.SPR(res.pma,target.SPR=NULL,MSY.base=MSY.base)$ysdata["F/Ftarget"])
+U.history <- unlist(colSums(res.pma$wcaa)/colSums(res.pma$baa))/derive_RP_value(MSY.base$summary_tb,"Btarget0")$U
+# matplot(cbind(Fratio,U.history),type="b")  # UとFの比較(けっこう違う)
+# plot(Fratio,U.history,type="p") # 両者の関係
+
+(g3_kobe4_F <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
+                            Blow="Btarget0", Btarget="Btarget0", beta=0.8,
+                            ylab.type="F",Fratio=Fratio))
+```
+
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
+
+``` r
+ggsave("g3_kobe4_F.png",g3_kobe4_F,width=6,height=3,dpi=600)
 
 # write.vline=FALSEで、縦の管理基準値の線を書かないようにもできます（水産庁からの要望？）
 #(g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
@@ -87,7 +105,7 @@ ggsave("g3_kobe4-1.png",g3_kobe4,width=6,height=3,dpi=600)
                    font.size=14)) # フォントサイズ
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
 
 ``` r
 ggsave("g5_future.png",g5_future,width=7,height=11,dpi=600)
@@ -101,7 +119,7 @@ ggsave("g5_future.png",g5_future,width=7,height=11,dpi=600)
          beta=0.8))
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->
 
 ``` r
 ggsave("g6_hcr.png",g6_hcr,width=8,height=4,dpi=600)

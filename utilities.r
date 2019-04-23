@@ -420,6 +420,8 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          Blimit=c("Blimit0"),
                          Blow=c("Blow0"),
                          Bban=c("Bban0"),write.vline=TRUE,
+                         ylab.type="U", # or "U"
+                         Fratio=NULL, # ylab.type=="F"のとき
                          refs.color=c("#00533E","#edb918","#C73C2E"),
                          beta=NULL){
 
@@ -456,6 +458,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         mutate(Uratio=roll_mean(U/target.RP$U,n=roll_mean,fill=NA,align="right"),
                Bratio=roll_mean(SSB/target.RP$SSB,n=roll_mean,fill=NA,align="right")) %>%
         arrange(year)
+    if(ylab.type=="F") UBdata <- UBdata %>% mutate(Uratio=Fratio)
 
     max.B <- max(c(UBdata$Bratio,1.2),na.rm=T)
     max.U <- max(c(UBdata$Uratio,1.2),na.rm=T)
@@ -547,8 +550,10 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          aes(x=Bratio,y=Uratio,label=year),
                          size=3,box.padding=2,segment.color="gray")
 
-
-
+    if(ylab.type=="F"){
+        g6 <- g6 + ylab("漁獲圧の比 (F/Fmsy)")
+        g4 <- g4 + ylab("漁獲圧の比 (F/Fmsy)")        
+    }
     
     if(category==4) return(g4) else return(g6)
 }
