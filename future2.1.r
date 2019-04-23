@@ -2278,20 +2278,28 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 #    points(fout.tmp$multi,fout.tmp$vssb[100,1],pch=4)
 }
 
-get.SPR <- function(dres,target.SPR=NULL,byear.current=NULL){
+get.SPR <- function(dres,target.SPR=NULL,MSY.base=NULL){
     # Fの歴史的な%SPRを見てみる                                                                             
     # 毎年異なるFや生物パラメータに対して、YPR,SPR、SPR0がどのくらい変わっているのか見る(Rコード例2)
     # target.SPRが与えられると、target.SPR（％）として与えた数字に対応するSPR値に対するFの乗数も出力する
-    #   NULLの場合にはFc.at.ageで与えられたFに対する乗数とする
-    #   F=Ftarget.SPR/Fcurrent
+    # NULLの場合にはMSY.baseを与えて、MSYの時の%SPRを別途計算する
+    #   F=Ftarget.SPR/Fmsy
     #
 
     if(is.null(target.SPR)){
-        if(is.null(byear.current)) byear.current <- rev(colnames(dres$naa))[1]
-        current_spr <- ref.F(dres,waa.year=byear,maa.year=byear,M.year=byear,rps.year=2000:2011,
-                             F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*2),
-                                           length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)$ypr.spr
-        target.SPR <- current_spr[current_spr$Frange2Fcurrent==1,]$spr[1]
+        MSY.base$input.list$msy$outtype <- "FULL"
+        fout.msy <- do.call(future.vpa,MSY.base$input.list$msy)
+        waa.msy <- fout.msy$waa[,dim(fout.msy$waa)[[2]],1]
+        maa.msy <- fout.msy$maa[,dim(fout.msy$maa)[[2]],1]
+        M.msy <- fout.msy$maa[,dim(fout.msy$M)[[2]],1]
+        F.msy <- MSY.base$input$msy$multi*MSY.base$input$msy$res0$Fc.at.age
+        
+#        if(is.null(byear.current)) byear.current <- rev(colnames(dres$naa))[1]
+        spr.msy <- ref.F(dres,sel=F.msy,waa=waa.msy,maa=maa.msy,M=M.msy,rps.year=as.numeric(colnames(dres$naa)),
+                         F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*2),
+                                       length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)$ypr.spr
+        target.SPR <- spr.msy[spr.msy$Frange2Fcurrent==1,]$spr[1]
+
     }
     
     dres$ysdata <- matrix(0,ncol(dres$faa),5)
@@ -2320,6 +2328,7 @@ get.SPR <- function(dres,target.SPR=NULL,byear.current=NULL){
             }
     }
     dres$ysdata <- as.data.frame(dres$ysdata)
+    dres$target.SPR <- target.SPR
     return(dres)
 }
 
@@ -2523,6 +2532,7 @@ est.MSY <- function(vpares,farg,
                                                     fmulti=tmp$minimum+c(-0.025,-0.05,-0.075,0,0.025,0.05,0.075))$table)
             trace$table <- trace$table[order(trace$table$fmulti),]
         }
+        F.msy <- fout.msy$input$multi*vpares$Fc.at.age
     }
     # optimizeでなくgridでやる場合
     else{
@@ -2766,6 +2776,7 @@ est.MSY <- function(vpares,farg,
     invisible(list(summary=as.data.frame(as.matrix(sumvalue)),
                    summaryAR=as.data.frame(as.matrix(sumvalue2)),
                    summary_tb=allsum,
+                   F.msy=F.msy,
                    all.stat=as.data.frame(as.matrix(refvalue)),
                    all.statAR=as.data.frame(as.matrix(refvalue2)),
                    all.stat_tb=bind_rows(refvalue,refvalue2),                   
