@@ -419,8 +419,11 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          Btarget=c("Btarget0"),
                          Blimit=c("Blimit0"),
                          Blow=c("Blow0"),
-                         Bban=c("Bban0"),write.vline=TRUE){
-    
+                         Bban=c("Bban0"),write.vline=TRUE,
+                         refs.color=c("#00533E","#edb918","#C73C2E"),
+                         beta=NULL){
+
+   
     require(tidyverse,quietly=TRUE)
     require(ggrepel,quietly=TRUE)    
 
@@ -431,7 +434,20 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
 
     low.ratio <- low.RP$SSB/target.RP$SSB
     limit.ratio <- limit.RP$SSB/target.RP$SSB
-    ban.ratio <- ban.RP$SSB/target.RP$SSB        
+    ban.ratio <- ban.RP$SSB/target.RP$SSB
+
+    ### HCRのプロット用の設定
+    #Setting of the function to multiply current F for SSB
+    multi2currF = function(x){ 
+        if(x > limit.ratio) {multi2currF=beta}
+        else if (x < ban.ratio) {multi2currF=0}
+        else { multi2currF = beta*(x - ban.ratio)/(limit.ratio - ban.ratio) }
+        return(multi2currF)
+    }
+  
+    #Function setting for drawing.
+    h=Vectorize(multi2currF)
+    ####
     
     require(RcppRoll)
     vpa_tb <- convert_vpa_tibble(vpares)
@@ -444,7 +460,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     max.B <- max(c(UBdata$Bratio,1.2),na.rm=T)
     max.U <- max(c(UBdata$Uratio,1.2),na.rm=T)
 
-    kobe.6area <- ggplot(data=UBdata) + theme(legend.position="none")+
+    g6 <- ggplot(data=UBdata) + theme(legend.position="none")+
         geom_polygon(data=tibble(x=c(-1,low.ratio,low.ratio,-1),
                                  y=c(-1,-1,1,1)),
                      aes(x=x,y=y),fill="khaki1")+
@@ -463,9 +479,9 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                                  y=c(-1,-1,1,1)),aes(x=x,y=y),fill="khaki2") +
         geom_polygon(data=tibble(x=c(limit.ratio,low.ratio,low.ratio,limit.ratio),
                                  y=c(-1,-1,1,1)),aes(x=x,y=y),fill="khaki1")+
-        geom_vline(xintercept=c(1,ban.ratio),linetype=2)
+        geom_vline(xintercept=c(1,ban.ratio),linetype=2)   
 
-    kobe.4area <- ggplot(data=UBdata) +theme(legend.position="none")+
+    g4 <- ggplot(data=UBdata) +theme(legend.position="none")+
         geom_polygon(data=tibble(x=c(-1,low.ratio,low.ratio,-1),
                                  y=c(-1,-1,1,1)),
                      aes(x=x,y=y),fill="khaki1")+
@@ -481,26 +497,6 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         geom_polygon(data=tibble(x=c(-1,1,1,-1),
                                  y=c(-1,-1,1,1)),aes(x=x,y=y),fill="khaki1")
 
-
-    g6 <- kobe.6area +
-        geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
-        geom_path(mapping=aes(x=Bratio,y=Uratio)) +
-        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
-        ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
-        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
-                         aes(x=Bratio,y=Uratio,label=year),
-                         size=3,box.padding=2,segment.color="gray")
-
-    g4 <- kobe.4area +
-        geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
-        geom_path(mapping=aes(x=Bratio,y=Uratio)) +
-        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
-        ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
-        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
-                         aes(x=Bratio,y=Uratio,label=year),
-                         size=3,box.padding=2,segment.color="gray")
-
-
     if(write.vline){
      if(low.ratio<1){
         g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
@@ -515,15 +511,44 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     }else{
         g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
                               y=rep(0.1,3),
-                              label=c("禁漁水準","限界水準","目標水準")),
+                              label=c("禁漁水準","限界管理基準値","目標管理基準値")),
                              aes(x=x,y=y,label=label))
-        g4 <- g4 + geom_vline(xintercept=c(ban.ratio,limit.ratio,1),linetype=2)+
-            geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
-                                  y=rep(0.1,3),
-                                  label=c("禁漁水準","限界水準","目標水準")),
-                      aes(x=x,y=y,label=label))        
+        g4 <- g4 + geom_vline(xintercept=c(ban.ratio,limit.ratio,1),color=refs.color,lty="41",lwd=1)+
+            geom_text(data=tibble(x=c(1,limit.ratio,ban.ratio),
+                                  y=rep(max.U*1.05,3),
+                                  label=c("目標管理基準値","限界管理基準値","禁漁水準")),
+                      aes(x=x,y=y,label=label),hjust=0)        
     }
+    }    
+
+    if(!is.null(beta)){
+        g6 <- g6+stat_function(fun = h,lwd=1.5,color="gray",n=1000)+
+            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n(beta=",beta,")"))            
+        g4 <- g4+stat_function(fun = h,lwd=1.5,color="gray",n=1000)+
+            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n(beta=",beta,")"))            
     }
+
+
+    g6 <- g6 +
+        geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
+        geom_path(mapping=aes(x=Bratio,y=Uratio)) +
+        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
+        ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
+        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
+                         aes(x=Bratio,y=Uratio,label=year),
+                         size=3,box.padding=2,segment.color="gray")
+
+    g4 <- g4 +
+        geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
+        geom_path(mapping=aes(x=Bratio,y=Uratio)) +
+        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
+        ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
+        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
+                         aes(x=Bratio,y=Uratio,label=year),
+                         size=3,box.padding=2,segment.color="gray")
+
+
+
     
     if(category==4) return(g4) else return(g6)
 }
