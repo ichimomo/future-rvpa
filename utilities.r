@@ -817,7 +817,7 @@ plot_HCR <- function(SBtarget,SBlim,SBban,Ftarget,
 
 
 # MSYを達成するときの%SPRを計算する
-calc_MSY_spr <- function(MSYres){
+calc_MSY_spr <- function(MSYres,Fmax=10,max.age=Inf){
     dres <- MSYres$input$msy$res0
     # MSYにおける将来予測計算をやりなおし
     MSYres$input.list$msy$outtype <- "FULL"
@@ -825,14 +825,15 @@ calc_MSY_spr <- function(MSYres){
     # 生物パラメータはその将来予測で使われているものを使う
     waa.msy <- fout.msy$waa[,dim(fout.msy$waa)[[2]],1]
     maa.msy <- fout.msy$maa[,dim(fout.msy$maa)[[2]],1]
-    M.msy <- fout.msy$maa[,dim(fout.msy$M)[[2]],1]
+    M.msy <- fout.msy$M[,dim(fout.msy$M)[[2]],1]
     # F.msyの定義
     F.msy <- MSYres$input$msy$multi*MSYres$input$msy$res0$Fc.at.age
 
     # PPRを計算
-    spr.msy <- ref.F(dres,sel=F.msy,waa=waa.msy,maa=maa.msy,M=M.msy,rps.year=as.numeric(colnames(dres$naa)),
-                     F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*5),
-                                   length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)$ypr.spr
+    dres$Fc.at.age <- F.msy
+    spr.msy <- ref.F(dres,waa=waa.msy,maa=maa.msy,M=M.msy,rps.year=as.numeric(colnames(dres$naa)),
+                     F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*Fmax),
+                                   length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE,max.age=max.age)$ypr.spr
     target.SPR <- spr.msy[spr.msy$Frange2Fcurrent==1,]$spr[1]
     target.SPR
 }
