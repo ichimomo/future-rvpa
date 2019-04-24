@@ -2278,7 +2278,7 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 #    points(fout.tmp$multi,fout.tmp$vssb[100,1],pch=4)
 }
 
-get.SPR <- function(dres,target.SPR=30){
+get.SPR <- function(dres,target.SPR=30,Fmax=5){
     # Fの歴史的な%SPRを見てみる                                                                             
     # 毎年異なるFや生物パラメータに対して、YPR,SPR、SPR0がどのくらい変わっているのか見る(Rコード例2)
     # target.SPRが与えられると、target.SPR（％）として与えた数字に対応するSPR値に対するFの乗数も出力する(与えない場合は30%とする)
@@ -2293,7 +2293,7 @@ get.SPR <- function(dres,target.SPR=30){
             # 配布している1.3から1.4にアップデートしているので、新しいほうの関数を使うこと(返り値がちょっと違う)
             a <- ref.F(dres,waa.year=byear,maa.year=byear,M.year=byear,rps.year=2000:2011,
                        pSPR=round(target.SPR),
-                       F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*2),
+                       F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*Fmax),
                                      length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)
             # YPRと%SPR
             dres$ysdata[i,1:2] <- (as.numeric(rev(a$ypr.spr[which(a$ypr.spr$Frange2Fcurrent==1)[1],2:3])))
