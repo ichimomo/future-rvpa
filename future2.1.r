@@ -2752,9 +2752,9 @@ est.MSY <- function(vpares,farg,
     allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="MSY"] <- "Btarget0"
     allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="PGY_0.9_lower"] <- "Blow0"
     allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="PGY_0.6_lower"] <- "Blimit0"    
-    allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="PGY_0.1_lower"] <- "Bban0"    
-    
-    invisible(list(summary=as.data.frame(as.matrix(sumvalue)),
+    allsum$RP.definition[allsum$AR==FALSE&allsum$RP_name=="PGY_0.1_lower"] <- "Bban0"
+
+    output <- list(summary=as.data.frame(as.matrix(sumvalue)),
                    summaryAR=as.data.frame(as.matrix(sumvalue2)),
                    summary_tb=allsum,
                    F.msy=F.msy,
@@ -2762,7 +2762,10 @@ est.MSY <- function(vpares,farg,
                    all.statAR=as.data.frame(as.matrix(refvalue2)),
                    all.stat_tb=bind_rows(refvalue,refvalue2),                   
                    trace=trace$table,input.list=input.list,
-                   ssb.ar.mean=ssb.ar.mean))    
+                   ssb.ar.mean=ssb.ar.mean)
+    output$SPR.msy <- calc_MSY_spr(output)
+    
+    invisible(output)    
 }
 
 

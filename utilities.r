@@ -146,7 +146,7 @@ get.trace <- function(trace){
         mutate(label=as.character(1:nrow(.)))
 
     trace <- trace %>% gather(value=value,key=age,-label,-fmulti,-ssb.mean,-catch.CV) %>%
-        mutate(age=str_extract(age, "[0-9]")) %>%
+        mutate(age=str_extract(age, "(\\d)+")) %>%
         mutate(age=factor(age)) %>%
         mutate(age=fct_reorder(age,length(age):1))
     return(trace)
