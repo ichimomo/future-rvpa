@@ -814,4 +814,25 @@ plot_HCR <- function(SBtarget,SBlim,SBban,Ftarget,
 # test plot
 #Fig_Fish_Manage_Rule(SBtarget,SBlim,SBban,Ftarget,col.multi2currf = "#093d86", col.SBtarget = "#00533E", col.SBlim = "#edb918",col.SBban = "#C73C2E",col.Ftarget = "#714C99", col.betaFtarget = "#505596")
 # function;ruri-rio, sbtarget;moegi-iro, sblim;koki-ki; sbban;hi-iro, ftarget;sumire-iro, betaftarget;kikyou-iro
-                       
+
+
+# MSYを達成するときの%SPRを計算する
+calc_MSY_spr <- function(MSYres){
+    dres <- MSY.base$input$msy$res0
+    # MSYにおける将来予測計算をやりなおし
+    MSYres$input.list$msy$outtype <- "FULL"
+    fout.msy <- do.call(future.vpa,MSYres$input.list$msy)
+    # 生物パラメータはその将来予測で使われているものを使う
+    waa.msy <- fout.msy$waa[,dim(fout.msy$waa)[[2]],1]
+    maa.msy <- fout.msy$maa[,dim(fout.msy$maa)[[2]],1]
+    M.msy <- fout.msy$maa[,dim(fout.msy$M)[[2]],1]
+    # F.msyの定義
+    F.msy <- MSYres$input$msy$multi*MSYres$input$msy$res0$Fc.at.age
+
+    # PPRを計算
+    spr.msy <- ref.F(dres,sel=F.msy,waa=waa.msy,maa=maa.msy,M=M.msy,rps.year=as.numeric(colnames(dres$naa)),
+                     F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*5),
+                                   length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)$ypr.spr
+    target.SPR <- spr.msy[spr.msy$Frange2Fcurrent==1,]$spr[1]
+    target.SPR
+}

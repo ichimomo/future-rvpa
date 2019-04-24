@@ -1,6 +1,6 @@
 会議用資料
 ================
-2019-04-23
+2019-04-24
 
 # SH会議用の出力
 
@@ -67,9 +67,35 @@ ggsave("g2_yield_curve.png",g2_yield_curve,width=6,height=3,dpi=600)
 ggsave("g3_kobe4_U.png",g3_kobe4_U,width=6,height=3,dpi=600)
 
 ## kobe plot(縦軸をF(SPR換算)とする場合)
-Fratio <- unlist(get.SPR(res.pma,target.SPR=NULL,MSY.base=MSY.base)$ysdata["F/Ftarget"])
+
+# MSYを達成するときのSPRを計算する
+(SPR.msy <- calc_MSY_spr(MSY.base))
+```
+
+    [1] 36.86469
+
+``` r
+# SPR.msyを目標としたとき、それぞれのF at age by yearを何倍すればSPR.msyを達成できるか計算
+SPR.history <- get.SPR(res.pma,target.SPR=round(SPR.msy))$ysdata
+# SPRの時系列と目標SPR
+plot(SPR.history$perSPR,ylim=c(0,max(c(SPR.history$perSPR,SPR.msy))),type="b")
+abline(h=SPR.msy,lty=2)
+```
+
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
+
+``` r
+# Fratio
+Fratio <- unlist(SPR.history$"F/Ftarget")
+# Uatio
 U.history <- unlist(colSums(res.pma$wcaa)/colSums(res.pma$baa))/derive_RP_value(MSY.base$summary_tb,"Btarget0")$U
-# matplot(cbind(Fratio,U.history),type="b")  # UとFの比較(けっこう違う)
+# 両者の比較
+ matplot(cbind(Fratio,U.history),type="b")  # UとFの比較(けっこう違う)
+```
+
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
+
+``` r
 # plot(Fratio,U.history,type="p") # 両者の関係
 
 (g3_kobe4_F <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
@@ -77,7 +103,7 @@ U.history <- unlist(colSums(res.pma$wcaa)/colSums(res.pma$baa))/derive_RP_value(
                             ylab.type="F",Fratio=Fratio))
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->
 
 ``` r
 ggsave("g3_kobe4_F.png",g3_kobe4_F,width=6,height=3,dpi=600)
@@ -85,7 +111,7 @@ ggsave("g3_kobe4_F.png",g3_kobe4_F,width=6,height=3,dpi=600)
 g3_kobe4_UF <- grid.arrange(g3_kobe4_U,g3_kobe4_F,ncol=2)
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-9.png)<!-- -->
 
 ``` r
 ggsave("g3_kobe4_UF.png",g3_kobe4_UF,width=6,height=3,dpi=600)
@@ -114,10 +140,10 @@ ggsave("g3_kobe4_UF.png",g3_kobe4_UF,width=6,height=3,dpi=600)
                    font.size=14)) # フォントサイズ
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-10.png)<!-- -->
 
 ``` r
-ggsave("g5_future.png",g5_future,width=7,height=11,dpi=600)
+ggsave("g5_future.png",g5_future,width=8,height=10,dpi=600)
 
 ## HCRの図
 # こちらはもう必要ない？
@@ -128,7 +154,7 @@ ggsave("g5_future.png",g5_future,width=7,height=11,dpi=600)
          beta=0.8))
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-9.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-11.png)<!-- -->
 
 ``` r
 ggsave("g6_hcr.png",g6_hcr,width=8,height=4,dpi=600)

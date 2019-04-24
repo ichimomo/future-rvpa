@@ -2278,30 +2278,11 @@ plotyield <- function(res00,int.res=NULL,detail.plot=FALSE){
 #    points(fout.tmp$multi,fout.tmp$vssb[100,1],pch=4)
 }
 
-get.SPR <- function(dres,target.SPR=NULL,MSY.base=NULL){
+get.SPR <- function(dres,target.SPR=30){
     # Fの歴史的な%SPRを見てみる                                                                             
     # 毎年異なるFや生物パラメータに対して、YPR,SPR、SPR0がどのくらい変わっているのか見る(Rコード例2)
-    # target.SPRが与えられると、target.SPR（％）として与えた数字に対応するSPR値に対するFの乗数も出力する
-    # NULLの場合にはMSY.baseを与えて、MSYの時の%SPRを別途計算する
-    #   F=Ftarget.SPR/Fmsy
-    #
+    # target.SPRが与えられると、target.SPR（％）として与えた数字に対応するSPR値に対するFの乗数も出力する(与えない場合は30%とする)
 
-    if(is.null(target.SPR)){
-        MSY.base$input.list$msy$outtype <- "FULL"
-        fout.msy <- do.call(future.vpa,MSY.base$input.list$msy)
-        waa.msy <- fout.msy$waa[,dim(fout.msy$waa)[[2]],1]
-        maa.msy <- fout.msy$maa[,dim(fout.msy$maa)[[2]],1]
-        M.msy <- fout.msy$maa[,dim(fout.msy$M)[[2]],1]
-        F.msy <- MSY.base$input$msy$multi*MSY.base$input$msy$res0$Fc.at.age
-        
-#        if(is.null(byear.current)) byear.current <- rev(colnames(dres$naa))[1]
-        spr.msy <- ref.F(dres,sel=F.msy,waa=waa.msy,maa=maa.msy,M=M.msy,rps.year=as.numeric(colnames(dres$naa)),
-                         F.range=c(seq(from=0,to=ceiling(max(dres$Fc.at.age,na.rm=T)*2),
-                                       length=101),max(dres$Fc.at.age,na.rm=T)),plot=FALSE)$ypr.spr
-        target.SPR <- spr.msy[spr.msy$Frange2Fcurrent==1,]$spr[1]
-
-    }
-    
     dres$ysdata <- matrix(0,ncol(dres$faa),5)
     dimnames(dres$ysdata) <- list(colnames(dres$faa),c("perSPR","YPR","SPR","SPR0","F/Ftarget"))
     for(i in 1:ncol(dres$faa)){
