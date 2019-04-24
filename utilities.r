@@ -818,7 +818,7 @@ plot_HCR <- function(SBtarget,SBlim,SBban,Ftarget,
 
 # MSYを達成するときの%SPRを計算する
 calc_MSY_spr <- function(MSYres){
-    dres <- MSY.base$input$msy$res0
+    dres <- MSYres$input$msy$res0
     # MSYにおける将来予測計算をやりなおし
     MSYres$input.list$msy$outtype <- "FULL"
     fout.msy <- do.call(future.vpa,MSYres$input.list$msy)
