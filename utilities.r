@@ -275,8 +275,10 @@ plot_yield <- function(MSY_obj,refs_base,
     }
         
     if(isTRUE(lining)){
+        ylim.scale.factor <- rep(c(0.97,0.94),ceiling(length(refs.label)/2))[1:length(refs.label)]
         g1 <- g1 + geom_vline(xintercept=refs_base$SSB,color=refs.color,lty="41",lwd=1)+
-            geom_text(data=refs_base,aes(y=ymax*ylim.scale*0.95,x=SSB,label=refs.label),hjust=0)
+            geom_text(data=refs_base,aes(y=ymax*ylim.scale*ylim.scale.factor,
+                                         x=SSB,label=refs.label),hjust=0)
     }
 
     return(g1)
@@ -430,8 +432,6 @@ get.stat4 <- function(fout,Brefs,
 }
 
 
-
-
 plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          category=4,# 4区分か、6区分か
                          Btarget=c("Btarget0"),
@@ -439,6 +439,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          Blow=c("Blow0"),
                          Bban=c("Bban0"),write.vline=TRUE,
                          ylab.type="U", # or "U"
+                         labeling.year=NULL,
                          Fratio=NULL, # ylab.type=="F"のとき
                          refs.color=c("#00533E","#edb918","#C73C2E"),
                          beta=NULL){
@@ -477,6 +478,14 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                Bratio=roll_mean(SSB/target.RP$SSB,n=roll_mean,fill=NA,align="right")) %>%
         arrange(year)
     if(ylab.type=="F") UBdata <- UBdata %>% mutate(Uratio=Fratio)
+    
+    if(is.null(labeling.year)){
+        years <- unique(UBdata$year)
+        labeling.year <- c(years[years%%5==0],max(years))
+    }
+
+    UBdata <- UBdata %>%
+        mutate(year.label=ifelse(year%in%labeling.year,year,""))
 
     max.B <- max(c(UBdata$Bratio,1.2),na.rm=T)
     max.U <- max(c(UBdata$Uratio,1.2),na.rm=T)
@@ -529,18 +538,18 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                               y=rep(0.1,4),
                               label=c("Bban","Blimit","Blow","Btarget")),
                   aes(x=x,y=y,label=label))
-    }else{
+     }else{
+         
         g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
-                              y=rep(0.1,3),
-                              label=c("禁漁水準","限界管理基準値","目標管理基準値")),
+                                         y=max.U*c(1.05,1,1.05),
+                                         label=c("禁漁水準","限界管理基準値","目標管理基準値")),
                              aes(x=x,y=y,label=label))
         g4 <- g4 + geom_vline(xintercept=c(1,limit.ratio,ban.ratio),color=refs.color,lty="41",lwd=1)+
             geom_text(data=tibble(x=c(1,limit.ratio,ban.ratio),
-                                  y=rep(max.U*1.05,3),
+                                  y=max.U*c(1.05,1.1,1.05),
                                   label=c("目標管理基準値","限界管理基準値","禁漁水準")),
                       aes(x=x,y=y,label=label),hjust=0)        
-    }
-    }    
+    }}    
 
     if(!is.null(beta)){
         g6 <- g6+stat_function(fun = h,lwd=1.5,color="gray",n=1000)+
@@ -549,24 +558,24 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
             annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n(beta=",beta,")"))            
     }
 
-
+   
     g6 <- g6 +
         geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
-        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
+        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.15),expand=0) +
         ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
-        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
-                         aes(x=Bratio,y=Uratio,label=year),
-                         size=3,box.padding=2,segment.color="gray")
+        geom_text_repel(#data=dplyr::filter(UBdata,year%in%labeling.year),
+                         aes(x=Bratio,y=Uratio,label=year.label),
+                         size=4,box.padding=1,segment.color="gray")
 
     g4 <- g4 +
         geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
-        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.1),expand=0) +
+        coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.15),expand=0) +
         ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
-        geom_label_repel(data=dplyr::filter(UBdata,year%%10==0|year==max(year)),
-                         aes(x=Bratio,y=Uratio,label=year),
-                         size=3,box.padding=2,segment.color="gray")
+        geom_text_repel(#data=dplyr::filter(UBdata,year%in%labeling.year),
+                         aes(x=Bratio,y=Uratio,label=year.label),
+                         size=4,box.padding=1,segment.color="gray")
 
     if(ylab.type=="F"){
         g6 <- g6 + ylab("漁獲圧の比 (F/Fmsy)")
@@ -659,7 +668,6 @@ plot_futures <- function(vpares,
         mutate(value=max*1.1,
                year=min(future.table$year,na.rm=T)) %>%
         select(-max)
-
 
     future.table.qt <- left_join(future.table.qt,rename_list) %>%
         mutate(jstat=factor(jstat,levels=rename_list$jstat))
