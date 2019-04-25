@@ -113,9 +113,9 @@ SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=
 
     g1 <- ggplot() +
         geom_point(data=dplyr::filter(alldata,type=="obs"),
-                   aes(y=R,x=SSB,color=year)) +
+                   aes(y=R,x=SSB)) +
         geom_path(data=dplyr::filter(alldata,type=="obs"),
-                   aes(y=R,x=SSB),alpha=0.5) +        
+                   aes(y=R,x=SSB),color=gray(0.7)) +        
 #        geom_label_repel(data=dplyr::filter(alldata,type=="obs" & (year%%10==0|year==year.max)),
 #                         aes(y=R,x=SSB,label=year),
     #                         size=3,box.padding=3,segment.color="black") +
@@ -124,7 +124,7 @@ SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=
                     segment.alpha=0.5,nudge_y=5,
                     aes(y=R,x=SSB,label=pick.year)) +                
         geom_line(data=dplyr::filter(alldata,type=="pred"),
-                  aes(y=R,x=SSB)) +
+                  aes(y=R,x=SSB),color="deepskyblue3",lwd=1.3) +
         theme_bw(base_size=14)+
     theme(legend.position = 'none') +
         theme(panel.grid = element_blank()) +
@@ -156,7 +156,7 @@ plot_yield <- function(MSY_obj,refs_base,
                        refs.label=NULL, # label for reference point
                        refs.color=c("#00533E","#edb918","#C73C2E"),
                        AR_select=FALSE,xlim.scale=1.1,
-                       biomass.unit=1,
+                       biomass.unit=1,labeling=TRUE,lining=TRUE,
                        ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
     
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
@@ -224,7 +224,10 @@ plot_yield <- function(MSY_obj,refs_base,
               color="tomato",lwd=1.5,alpha=0.7)
     }
 
-    if(is.null(refs.label)) refs.label <- str_c(refs_base$RP_name,":",refs_base$RP.definition)
+    if(is.null(refs.label)) {
+        refs.label <- str_c(refs_base$RP_name,":",refs_base$RP.definition)
+        refs.color <- 1:length(refs.label)
+    }
     refs_base$refs.label <- refs.label
 
     xmax <- max(trace$ssb.mean,na.rm=T)
@@ -246,8 +249,6 @@ plot_yield <- function(MSY_obj,refs_base,
     theme(panel.grid = element_blank()) +
     coord_cartesian(xlim=c(0,xmax*xlim.scale),
                     ylim=c(0,ymax*ylim.scale),expand=0) +
-    geom_text(data=refs_base,
-              aes(y=ymax*ylim.scale*0.95,x=SSB,label=refs.label),hjust=0)+
     geom_text(data=age.label,
               mapping=aes(y=cumcatch,x=ssb.mean,label=str_c(age,"歳")))+
 #    geom_text_repel(data=refs_base,
@@ -258,8 +259,23 @@ plot_yield <- function(MSY_obj,refs_base,
 #    angle        = 0,
 #    vjust        = 0,
 #        segment.size = 1)+
-    geom_vline(xintercept=refs_base$SSB,color=refs.color,lty="41",lwd=1)+
     xlab(str_c("平均親魚量 (",junit,"トン)")) + ylab(str_c("平均漁獲量 (",junit,"トン)"))
+
+    if(isTRUE(labeling)){
+        g1 <- g1 +
+            geom_point(data=refs_base,
+                        aes(y=Catch,x=SSB))+
+            geom_text_repel(data=refs_base,
+                            aes(y=Catch,x=SSB,label=refs.label),
+#                            size=4,box.padding=0.5,segment.color=1,
+                            hjust=0,#nudge_y      = ymax*ylim.scale-refs_base$Catch/2,
+                            direction="x",angle=0,vjust        = 0,segment.size = 1)
+    }
+        
+    if(isTRUE(lining)){
+        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,color=refs.color,lty="41",lwd=1)+
+            geom_text(data=refs_base,aes(y=ymax*ylim.scale*0.95,x=SSB,label=refs.label),hjust=0)
+    }
 
     return(g1)
         
