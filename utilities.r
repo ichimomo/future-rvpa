@@ -112,6 +112,8 @@ SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=
 
 
     g1 <- ggplot() +
+        geom_line(data=dplyr::filter(alldata,type=="pred"),
+                  aes(y=R,x=SSB),color="deepskyblue3",lwd=1.3) +
         geom_point(data=dplyr::filter(alldata,type=="obs"),
                    aes(y=R,x=SSB)) +
         geom_path(data=dplyr::filter(alldata,type=="obs"),
@@ -123,8 +125,6 @@ SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=
     geom_text_repel(data=dplyr::filter(alldata,type=="obs"),
                     segment.alpha=0.5,nudge_y=5,
                     aes(y=R,x=SSB,label=pick.year)) +                
-        geom_line(data=dplyr::filter(alldata,type=="pred"),
-                  aes(y=R,x=SSB),color="deepskyblue3",lwd=1.3) +
         theme_bw(base_size=14)+
     theme(legend.position = 'none') +
         theme(panel.grid = element_blank()) +
