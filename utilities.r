@@ -200,11 +200,10 @@ plot_yield <- function(MSY_obj,refs_base,
             geom_path(data=tmpdata,
                       mapping=aes(x=ssb.future,y=catch.future,
                                   linetype=factor(scenario)),
-                      lwd=1.5,col="green",alpha=0.7)+            
+                      lwd=1.5,col="chartreuse3")+
             geom_point(data=tmpdata,
-                       mapping=aes(x=ssb.future/biomass.unit,y=catch.future/biomass.unit,
-                                   shape=factor(scenario)),alpha=0.7,color="darkgreen",
-                       size=3)
+                       mapping=aes(x=ssb.future,y=catch.future,
+                                   shape=factor(scenario)),color="chartreuse4",size=4)
 
 
     }
@@ -233,7 +232,10 @@ plot_yield <- function(MSY_obj,refs_base,
     xmax <- max(trace$ssb.mean,na.rm=T)
     age.label.position <- trace$ssb.mean[which.min((trace$ssb.mean-xmax*xlim.scale*0.9)^2)]
     age.label <- trace %>% dplyr::filter(round(age.label.position,1)==round(ssb.mean,1))%>%
-        mutate(cumcatch=cumsum(value)-value/2)
+        mutate(cumcatch=cumsum(value)-value/2)%>%
+        mutate(age=as.numeric(as.character(age)))
+    age.label <- age.label %>%
+        mutate(age_name=str_c(age,ifelse(age.label$age==max(age.label$age),"+",""),"歳"))
    
     g1 <- g1 + geom_area(aes(x=ssb.mean,y=value,fill=年齢),col="black",alpha=0.5) +
 #    geom_line(aes(x=ssb.mean,y=catch.CV,fill=age)) +
@@ -250,7 +252,7 @@ plot_yield <- function(MSY_obj,refs_base,
     coord_cartesian(xlim=c(0,xmax*xlim.scale),
                     ylim=c(0,ymax*ylim.scale),expand=0) +
     geom_text(data=age.label,
-              mapping=aes(y=cumcatch,x=ssb.mean,label=str_c(age,"歳")))+
+              mapping=aes(y=cumcatch,x=ssb.mean,label=age_name))+
 #    geom_text_repel(data=refs_base,
 #                     aes(y=Catch,x=SSB,label=refs.label),
 #                     size=4,box.padding=0.5,segment.color="gray",
