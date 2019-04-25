@@ -592,7 +592,7 @@ plot_futures <- function(vpares,
                          CI_range=c(0.1,0.9),
                          maxyear=NULL,font.size=18,
                          ncol=3,
-                         what.plot=c("Recruitment","SSB","biomass","catch","Fsakugen"),
+                         what.plot=c("Recruitment","SSB","biomass","catch","Fsakugen","alpha"),
                          biomass.unit=1,RP_name=c("Btarget","Blimit","Bban"),
                          Btarget=0,Blimit=0,Bban=0,#Blow=0,
                          n_example=3, # number of examples
@@ -601,12 +601,13 @@ plot_futures <- function(vpares,
 
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
     require(tidyverse,quietly=TRUE)
-    rename_list <- tibble(stat=c("Recruitment","SSB","biomass","catch","Fsakugen"),
+    rename_list <- tibble(stat=c("Recruitment","SSB","biomass","catch","Fsakugen","alpha"),
                           jstat=c(str_c("加入尾数"),
                               str_c("親魚量 (",junit,"トン)"),
                               str_c("資源量 (",junit,"トン)"),
                               str_c("漁獲量 (",junit,"トン)"),
-                              "努力量の削減率"))
+                              "努力量の削減率",
+                              "Fcurrentに対する乗数"))
 
     rename_list <- rename_list %>% dplyr::filter(stat%in%what.plot)
     
@@ -624,7 +625,6 @@ plot_futures <- function(vpares,
         future_tibble %>%
         dplyr::filter(stat%in%rename_list$stat) %>%
         mutate(stat=factor(stat,levels=rename_list$stat))
-
 
     set.seed(seed)
     future.example <- future.table %>%
@@ -650,7 +650,8 @@ plot_futures <- function(vpares,
     options(warn=-1)
     future.table <- bind_rows(future.table,vpa_tb,future.dummy) %>%
         mutate(stat=factor(stat,levels=rename_list$stat)) %>%
-        mutate(value=ifelse(stat=="Fsakugen",value,value/biomass.unit))
+        mutate(scenario=factor(scenario,levels=c("VPA",future.name))) %>%
+        mutate(value=ifelse(stat%in%c("Fsakugen","alpha"),value,value/biomass.unit))
 
     future.table.qt <- future.table %>% group_by(scenario,year,stat) %>%
         summarise(low=quantile(value,CI_range[1],na.rm=T),
@@ -699,7 +700,10 @@ plot_futures <- function(vpares,
 
     if(n_example>0){
         g1 <- g1 + geom_line(data=future.example,
-                       mapping=aes(x=year,y=value,alpha=factor(sim),color=scenario)) + scale_alpha_discrete(guide=FALSE)
+                             mapping=aes(x=year,y=value,
+                                         alpha=factor(sim),
+                                         color=scenario)) +
+            scale_alpha_discrete(guide=FALSE)
             
     }
     return(g1)
