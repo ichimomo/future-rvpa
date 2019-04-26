@@ -74,6 +74,7 @@ convert_vpa_tibble <- function(vpares){
                            convert_df(vpares$input$dat$caa,"catch_number"))
 }
 
+#' export
 SRplot_gg <- function(SR_result,refs=NULL){
     require(tidyverse,quietly=TRUE)    
     require(ggrepel)
@@ -117,6 +118,7 @@ get.trace <- function(trace){
     return(trace)
 }
     
+#' export
 plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
     
     if("trace" %in% names(MSY_obj)) trace.msy <- MSY_obj$trace
@@ -191,6 +193,7 @@ plot_yield <- function(MSY_obj,refs_base,AR_select=FALSE,xlim.scale=1.1,ylim.sca
         
 }
 
+#' export
 make_RP_table <- function(refs_base){
     require(formattable)
     require(tidyverse,quietly=TRUE)
@@ -217,6 +220,7 @@ make_RP_table <- function(refs_base){
     
 }
 
+#' export
 derive_RP_value <- function(refs_base,RP_name){
 #    refs_base %>% dplyr::filter(RP.definition%in%RP_name)
 #    subset(refs_base,RP.definition%in%RP_name)
@@ -224,6 +228,7 @@ derive_RP_value <- function(refs_base,RP_name){
 }
 
 
+#' export
 calc_kobeII_matrix <- function(fres_base,
                               refs_base,
                               Btarget=c("Btarget0"),
@@ -339,6 +344,7 @@ get.stat4 <- function(fout,Brefs,
 
 
 
+#' export
 plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          category=4,# 4区分か、6区分か
                          Btarget=c("Btarget0"),
@@ -451,6 +457,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     if(category==4) return(g4) else return(g6)
 }
 
+#' export
 plot_futures <- function(vpares,
                          future.list,
                          future.name=names(future.list),
@@ -556,6 +563,7 @@ plot_futures <- function(vpares,
     return(g1)
 }
 
+#' export
 plot_Fcurrent <- function(vpares,
                           year.range=NULL){
 
