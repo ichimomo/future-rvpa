@@ -1,5 +1,6 @@
 #---------------- 管理基準値計算のための関数 ------------------------
 # ref.F
+#' export
 ref.F <- function(
   res, # VPAの結果のオブジェクト
   sel=NULL, # 仮定する選択率．NULLの場合，res$Fc.at.ageが使われる
@@ -228,6 +229,7 @@ ref.F <- function(
   return(Res)
 }
 
+#' export
 plot.Fref <- function(rres,xlabel="max", # or, "mean","Fref/Fcur"
                       vline.text=c("F0.1","Fmax","Fcurrent","Fmed") # and "FpSPR.20.SPR" etc..
                       ){
@@ -1103,6 +1105,7 @@ RI.recAR2 <- function(ssb,vpares,deterministic=FALSE,rec.resample=NULL,
 
 
 
+#' export
 plot.futures <- function(fres.list,conf=c(0.1,0.5,0.9),target="SSB",legend.text="",xlim.tmp=NULL,y.scale=1){
     if(target=="SSB")  aa <- lapply(fres.list,function(x) apply(x$vssb[,-1],1,quantile,probs=conf))
     if(target=="Biomass") aa <- lapply(fres.list,function(x) apply(x$vbiom[,-1],1,quantile,probs=conf))
@@ -1117,6 +1120,7 @@ plot.futures <- function(fres.list,conf=c(0.1,0.5,0.9),target="SSB",legend.text=
     invisible(aa)
 }
 
+#' export
 plot.future <- function(fres0,ylim.tmp=NULL,xlim.tmp=NULL,vpares=NULL,what=c(TRUE,TRUE,TRUE),conf=0.1,N.line=0,
                         label=c("Biomass","SSB","Catch"),is.legend=TRUE,add=FALSE,col=NULL,...){
     ## 暗黙に、vssbなどのmatrixの1列目は決定論的なランの結果と仮定している 
@@ -1926,6 +1930,7 @@ geomean <- function(x)
 }
 
 
+#' export
 plot.SR <- function(srres,what.plot=c("hs","bh","ri","sl"),xyscale=c(1.3,1.3),xscale=FALSE,is.legend=TRUE,what.sigma=1,FUN="mean",is.MSYline=TRUE,
                     pick="SSB_MSY"){
 
@@ -2297,6 +2302,7 @@ get.SPR <- function(dres,target.SPR=NULL,byear.current=NULL){
 
 
 
+#' export
 get.SRdata <- function(vpares,R.dat=NULL,SSB.dat=NULL,years=as.numeric(colnames(vpares$naa))){
     # R.datとSSB.datだけが与えられた場合、それを使ってシンプルにフィットする
     if(!is.null(R.dat) & !is.null(SSB.dat)){
@@ -2325,10 +2331,12 @@ get.SRdata <- function(vpares,R.dat=NULL,SSB.dat=NULL,years=as.numeric(colnames(
     return(dat[c("year","SSB","R")])
 }
 
+#' export
 plot.SRdata <- function(SRdata){
     plot(SRdata$SSB,SRdata$R,xlab="SSB",ylab="R",xlim=c(0,max(SRdata$SSB)),ylim=c(0,max(SRdata$R)))
 }
 
+#' export
 est.MSY <- function(vpares,farg,
                    seed=1,
                    nyear=NULL,
@@ -3103,6 +3111,7 @@ plot.kobemat2 <- function(yy,...){
 ## L1ノルム（最小絶対値）も推定できる (sigmaはSD)
 ## TMB = TRUEでmarginal likelihood (.cppファイルが必要)
 
+#' export
 fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep(1,length(SRdata$year)),length=20){
   
   argname <- ls()
@@ -3423,6 +3432,7 @@ fit.SR2 <- function(SRdata,
 
 
 
+#' export
 plot.kobe <- function(vpares,Bmsy,Umsy,Blim=NULL,Bban=NULL,plot.history=FALSE,is.plot=FALSE,pickU="",pickB="",
                       ylab.tmp=ifelse(yaxis=="U","U/Umsy","F/Fmsy"),
                       xlab.tmp="SSB/SSBmsy",title.tmp="",HCR=NULL,
@@ -3782,13 +3792,13 @@ waa <- vpares$input$dat$waa
 waa <- rowMeans(waa[,colnames(waa) %in% waa.year])
 maa <- vpares$input$dat$maa
 maa <- rowMeans(maa[,colnames(maa) %in% maa.year])
-M <- vpares$input$dat$M
+ <- vpares$input$dat$M
 A <- nrow(M)
-M <- rowMeans(M[,colnames(M) %in% M.year])
+ <- rowMeans(M[,colnames(M) %in% M.year])
 
 waa <- array(waa,dim=c(A,nyear+1,N))
 maa <- array(maa,dim=c(A,nyear+1,N))
-M <- array(M,dim=c(A,nyear+1,N))
+ <- array(M,dim=c(A,nyear+1,N))
 
 naa <- baa <- ssb <- faa <- caa <- wcaa <- array(NA,dim=c(A,nyear+1,N))
 
@@ -4633,6 +4643,7 @@ dyn.msy <- function(naa.past,naa.init=NULL,fmsy,a,b,resid,resid.year,waa,maa,M,S
 }
 
 
+#' export
 plot.HCR <- function(beta=1,bban=0,blimit=1,btarget=2,add=FALSE,yscale=1.3,xlim=NULL,
                      Fmsy=1,scale=1,
                      ssb.cur=NULL,...) {

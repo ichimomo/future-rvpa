@@ -27,6 +27,7 @@
 # rvpa1.9.2 - 各indexに対する分散に制約をかけられるように修正。例えばindexが５本ある場合、sigma.constraint=c(1,2,2,3,3)とすると2,3本めと4,5本目のindexに対する分散は等しいとして推定する。180522中山
 ##
 
+#' export
 data.handler <- function(
   caa,
   waa,
