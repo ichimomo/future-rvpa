@@ -1,5 +1,6 @@
 ## ---- echo=FALSE---------------------------------------------------------
 library(rmdformats)
+library(knitr)
 ## Global options
 options(max.print="75")
 opts_chunk$set(echo=TRUE,
@@ -18,6 +19,7 @@ par(mar=c(4,4,3,1))
 # 関数の読み込み →  warningまたは「警告」が出るかもしれませんが，その後動いていれば問題ありません
 source("../../rvpa1.9.2.r")
 source("../../future2.1.r")
+source("../../utilities.r",encoding="UTF-8") # ggplotを使ったグラフ作成用の関数
 
 # データの読み込み
 caa <- read.csv("caa_pma.csv",row.names=1)
