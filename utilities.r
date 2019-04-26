@@ -5,6 +5,7 @@ col.SBban <- "#C73C2E"
 col.Ftarget <- "#714C99"
 col.betaFtarget <- "#505596"
 
+pt1 <- 0.3528
 
 
 convert_df <- function(df,name){
@@ -94,7 +95,7 @@ convert_vpa_tibble <- function(vpares){
 }
 
 SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=1,ylabel="尾",
-                      labeling.year=NULL){
+                      labeling.year=NULL,add.info=TRUE){
     require(tidyverse,quietly=TRUE)    
     require(ggrepel)
     
@@ -114,10 +115,11 @@ SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=
     g1 <- ggplot() +
         geom_line(data=dplyr::filter(alldata,type=="pred"),
                   aes(y=R,x=SSB),color="deepskyblue3",lwd=1.3) +
-        geom_point(data=dplyr::filter(alldata,type=="obs"),
-                   aes(y=R,x=SSB)) +
         geom_path(data=dplyr::filter(alldata,type=="obs"),
-                   aes(y=R,x=SSB),color=gray(0.7)) +        
+                  aes(y=R,x=SSB),color=1) +
+        geom_point(data=dplyr::filter(alldata,type=="obs"),
+                   aes(y=R,x=SSB),shape=21,fill="white") +
+#        scale_shape_discrete(solid=T)+        
 #        geom_label_repel(data=dplyr::filter(alldata,type=="obs" & (year%%10==0|year==year.max)),
 #                         aes(y=R,x=SSB,label=year),
     #                         size=3,box.padding=3,segment.color="black") +
@@ -127,12 +129,15 @@ SRplot_gg <- function(SR_result,refs=NULL,xscale=1000,xlabel="千トン",yscale=
                     aes(y=R,x=SSB,label=pick.year)) +                
         theme_bw(base_size=14)+
     theme(legend.position = 'none') +
-        theme(panel.grid = element_blank()) +
+    theme(panel.grid = element_blank()) +
         xlab(str_c("親魚資源量 (",xlabel,")"))+
         ylab(str_c("加入尾数 (",ylabel,")"))+        
-        coord_cartesian(ylim=c(0,ymax*1.05),expand=0) +
-        labs(caption=str_c("関数形: ",SR_result$input$SR,", 自己相関: ",SR_result$input$AR,
+    coord_cartesian(ylim=c(0,ymax*1.05),expand=0)
+
+    if(add.info){
+        g1 <- g1+labs(caption=str_c("関数形: ",SR_result$input$SR,", 自己相関: ",SR_result$input$AR,
                            ", 最適化法",SR_result$input$method,", AICc: ",round(SR_result$AICc,2)))
+    }
 
     if(!is.null(refs)){
         g1 <- g1+geom_vline(xintercept=c(refs$Bmsy,refs$Blim,refs$Bban),linetype=2)
@@ -185,44 +190,6 @@ plot_yield <- function(MSY_obj,refs_base,
 
     if(is.null(future.name)) future.name <- 1:length(future)
     
-    if(!is.null(future)){
-        tmpdata <- NULL
-        for(j in 1:length(future)){
-            tmpdata <- bind_rows(tmpdata,
-                tibble(
-                year        =as.numeric(rownames(future[[j]]$vssb)),
-                ssb.future  =apply(future[[j]]$vssb[,-1],1,mean)/biomass.unit,
-                catch.future=apply(future[[j]]$vwcaa[,-1],1,mean)/biomass.unit,
-                scenario=future.name[j]))
-            }
-        tmpdata <- tmpdata %>% group_by(scenario)
-        g1 <- g1 +
-            geom_path(data=tmpdata,
-                      mapping=aes(x=ssb.future,y=catch.future,
-                                  linetype=factor(scenario)),
-                      lwd=1.5,col="chartreuse3")+
-            geom_point(data=tmpdata,
-                       mapping=aes(x=ssb.future,y=catch.future,
-                                   shape=factor(scenario)),color="chartreuse4",size=4)
-
-
-    }
-
-    if(!is.null(past)){
-        tmpdata <- tibble(
-            year      =as.numeric(colnames(past$ssb)),
-            ssb.past  =unlist(colSums(past$ssb))/biomass.unit,
-            catch.past=unlist(colSums(past$input$dat$caa*past$input$dat$waa)/biomass.unit)
-        )
-
-        g1 <- g1 +
-#            geom_point(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past,
-#                                                alpha=year),shape=2) +
-    geom_path(data=tmpdata,
-              mapping=aes(x=ssb.past,y=catch.past),
-              color="tomato",lwd=1.5,alpha=0.7)
-    }
-
     if(is.null(refs.label)) {
         refs.label <- str_c(refs_base$RP_name,":",refs_base$RP.definition)
         refs.color <- 1:length(refs.label)
@@ -237,7 +204,7 @@ plot_yield <- function(MSY_obj,refs_base,
     age.label <- age.label %>%
         mutate(age_name=str_c(age,ifelse(age.label$age==max(age.label$age),"+",""),"歳"))
    
-    g1 <- g1 + geom_area(aes(x=ssb.mean,y=value,fill=年齢),col="black",alpha=0.5) +
+    g1 <- g1 + geom_area(aes(x=ssb.mean,y=value,fill=年齢),col="black",alpha=0.5,lwd=1*0.3528) +
 #    geom_line(aes(x=ssb.mean,y=catch.CV,fill=age)) +
 #    scale_y_continuous(sec.axis = sec_axis(~.*5, name = "CV catch"))+
     scale_fill_brewer() +
@@ -263,22 +230,70 @@ plot_yield <- function(MSY_obj,refs_base,
 #        segment.size = 1)+
     xlab(str_c("平均親魚量 (",junit,"トン)")) + ylab(str_c("平均漁獲量 (",junit,"トン)"))
 
+    if(!is.null(future)){
+        tmpdata <- NULL
+        for(j in 1:length(future)){
+            tmpdata <- bind_rows(tmpdata,
+                tibble(
+                year        =as.numeric(rownames(future[[j]]$vssb)),
+                ssb.future  =apply(future[[j]]$vssb[,-1],1,mean)/biomass.unit,
+                catch.future=apply(future[[j]]$vwcaa[,-1],1,mean)/biomass.unit,
+                scenario=future.name[j]))
+            }
+        tmpdata <- tmpdata %>% group_by(scenario)
+        g1 <- g1 +
+            geom_path(data=tmpdata,
+                      mapping=aes(x=ssb.future,y=catch.future,
+                                  linetype=factor(scenario)),
+                      lwd=1,col=col.SBtarget)+
+            geom_point(data=tmpdata,
+                       mapping=aes(x=ssb.future,y=catch.future,
+                                   shape=factor(scenario)),color=col.SBtarget,size=3)
+
+
+    }
+
+    if(!is.null(past)){
+        tmpdata <- tibble(
+            year      =as.numeric(colnames(past$ssb)),
+            ssb.past  =unlist(colSums(past$ssb))/biomass.unit,
+            catch.past=unlist(colSums(past$input$dat$caa*past$input$dat$waa)/biomass.unit)
+        )
+
+        g1 <- g1 +
+#            geom_point(data=tmpdata,mapping=aes(x=ssb.past,y=catch.past,
+#                                                alpha=year),shape=2) +
+    geom_path(data=tmpdata,
+              mapping=aes(x=ssb.past,y=catch.past),
+              color=col.SBban,lwd=1,alpha=0.9)
+    }
+    
+
     if(isTRUE(labeling)){
         g1 <- g1 +
             geom_point(data=refs_base,
                         aes(y=Catch,x=SSB))+
-            geom_text_repel(data=refs_base,
+            geom_label_repel(data=refs_base,
                             aes(y=Catch,x=SSB,label=refs.label),
 #                            size=4,box.padding=0.5,segment.color=1,
                             hjust=0,#nudge_y      = ymax*ylim.scale-refs_base$Catch/2,
-                            direction="x",angle=0,vjust        = 0,segment.size = 1)
+                            direction="y",angle=0,vjust        = 0,segment.size = 1)
+#             geom_label_repel(data=tibble(x=c(1,limit.ratio,ban.ratio),
+#                                          y=max.U,
+#                                          label=c("目標管理基準値","限界管理基準値","禁漁水準")),
+#                              aes(x=x,y=y,label=label),
+#                              direction="y",angle=0,nudge_y=max.U        
     }
         
     if(isTRUE(lining)){
-        ylim.scale.factor <- rep(c(0.97,0.94),ceiling(length(refs.label)/2))[1:length(refs.label)]
-        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,color=refs.color,lty="41",lwd=1)+
-            geom_text(data=refs_base,aes(y=ymax*ylim.scale*ylim.scale.factor,
-                                         x=SSB,label=refs.label),hjust=0)
+#        ylim.scale.factor <- rep(c(0.94,0.97),ceiling(length(refs.label)/2))[1:length(refs.label)]
+        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,lty="41",lwd=0.6,color=refs.color)+
+#            geom_text(data=refs_base,aes(y=ymax*ylim.scale*ylim.scale.factor,
+    #                                         x=SSB,label=refs.label),hjust=0)
+             geom_label_repel(data=refs_base,
+                              aes(y=ymax*ylim.scale*0.85,
+                                  x=SSB,label=refs.label),
+                              direction="x",size=11*0.282,nudge_y=ymax*ylim.scale*0.9)        
     }
 
     return(g1)
@@ -441,6 +456,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          ylab.type="U", # or "U"
                          labeling.year=NULL,
                          Fratio=NULL, # ylab.type=="F"のとき
+                         yscale=1.2,xscale=1.2,
                          refs.color=c("#00533E","#edb918","#C73C2E"),
                          beta=NULL){
 
@@ -487,8 +503,8 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     UBdata <- UBdata %>%
         mutate(year.label=ifelse(year%in%labeling.year,year,""))
 
-    max.B <- max(c(UBdata$Bratio,1.2),na.rm=T)
-    max.U <- max(c(UBdata$Uratio,1.2),na.rm=T)
+    max.B <- max(c(UBdata$Bratio,xscale),na.rm=T)
+    max.U <- max(c(UBdata$Uratio,yscale),na.rm=T)
 
     g6 <- ggplot(data=UBdata) + theme(legend.position="none")+
         geom_polygon(data=tibble(x=c(-1,low.ratio,low.ratio,-1),
@@ -544,38 +560,43 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                                          y=max.U*c(1.05,1,1.05),
                                          label=c("禁漁水準","限界管理基準値","目標管理基準値")),
                              aes(x=x,y=y,label=label))
-        g4 <- g4 + geom_vline(xintercept=c(1,limit.ratio,ban.ratio),color=refs.color,lty="41",lwd=1)+
-            geom_text(data=tibble(x=c(1,limit.ratio,ban.ratio),
-                                  y=max.U*c(1.05,1.1,1.05),
-                                  label=c("目標管理基準値","限界管理基準値","禁漁水準")),
-                      aes(x=x,y=y,label=label),hjust=0)        
+        g4 <- g4 + geom_vline(xintercept=c(1,limit.ratio,ban.ratio),color=refs.color,lty="41",lwd=0.7)+
+#            geom_text(data=tibble(x=c(1,limit.ratio,ban.ratio),
+#                                  y=max.U*c(1.05,1.1,1.05),
+#                                  label=c("目標管理基準値","限界管理基準値","禁漁水準")),
+    #                      aes(x=x,y=y,label=label),hjust=0)
+             geom_label_repel(data=tibble(x=c(1,limit.ratio,ban.ratio),
+                                          y=max.U*0.85,
+                                          label=c("目標管理基準値","限界管理基準値","禁漁水準")),
+                              aes(x=x,y=y,label=label),
+                              direction="x",nudge_y=max.U*0.9,size=11*0.282)
     }}    
 
     if(!is.null(beta)){
-        g6 <- g6+stat_function(fun = h,lwd=1.5,color="gray",n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n(beta=",beta,")"))            
-        g4 <- g4+stat_function(fun = h,lwd=1.5,color="gray",n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n(beta=",beta,")"))            
+        g6 <- g6+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
+            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則\n(beta=",beta,")"))            
+        g4 <- g4+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
+            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則\n(beta=",beta,")"))
     }
 
    
     g6 <- g6 +
-        geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
+        geom_point(mapping=aes(x=Bratio,y=Uratio),shape=21,fill="white") +        
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.15),expand=0) +
         ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
         geom_text_repel(#data=dplyr::filter(UBdata,year%in%labeling.year),
                          aes(x=Bratio,y=Uratio,label=year.label),
-                         size=4,box.padding=1,segment.color="gray")
+                         size=4,box.padding=0.5,segment.color="gray")
 
     g4 <- g4 +
-        geom_point(mapping=aes(x=Bratio,y=Uratio,color=year),size=2) +
-        geom_path(mapping=aes(x=Bratio,y=Uratio)) +
+        geom_path(mapping=aes(x=Bratio,y=Uratio)) +        
+        geom_point(mapping=aes(x=Bratio,y=Uratio),shape=21,fill="white") +
         coord_cartesian(xlim=c(0,max.B*1.1),ylim=c(0,max.U*1.15),expand=0) +
         ylab("漁獲率の比 (U/Umsy)") + xlab("親魚量の比 (SB/SBmsy)")  +
         geom_text_repel(#data=dplyr::filter(UBdata,year%in%labeling.year),
                          aes(x=Bratio,y=Uratio,label=year.label),
-                         size=4,box.padding=1,segment.color="gray")
+                         size=4,box.padding=0.5,segment.color="gray")
 
     if(ylab.type=="F"){
         g6 <- g6 + ylab("漁獲圧の比 (F/Fmsy)")
@@ -676,7 +697,7 @@ plot_futures <- function(vpares,
 
     dummy <- left_join(dummy,rename_list) %>% dplyr::filter(!is.na(stat))
     dummy2 <- left_join(dummy2,rename_list) %>% dplyr::filter(!is.na(stat))
-    dummy3 <- tibble(jstat=rename_list$jstat[2],
+    dummy3 <- tibble(jstat=rename_list$jstat[1],
                      value=c(Btarget,Blimit,Bban)/biomass.unit,
                      RP_name=RP_name)
     
