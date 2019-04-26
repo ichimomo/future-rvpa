@@ -247,16 +247,6 @@ ssbtarget.table <- kobeII.table %>%
     arrange(HCR_name,desc(beta))%>%
     mutate(stat_name="Pr(SSB>SSBtarget)")
 
-# SSB>SSBlow(=高位水準)となる確率
-ssblow.table <- kobeII.table %>%
-    dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
-    group_by(HCR_name,beta,year) %>%
-    summarise(ssb.over.target=round(100*mean(value>Blow))) %>%
-    spread(key=year,value=ssb.over.target)%>%
-    ungroup() %>%
-    arrange(HCR_name,desc(beta))%>%
-    mutate(stat_name="Pr(SSB>SSBlow)")
-
 # SSB>SSBlimとなる確率
 ssblimit.table <- kobeII.table %>%
     dplyr::filter(year%in%c(2017:2023,2028,2038),stat=="SSB") %>%
@@ -294,7 +284,6 @@ catch.aav.table <- kobeII.table %>%
 ## csvファイルに一括して出力する場合
 all.table <- bind_rows(catch.table,
                        ssbtarget.table,
-                       ssblow.table,
                        ssblimit.table,
                        ssbmin.table)
 write.csv(all.table,file="all.table.csv")
