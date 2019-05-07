@@ -714,7 +714,7 @@ plot_futures <- function(vpares,
         theme_bw(base_size=font.size) +
         coord_cartesian(expand=0)+
         theme(legend.position="top",panel.grid = element_blank())+
-        facet_wrap(~factor(jstat,levels=rename_list$jstat),scales="free",ncol=ncol)+        
+        facet_wrap(~factor(jstat,levels=rename_list$jstat),scales="free_y",ncol=ncol)+        
         xlab("年")+ylab("")+ labs(fill = "",linetype="",color="")+
         geom_hline(data=dummy3,aes(yintercept=value,linetype=RP_name),
                    color=c(col.SBtarget,col.SBlim,col.SBban)) 
