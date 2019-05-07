@@ -162,6 +162,7 @@ plot_yield <- function(MSY_obj,refs_base,
                        refs.color=c("#00533E","#edb918","#C73C2E"),
                        AR_select=FALSE,xlim.scale=1.1,
                        biomass.unit=1,labeling=TRUE,lining=TRUE,
+                       age.label.ratio=0.9, # 年齢のラベルを入れる位置（xの最大値からの割合)
                        ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
     
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
@@ -197,7 +198,7 @@ plot_yield <- function(MSY_obj,refs_base,
     refs_base$refs.label <- refs.label
 
     xmax <- max(trace$ssb.mean,na.rm=T)
-    age.label.position <- trace$ssb.mean[which.min((trace$ssb.mean-xmax*xlim.scale*0.9)^2)]
+    age.label.position <- trace$ssb.mean[which.min((trace$ssb.mean-xmax*xlim.scale*age.label.ratio)^2)]
     age.label <- trace %>% dplyr::filter(round(age.label.position,1)==round(ssb.mean,1))%>%
         mutate(cumcatch=cumsum(value)-value/2)%>%
         mutate(age=as.numeric(as.character(age)))
