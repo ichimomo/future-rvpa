@@ -94,6 +94,29 @@ ggsave("g3_kobe4_UF.png",g3_kobe4_UF,width=6,height=3,dpi=600)
 
 ## 将来予測の図
 # 親魚資源量と漁獲量の時系列の図示
+(g4_future <- plot_futures(res.pma, #vpaの結果
+                   list(future.Fcurrent,future.default), # 将来予測結果
+                   future.name=c("s1","s2"),
+                   CI_range=c(0.1,0.9),
+                   maxyear=2045,
+                   ncol=1, # 図の出力の列数。3行x1列ならncol=1
+                   what.plot=c("biomass","SSB","catch"),
+                   Btarget=derive_RP_value(refs.base,"Btarget0")$SSB,
+                   Blimit=derive_RP_value(refs.base,"Blimit0")$SSB,
+                   Bban=derive_RP_value(refs.base,"Bban0")$SSB,
+                   RP_name=c("目標管理基準値","限界管理基準値","禁漁水準"),
+                   biomass.unit=1000,  # バイオマスの単位(100, 1000, or 10000トン)
+                   n_example=5,seed=2)+ # どのシミュレーションをピックアップするかはseedの値を変えて調整してください
+    theme_SH()+
+    theme(legend.position="top")+
+    scale_color_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2=expression(paste("漁獲管理規則(",beta,"=0.8)") ) ) )+
+    scale_fill_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2=expression(paste("漁獲管理規則(",beta,"=0.8)" ) ) ) )+
+    scale_linetype_discrete(guide=FALSE)
+)
+ggsave_SH_large("g4_future.png",g4_future)
+
+## 将来予測の図
+# 親魚資源量と漁獲量の時系列の図示
 (g5_future <- plot_futures(res.pma, #vpaの結果
                    list(future.Fcurrent,future.default), # 将来予測結果
                    future.name=c("F current",str_c("HCR(beta=",future.default$input$HCR$beta,")")),
