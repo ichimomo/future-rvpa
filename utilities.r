@@ -191,7 +191,8 @@ plot_yield <- function(MSY_obj,refs_base,
     ymax <- max(ymax$catch.mean)
 
 
-    g1 <- trace %>%   ggplot()
+    g1 <- trace %>%
+      ggplot2::ggplot()
 
     if(is.null(future.name)) future.name <- 1:length(future)
     
