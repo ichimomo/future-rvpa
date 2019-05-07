@@ -160,7 +160,9 @@ get.trace <- function(trace){
 plot_yield <- function(MSY_obj,refs_base,
                        refs.label=NULL, # label for reference point
                        refs.color=c("#00533E","#edb918","#C73C2E"),
-                       AR_select=FALSE,xlim.scale=1.1,
+                       AR_select=FALSE,
+                       xmax = NULL,
+                       xlim.scale=1.1,
                        biomass.unit=1,labeling=TRUE,lining=TRUE,
                        age.label.ratio=0.9, # 年齢のラベルを入れる位置（xの最大値からの割合)
                        ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
@@ -197,7 +199,9 @@ plot_yield <- function(MSY_obj,refs_base,
     }
     refs_base$refs.label <- refs.label
 
-    xmax <- max(trace$ssb.mean,na.rm=T)
+    if (is.null(xmax)) {
+      xmax <- max(trace$ssb.mean,na.rm=T)
+    }
     age.label.position <- trace$ssb.mean[which.min((trace$ssb.mean-xmax*xlim.scale*age.label.ratio)^2)]
     age.label <- trace %>% dplyr::filter(round(age.label.position,1)==round(ssb.mean,1))%>%
         mutate(cumcatch=cumsum(value)-value/2)%>%
