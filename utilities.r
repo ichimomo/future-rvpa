@@ -575,11 +575,12 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
 
     if(!is.null(beta)){
         g6 <- g6+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則\n(beta=",beta,")"))            
+            annotate("text",x=max.B*1,y=multi2currF(1.05),
+                     label=str_c("漁獲管理規則\n(beta=",beta,")"))            
         g4 <- g4+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則\n(beta=",beta,")"))
+            annotate("text",x=max.B*1,y=multi2currF(1.05),
+                     label=str_c("漁獲管理規則\n(beta=",beta,")"))
     }
-
    
     g6 <- g6 +
         geom_path(mapping=aes(x=Bratio,y=Uratio)) +
@@ -698,7 +699,7 @@ plot_futures <- function(vpares,
 
     dummy <- left_join(dummy,rename_list) %>% dplyr::filter(!is.na(stat))
     dummy2 <- left_join(dummy2,rename_list) %>% dplyr::filter(!is.na(stat))
-    dummy3 <- tibble(jstat=rename_list$jstat[1],
+    dummy3 <- tibble(jstat=str_c("親魚量 (",junit,"トン)"),
                      value=c(Btarget,Blimit,Bban)/biomass.unit,
                      RP_name=RP_name)
     
