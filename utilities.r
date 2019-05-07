@@ -651,10 +651,11 @@ plot_futures <- function(vpares,
 
     set.seed(seed)
     future.example <- future.table %>%
-        dplyr::filter(sim%in%sample(2:max(future.table$sim),n_example)) %>%
-        mutate(value=ifelse(stat=="Fsakugen",value,value/biomass.unit)) %>%
-        left_join(rename_list) %>%
-        group_by(sim,scenario)
+      dplyr::filter(sim%in%sample(2:max(future.table$sim),n_example)) %>%
+      mutate(stat = as.character(stat),
+             value=ifelse(stat=="Fsakugen",value,value/biomass.unit)) %>%
+      left_join(rename_list) %>%
+      group_by(sim,scenario)
         
 
     if(is.null(maxyear)) maxyear <- max(future.table$year)
@@ -697,8 +698,8 @@ plot_futures <- function(vpares,
         mutate(jstat=factor(jstat,levels=rename_list$jstat))
 
 
-    dummy <- left_join(dummy,rename_list) %>% dplyr::filter(!is.na(stat))
-    dummy2 <- left_join(dummy2,rename_list) %>% dplyr::filter(!is.na(stat))
+    dummy     <- left_join(dummy,rename_list) %>% dplyr::filter(!is.na(stat))
+    dummy2    <- left_join(dummy2,rename_list) %>% dplyr::filter(!is.na(stat))
     ssb_table <- tibble(jstat = dplyr::filter(rename_list, stat == "SSB") %>%
                           dplyr::pull(jstat),
                         value = c(Btarget, Blimit, Bban) / biomass.unit,
