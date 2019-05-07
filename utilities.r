@@ -215,7 +215,7 @@ plot_yield <- function(MSY_obj,refs_base,
     scale_shape_manual(values = c(21, 24,5,10)) +
     #塗りつぶし色を指定する
     scale_color_manual(values = c("green", "pink","orange","yellow"))+
-    theme(panel.grid = element_blank()) +
+    theme(panel.grid = element_blank(),axis.text=element_text(color="black")) +
     coord_cartesian(xlim=c(0,xmax*xlim.scale),
                     ylim=c(0,ymax*ylim.scale),expand=0) +
     geom_text(data=age.label,
@@ -655,7 +655,7 @@ plot_futures <- function(vpares,
         group_by(sim,scenario)
         
 
-    if(is.null(maxyear)) maxyear <- min(future.table$year)+32
+    if(is.null(maxyear)) maxyear <- max(future.table$year)
 
     min.age <- as.numeric(rownames(vpares$naa)[1])
     vpa_tb <- convert_vpa_tibble(vpares) %>%

@@ -1,6 +1,6 @@
 会議用資料
 ================
-2019-04-26
+2019-05-07
 
 # SH会議用の出力
 
@@ -62,7 +62,7 @@ refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bb
                               biomass.unit=1000,#資源量の単位
                               AR=FALSE,
                               xlim.scale=0.4,ylim.scale=1.3 # x, y軸の最大値の何倍までプロットするか。ラベルやyield curveの形を見ながら適宜調整してください
-                              ))+ theme_SH()
+                              ) + theme_SH())
 ```
 
 ![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
@@ -104,12 +104,6 @@ abline(h=SPR.msy,lty=2)
 ``` r
 ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
 
-
-# write.vline=FALSEで、縦の管理基準値の線を書かないようにもできます（水産庁からの要望？）
-#(g3_kobe4 <- plot_kobe_gg(res.pma,refs.base,roll_mean=3,category=4,
-#                          Blow="Btarget0",Btarget="Btarget0",write.vline=FALSE))
-#ggsave("g3_kobe4-2.png",g3_kobe4,width=6,height=3,dpi=600)
-
 ## 将来予測の図
 # 親魚資源量と漁獲量の時系列の図示
 (g4_future <- plot_futures(res.pma, #vpaの結果
@@ -121,7 +115,6 @@ ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
                    what.plot=c("biomass","SSB","catch"),
                    Btarget=derive_RP_value(refs.base,"Btarget0")$SSB,
                    Blimit=derive_RP_value(refs.base,"Blimit0")$SSB,
-#                   Blow=derive_RP_value(refs.base,"Blow0")$SSB, blowのオプションは削除
                    Bban=derive_RP_value(refs.base,"Bban0")$SSB,
                    RP_name=c("目標管理基準値","限界管理基準値","禁漁水準"),
                    biomass.unit=1000,  # バイオマスの単位(100, 1000, or 10000トン)
