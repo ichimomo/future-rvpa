@@ -490,7 +490,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     max.B <- max(c(UBdata$Bratio,1.2),na.rm=T)
     max.U <- max(c(UBdata$Uratio,1.2),na.rm=T)
 
-    g6 <- ggplot(data=UBdata) + theme(legend.position="none")+
+    g6 <- ggplot(data=UBdata) + theme(legend.position="none") +
         geom_polygon(data=tibble(x=c(-1,low.ratio,low.ratio,-1),
                                  y=c(-1,-1,1,1)),
                      aes(x=x,y=y),fill="khaki1")+
@@ -511,7 +511,8 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                                  y=c(-1,-1,1,1)),aes(x=x,y=y),fill="khaki1")+
         geom_vline(xintercept=c(1,ban.ratio),linetype=2)   
 
-    g4 <- ggplot(data=UBdata) +theme(legend.position="none")+
+    g4 <- ggplot(data=UBdata) +theme(legend.position="none") + 
+
         geom_polygon(data=tibble(x=c(-1,low.ratio,low.ratio,-1),
                                  y=c(-1,-1,1,1)),
                      aes(x=x,y=y),fill="khaki1")+
@@ -553,9 +554,9 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
 
     if(!is.null(beta)){
         g6 <- g6+stat_function(fun = h,lwd=1.5,color="gray",n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n(beta=",beta,")"))            
+            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n (β=",beta,")"))            
         g4 <- g4+stat_function(fun = h,lwd=1.5,color="gray",n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n(beta=",beta,")"))            
+            annotate("text",x=max.B*1,y=multi2currF(1.05),label=str_c("漁獲管理規則 \n (β=",beta,")"))            
     }
 
    
