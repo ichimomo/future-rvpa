@@ -269,6 +269,10 @@ plot_yield <- function(MSY_obj,refs_base,
               color=col.SBban,lwd=1,alpha=0.9)
     }
     
+    if(isTRUE(lining)){
+#        ylim.scale.factor <- rep(c(0.94,0.97),ceiling(length(refs.label)/2))[1:length(refs.label)]
+        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,lty="41",lwd=0.6,color=refs.color)
+    }
 
     if(isTRUE(labeling)){
         g1 <- g1 +
@@ -286,16 +290,6 @@ plot_yield <- function(MSY_obj,refs_base,
 #                              direction="y",angle=0,nudge_y=max.U        
     }
         
-    if(isTRUE(lining)){
-#        ylim.scale.factor <- rep(c(0.94,0.97),ceiling(length(refs.label)/2))[1:length(refs.label)]
-        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,lty="41",lwd=0.6,color=refs.color)+
-#            geom_text(data=refs_base,aes(y=ymax*ylim.scale*ylim.scale.factor,
-    #                                         x=SSB,label=refs.label),hjust=0)
-             geom_label_repel(data=refs_base,
-                              aes(y=ymax*ylim.scale*0.85,
-                                  x=SSB,label=refs.label),
-                              direction="x",size=11*0.282,nudge_y=ymax*ylim.scale*0.9)        
-    }
 
     return(g1)
         
