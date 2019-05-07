@@ -163,6 +163,7 @@ plot_yield <- function(MSY_obj,refs_base,
                        AR_select=FALSE,xlim.scale=1.1,
                        biomass.unit=1,labeling=TRUE,lining=TRUE,
                        age.label.ratio=0.9, # 年齢のラベルを入れる位置（xの最大値からの割合)
+                       family = "JP1",
                        ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
     
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
@@ -220,7 +221,8 @@ plot_yield <- function(MSY_obj,refs_base,
     coord_cartesian(xlim=c(0,xmax*xlim.scale),
                     ylim=c(0,ymax*ylim.scale),expand=0) +
     geom_text(data=age.label,
-              mapping=aes(y=cumcatch,x=ssb.mean,label=age_name))+
+              mapping = aes(y = cumcatch, x = ssb.mean, label = age_name),
+              family = family) +
 #    geom_text_repel(data=refs_base,
 #                     aes(y=Catch,x=SSB,label=refs.label),
 #                     size=4,box.padding=0.5,segment.color="gray",
