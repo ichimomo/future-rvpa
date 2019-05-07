@@ -170,8 +170,11 @@ plot_yield <- function(MSY_obj,refs_base,
     
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
    
-    if("trace" %in% names(MSY_obj)) trace.msy <- MSY_obj$trace
-    else trace.msy <- MSY_obj
+    if ("trace" %in% names(MSY_obj)) {
+      trace.msy <- MSY_obj$trace
+    } else {
+      trace.msy <- MSY_obj
+    }
         
     require(tidyverse,quietly=TRUE)
     require(ggrepel)    
