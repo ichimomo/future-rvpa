@@ -82,6 +82,7 @@ ggsave_SH("g2_yield_curve.png",g2_yield_curve)
 ``` r
 # SPR.msyを目標としたとき、それぞれのF at age by yearを何倍すればSPR.msyを達成できるか計算
 SPR.history <- get.SPR(res.pma,target.SPR=round(SPR.msy),max.age=Inf,Fmax=10)$ysdata
+Fratio <- SPR.history$"F/Ftarget"
 
 # SPRの時系列と目標SPR
 plot(SPR.history$perSPR,ylim=c(0,max(c(SPR.history$perSPR,SPR.msy))),type="b")
