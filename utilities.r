@@ -456,6 +456,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          Bban=c("Bban0"),write.vline=TRUE,
                          ylab.type="U", # or "U"
                          labeling.year=NULL,
+                         family = "JP1",
                          Fratio=NULL, # ylab.type=="F"のとき
                          yscale=1.2,xscale=1.2,
                          refs.color=c("#00533E","#edb918","#C73C2E"),
@@ -549,18 +550,21 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
         g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
                               y=rep(0.1,4),
                               label=c("Bban","Blimit","Blow","Btarget")),
-                             aes(x=x,y=y,label=label))
+                             aes(x=x,y=y,label=label),
+                             family = family)
         g4 <- g4 + geom_vline(xintercept=c(ban.ratio,limit.ratio,low.ratio,1),linetype=2)+
         geom_text(data=tibble(x=c(ban.ratio,limit.ratio,low.ratio,1),
                               y=rep(0.1,4),
                               label=c("Bban","Blimit","Blow","Btarget")),
+                  family = family,
                   aes(x=x,y=y,label=label))
      }else{
          
         g6 <- g6 + geom_text(data=tibble(x=c(ban.ratio,limit.ratio,1),
                                          y=max.U*c(1.05,1,1.05),
                                          label=c("禁漁水準","限界管理基準値","目標管理基準値")),
-                             aes(x=x,y=y,label=label))
+                             aes(x=x,y=y,label=label),
+                             family = family)
         g4 <- g4 + geom_vline(xintercept=c(1,limit.ratio,ban.ratio),color=refs.color,lty="41",lwd=0.7)+
 #            geom_text(data=tibble(x=c(1,limit.ratio,ban.ratio),
 #                                  y=max.U*c(1.05,1.1,1.05),
@@ -570,16 +574,19 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                                           y=max.U*0.85,
                                           label=c("目標管理基準値","限界管理基準値","禁漁水準")),
                               aes(x=x,y=y,label=label),
+                              family = family,
                               direction="x",nudge_y=max.U*0.9,size=11*0.282)
     }}    
 
     if(!is.null(beta)){
         g6 <- g6+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
             annotate("text",x=max.B*1,y=multi2currF(1.05),
-                     label=str_c("漁獲管理規則\n(beta=",beta,")"))            
+                     label=str_c("漁獲管理規則\n(beta=",beta,")"),
+                     family = family)
         g4 <- g4+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
             annotate("text",x=max.B*1,y=multi2currF(1.05),
-                     label=str_c("漁獲管理規則\n(beta=",beta,")"))
+                     label=str_c("漁獲管理規則\n(beta=",beta,")"),
+                     family = family)
     }
    
     g6 <- g6 +
