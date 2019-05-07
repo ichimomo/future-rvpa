@@ -4702,3 +4702,65 @@ draw.refline <- function(reftable,horiz=TRUE,scale=1000,lwd=3){
         }
 }
 
+
+#---- 期間内のRPSをサンプリング。平均値と中央値の差を補正するかどうか？など 
+RPS.simple.rec <- function(ssb,vpares,
+                           rec.arg=list(rps.year=NULL, # 点推定値のrpsを計算する期間
+                             upper.ssb=Inf, # 親魚資源量の上限（単位はトン？）
+                             upper.recruit=Inf,
+			     sample.year = NULL, # リサンプリング期間。rps.yearと異なる範囲を使う場合、設定する
+                             bias.correction=TRUE, # stochasticのときに平均値と中央値の比率を使うもの)
+                             rpsmean=FALSE),# deterministicのときに、RPSの平均を使うか、中央値を使うか。（スケトウでは平均、その他の魚種は中央値）
+                           deterministic=FALSE,rec.resample=NULL # ここは外から指定する必要ない
+                           ){ 
+  argname <- c("rps.year","upper.ssb","upper.recruit","sample.year","bias.correction","rpsmean")
+  tmp <- !(names(rec.arg) %in% argname)
+  if(sum(tmp)>0) stop(paste(names(rec.arg)[tmp],"no such arguments in RPS.simple.rec"))
+  
+  if(is.null(rec.arg$bias.correction)) rec.arg$bias.correction <- TRUE
+  if(is.null(rec.arg$rpsmean)) rec.arg$rpsmean <- FALSE
+  if(is.null(rec.arg$rps.year)) rec.arg$rps.year <- as.numeric(colnames(vpares$naa))
+  if(is.null(rec.arg$sample.year)) rec.arg$sample.year <- rec.arg$rps.year
+
+#  browser()
+  names(rec.arg)
+
+  if(is.null(rec.resample)|deterministic){
+    min.age <- min(as.numeric(rownames(vpares$ssb)))
+    if(min.age==0) slide.tmp <- TRUE else slide.tmp <- -1:-min.age    
+    rps.data <- data.frame(year=years <- as.numeric(names(colSums(vpares$ssb,na.rm=T))),
+                           ssb=SSB <- as.numeric(colSums(vpares$ssb,na.rm=T)),
+                           recruit=rec <- as.numeric(c(vpares$naa[1,slide.tmp],
+                             rep(NA,min.age))))
+    rps.data$rps <- rps <- rps.data$recruit/rps.data$ssb
+    
+    rps.range <- as.numeric(rps[years %in% rec.arg$rps.year])
+    rps.med <- median(rps.range) # 点推定のためのrps
+    rps.mean <- mean(rps.range) # 点推定のためのrps
+
+    sample.range <- as.numeric(rps[years %in% rec.arg$sample.year]) # リサンプリングのためのrps
+    sample.mean <- mean(sample.range) # リサンプリングのためのrps
+    if(rec.arg$bias.correction==TRUE){
+#      rec.resample <- sample.range/rps.mean*rps.med
+      rec.resample <- sample.range/sample.mean*rps.med # ここは本当にsample.meanで良いのか？(サンプル期間が同じ場合、sample.mean=rps=meanなので問題ない。期間が異なる場合、rps.meanを使うとsample.range/rps.meanの平均が1にならないため、やはりsample.meanを使うのが適切)
+ 
+    }
+    else{
+      rec.resample <- sample.range
+    }
+  }
+  ssb.tmp <- min(ssb,rec.arg$upper.ssb)
+  if(deterministic){
+    if(rec.arg$rpsmean){
+      rec <- ssb.tmp * rps.mean
+    }
+    else{
+      rec <- ssb.tmp * rps.med
+    }
+  }
+  else{
+    rec <- ssb.tmp * sample(rec.resample,1)
+  }
+  rec2 <- min(rec,rec.arg$upper.recruit)  
+  return(list(rec=rec2,rec.resample=rec.resample))
+}
