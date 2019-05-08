@@ -97,7 +97,7 @@ abline(h=SPR.msy,lty=2)
                             beta=0.8, # 推奨されるβに変える
                             refs.color=c(1,1,1),
                             yscale=1.2, # y軸を最大値の何倍まで表示するか。ラベルの重なり具合を見ながら調整してください
-                            HCR.label.position=c(1,1.05),# HCRの説明を書くラベルの位置。相対値なので位置を見ながら調整してください。
+                            HCR.label.position=c(1,1),# HCRの説明を書くラベルの位置。相対値なので位置を見ながら調整してください。
                             ylab.type="F",Fratio=Fratio)+theme_SH())
 ```
 
