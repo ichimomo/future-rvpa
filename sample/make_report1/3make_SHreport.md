@@ -47,6 +47,11 @@ ggsave_SH("g1_SRplot.png",g1_SRplot)
 ## yield curve
 # プロットする管理基準値だけ取り出す
 refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bban0"))
+```
+
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
+
+``` r
 # プロットする
 (g2_yield_curve <- plot_yield(MSY.base$trace,
                               refs.plot,
@@ -55,12 +60,12 @@ refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bb
                               past=res.pma,labeling=FALSE,
                               refs.color=c(1,1,1), # 印刷が出ないので縦線の色は黒にすることに
                               biomass.unit=1000,#資源量の単位
-                              AR=FALSE,
+                              AR_select=FALSE,
                               xlim.scale=0.4,ylim.scale=1.3 # x, y軸の最大値の何倍までプロットするか。ラベルやyield curveの形を見ながら適宜調整してください
                               ) + theme_SH())
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
 ggsave_SH("g2_yield_curve.png",g2_yield_curve)
@@ -84,7 +89,7 @@ plot(SPR.history$perSPR,ylim=c(0,max(c(SPR.history$perSPR,SPR.msy))),type="b")
 abline(h=SPR.msy,lty=2)
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->
 
 ``` r
 (g3_kobe4_F <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
@@ -92,10 +97,11 @@ abline(h=SPR.msy,lty=2)
                             beta=0.8, # 推奨されるβに変える
                             refs.color=c(1,1,1),
                             yscale=1.2, # y軸を最大値の何倍まで表示するか。ラベルの重なり具合を見ながら調整してください
+                            HCR.label.position=c(1,1.05),# HCRの説明を書くラベルの位置。相対値なので位置を見ながら調整してください。
                             ylab.type="F",Fratio=Fratio)+theme_SH())
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-5.png)<!-- -->
 
 ``` r
 ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
@@ -123,7 +129,7 @@ ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
 )
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-5.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
 
 ``` r
 ggsave_SH_large("g4_future.png",g4_future)
