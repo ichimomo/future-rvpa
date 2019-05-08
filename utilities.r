@@ -163,12 +163,16 @@ plot_yield <- function(MSY_obj,refs_base,
                        AR_select=FALSE,xlim.scale=1.1,
                        biomass.unit=1,labeling=TRUE,lining=TRUE,
                        age.label.ratio=0.9, # 年齢のラベルを入れる位置（xの最大値からの割合)
+                       family = "JP1",
                        ylim.scale=1.2,future=NULL,past=NULL,future.name=NULL){
     
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
    
-    if("trace" %in% names(MSY_obj)) trace.msy <- MSY_obj$trace
-    else trace.msy <- MSY_obj
+    if ("trace" %in% names(MSY_obj)) {
+      trace.msy <- MSY_obj$trace
+    } else {
+      trace.msy <- MSY_obj
+    }
         
     require(tidyverse,quietly=TRUE)
     require(ggrepel)    
@@ -187,7 +191,8 @@ plot_yield <- function(MSY_obj,refs_base,
     ymax <- max(ymax$catch.mean)
 
 
-    g1 <- trace %>%   ggplot()
+    g1 <- trace %>%
+      ggplot2::ggplot()
 
     if(is.null(future.name)) future.name <- 1:length(future)
     
@@ -220,7 +225,8 @@ plot_yield <- function(MSY_obj,refs_base,
     coord_cartesian(xlim=c(0,xmax*xlim.scale),
                     ylim=c(0,ymax*ylim.scale),expand=0) +
     geom_text(data=age.label,
-              mapping=aes(y=cumcatch,x=ssb.mean,label=age_name))+
+              mapping = aes(y = cumcatch, x = ssb.mean, label = age_name),
+              family = family) +
 #    geom_text_repel(data=refs_base,
 #                     aes(y=Catch,x=SSB,label=refs.label),
 #                     size=4,box.padding=0.5,segment.color="gray",
@@ -269,6 +275,10 @@ plot_yield <- function(MSY_obj,refs_base,
               color=col.SBban,lwd=1,alpha=0.9)
     }
     
+    if(isTRUE(lining)){
+#        ylim.scale.factor <- rep(c(0.94,0.97),ceiling(length(refs.label)/2))[1:length(refs.label)]
+        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,lty="41",lwd=0.6,color=refs.color)
+    }
 
     if(isTRUE(labeling)){
         g1 <- g1 +
@@ -286,16 +296,6 @@ plot_yield <- function(MSY_obj,refs_base,
 #                              direction="y",angle=0,nudge_y=max.U        
     }
         
-    if(isTRUE(lining)){
-#        ylim.scale.factor <- rep(c(0.94,0.97),ceiling(length(refs.label)/2))[1:length(refs.label)]
-        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,lty="41",lwd=0.6,color=refs.color)+
-#            geom_text(data=refs_base,aes(y=ymax*ylim.scale*ylim.scale.factor,
-    #                                         x=SSB,label=refs.label),hjust=0)
-             geom_label_repel(data=refs_base,
-                              aes(y=ymax*ylim.scale*0.85,
-                                  x=SSB,label=refs.label),
-                              direction="x",size=11*0.282,nudge_y=ymax*ylim.scale*0.9)        
-    }
 
     return(g1)
         
