@@ -576,10 +576,10 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     if(!is.null(beta)){
         g6 <- g6+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
             annotate("text",x=max.B*1,y=multi2currF(1.05),
-                     label=str_c("漁獲管理規則\n(beta=",beta,")"))            
+                     label=str_c("漁獲管理規則\n(β=",beta,")"))            
         g4 <- g4+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
             annotate("text",x=max.B*1,y=multi2currF(1.05),
-                     label=str_c("漁獲管理規則\n(beta=",beta,")"))
+                     label=str_c("漁獲管理規則\n(β=",beta,")"))
     }
    
     g6 <- g6 +

@@ -111,8 +111,8 @@ ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
                    n_example=5,seed=2)+ # どのシミュレーションをピックアップするかはseedの値を変えて調整してください
     theme_SH()+
     theme(legend.position="top")+
-    scale_color_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(beta=0.8)"))+
-    scale_fill_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(beta=0.8)"))+
+    scale_color_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(β=0.8)"))+
+    scale_fill_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(β=0.8)"))+
     scale_linetype_discrete(guide=FALSE)
 )
 ggsave_SH_large("g4_future.png",g4_future)

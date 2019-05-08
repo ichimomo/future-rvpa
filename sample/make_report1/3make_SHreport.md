@@ -1,6 +1,6 @@
 会議用資料
 ================
-2019-05-07
+2019-05-08
 
 # SH会議用の出力
 
@@ -47,11 +47,6 @@ ggsave_SH("g1_SRplot.png",g1_SRplot)
 ## yield curve
 # プロットする管理基準値だけ取り出す
 refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bban0"))
-```
-
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
-
-``` r
 # プロットする
 (g2_yield_curve <- plot_yield(MSY.base$trace,
                               refs.plot,
@@ -65,7 +60,7 @@ refs.plot <- dplyr::filter(refs.base,RP.definition%in%c("Btarget0","Blimit0","Bb
                               ) + theme_SH())
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->
 
 ``` r
 ggsave_SH("g2_yield_curve.png",g2_yield_curve)
@@ -89,7 +84,7 @@ plot(SPR.history$perSPR,ylim=c(0,max(c(SPR.history$perSPR,SPR.msy))),type="b")
 abline(h=SPR.msy,lty=2)
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->
 
 ``` r
 (g3_kobe4_F <- plot_kobe_gg(res.pma,refs.base,roll_mean=1,category=4,
@@ -100,7 +95,7 @@ abline(h=SPR.msy,lty=2)
                             ylab.type="F",Fratio=Fratio)+theme_SH())
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-5.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->
 
 ``` r
 ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
@@ -122,13 +117,13 @@ ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
                    n_example=5,seed=2)+ # どのシミュレーションをピックアップするかはseedの値を変えて調整してください
     theme_SH()+
     theme(legend.position="top")+
-    scale_color_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(beta=0.8)"))+
-    scale_fill_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(beta=0.8)"))+
+    scale_color_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(β=0.8)"))+
+    scale_fill_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(β=0.8)"))+
     scale_linetype_discrete(guide=FALSE)
 )
 ```
 
-![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->
+![](3make_SHreport_files/figure-gfm/unnamed-chunk-2-5.png)<!-- -->
 
 ``` r
 ggsave_SH_large("g4_future.png",g4_future)
