@@ -728,6 +728,7 @@ plot_futures <- function(vpares,
         theme(legend.position="top",panel.grid = element_blank())+
         facet_wrap(~factor(jstat,levels=rename_list$jstat),scales="free_y",ncol=ncol)+        
         xlab("年")+ylab("")+ labs(fill = "",linetype="",color="")+
+        xlim(min(future.table$year),maxyear)+
         geom_hline(data = ssb_table,
                    aes(yintercept = value, linetype = RP_name),
                    color = c(col.SBtarget, col.SBlim, col.SBban))
