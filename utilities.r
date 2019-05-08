@@ -458,6 +458,7 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
                          labeling.year=NULL,
                          Fratio=NULL, # ylab.type=="F"のとき
                          yscale=1.2,xscale=1.2,
+                         HCR.label.position=c(1,1), # デフォルトはx軸方向が1, y軸方向が1の相対値です。様子を見ながら調整してください
                          refs.color=c("#00533E","#edb918","#C73C2E"),
                          beta=NULL){
 
@@ -574,12 +575,20 @@ plot_kobe_gg <- function(vpares,refs_base,roll_mean=1,
     }}    
 
     if(!is.null(beta)){
+        x.pos <- max.B*HCR.label.position[1]
+        y.pos <- multi2currF(1.05)*HCR.label.position[2]
         g6 <- g6+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),
+            annotate("text",x=x.pos,y=y.pos,            
                      label=str_c("漁獲管理規則\n(β=",beta,")"))            
         g4 <- g4+stat_function(fun = h,lwd=1.5,color=1,n=1000)+
-            annotate("text",x=max.B*1,y=multi2currF(1.05),
+            annotate("text",x=x.pos,y=y.pos,
                      label=str_c("漁獲管理規則\n(β=",beta,")"))
+#        if(abs(HCR.label.position[1]-1)+abs(HCR.label.position[2]-1)>0.3){
+#            label.line <- tibble(x=c(max.B,x.pos),
+#                                 y=c(multi2currF(1.05),y.pos))
+#            g6 <- g6 + geom_path(data=label.line,mapping=aes(x=x,y=y),color="gray")
+#            g4 <- g4 + geom_path(data=label.line,mapping=aes(x=x,y=y),color="gray")
+#        }
     }
    
     g6 <- g6 +
