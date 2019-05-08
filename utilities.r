@@ -50,6 +50,10 @@ convert_future_table <- function(fout,label="tmp"){
         gather(key=sim, value=value, -year, convert=TRUE) %>%
         mutate(year=as.numeric(year),stat="Fsakugen",label=label)
 
+    Fsakugen_ratio <- Fsakugen %>%
+        mutate(value=value+1)
+    Fsakugen_ratio$stat <- "Fsakugen_ratio"
+
     if(is.null(fout$recruit)) fout$recruit <- fout$naa[1,,]
     Recruitment <- fout$recruit %>%                                    #追加
         as_tibble %>%                                                   #追加
@@ -57,7 +61,7 @@ convert_future_table <- function(fout,label="tmp"){
         gather(key=sim, value=value, -year, convert=TRUE) %>%           #追加
         mutate(year=as.numeric(year),stat="Recruitment",label=label)   
     
-    bind_rows(ssb,catch,biomass,alpha_value,Fsakugen,Recruitment)
+    bind_rows(ssb,catch,biomass,alpha_value,Fsakugen,Fsakugen_ratio,Recruitment)
 }
         
     
@@ -624,7 +628,7 @@ plot_futures <- function(vpares,
                          CI_range=c(0.1,0.9),
                          maxyear=NULL,font.size=18,
                          ncol=3,
-                         what.plot=c("Recruitment","SSB","biomass","catch","Fsakugen","alpha"),
+                         what.plot=c("Recruitment","SSB","biomass","catch","Fsakugen","Fsakugen_ratio"),
                          biomass.unit=1,RP_name=c("Btarget","Blimit","Bban"),
                          Btarget=0,Blimit=0,Bban=0,#Blow=0,
                          n_example=3, # number of examples
@@ -633,13 +637,14 @@ plot_futures <- function(vpares,
 
     junit <- c("","十","百","千","万")[log10(biomass.unit)+1]
     require(tidyverse,quietly=TRUE)
-    rename_list <- tibble(stat=c("Recruitment","SSB","biomass","catch","Fsakugen","alpha"),
+    rename_list <- tibble(stat=c("Recruitment","SSB","biomass","catch","Fsakugen","Fsakugen_ratio","alpha"),
                           jstat=c(str_c("加入尾数"),
                               str_c("親魚量 (",junit,"トン)"),
                               str_c("資源量 (",junit,"トン)"),
                               str_c("漁獲量 (",junit,"トン)"),
                               "努力量の削減率",
-                              "Fcurrentに対する乗数"))
+                              "Fcurrentに対する乗数",
+                              "alpha"))
 
     rename_list <- rename_list %>% dplyr::filter(stat%in%what.plot)
     
@@ -662,7 +667,8 @@ plot_futures <- function(vpares,
     future.example <- future.table %>%
       dplyr::filter(sim%in%sample(2:max(future.table$sim),n_example)) %>%
       mutate(stat = as.character(stat),
-             value=ifelse(stat=="Fsakugen",value,value/biomass.unit)) %>%
+             value=ifelse((stat=="Fsakugen"|stat=="Fsakugen_ratio"),
+                          value,value/biomass.unit)) %>%
       left_join(rename_list) %>%
       group_by(sim,scenario)
         
@@ -684,7 +690,7 @@ plot_futures <- function(vpares,
     future.table <- bind_rows(future.table,vpa_tb,future.dummy) %>%
         mutate(stat=factor(stat,levels=rename_list$stat)) %>%
         mutate(scenario=factor(scenario,levels=c("VPA",future.name))) %>%
-        mutate(value=ifelse(stat%in%c("Fsakugen","alpha"),value,value/biomass.unit))
+        mutate(value=ifelse(stat%in%c("Fsakugen","Fsakugen_ratio","alpha"),value,value/biomass.unit))
 
     future.table.qt <- future.table %>% group_by(scenario,year,stat) %>%
         summarise(low=quantile(value,CI_range[1],na.rm=T),

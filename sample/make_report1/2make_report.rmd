@@ -145,7 +145,12 @@ yield.table <- yield.table %>% mutate(age=as.character(age)) %>% spread(key=age,
 (g6_Fcurrent <- plot_Fcurrent(res.pma,year.range=2007:2017))
 
 # HCRの図
-#g7_HCR <- 
+(g7_hcr <- plot_HCR(SBtarget=derive_RP_value(refs.base,"Btarget0")$SSB,
+         SBlim=derive_RP_value(refs.base,"Blimit0")$SSB,
+         SBban=derive_RP_value(refs.base,"Bban0")$SSB,
+         Ftarget=1,biomass.unit=1000,
+         beta=0.8))
+ggsave("g7_hcr.png",g7_hcr,width=8,height=4,dpi=600) 
 ```
 
 ## 図の一括保存
