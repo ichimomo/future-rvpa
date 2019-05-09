@@ -230,7 +230,8 @@ plot_yield <- function(MSY_obj,refs_base,
                     ylim=c(0,ymax*ylim.scale),expand=0) +
     geom_text(data=age.label,
               mapping = aes(y = cumcatch, x = ssb.mean, label = age_name),
-              family = family) +
+                            family = family
+              ) +
 #    geom_text_repel(data=refs_base,
 #                     aes(y=Catch,x=SSB,label=refs.label),
 #                     size=4,box.padding=0.5,segment.color="gray",
@@ -281,7 +282,11 @@ plot_yield <- function(MSY_obj,refs_base,
     
     if(isTRUE(lining)){
 #        ylim.scale.factor <- rep(c(0.94,0.97),ceiling(length(refs.label)/2))[1:length(refs.label)]
-        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,lty="41",lwd=0.6,color=refs.color)
+        g1 <- g1 + geom_vline(xintercept=refs_base$SSB,lty="41",lwd=0.6,color=refs.color)+
+            geom_label_repel(data=refs_base,
+                             aes(y=ymax*ylim.scale*0.85,
+                                 x=SSB,label=refs.label),
+                             direction="x",size=11*0.282,nudge_y=ymax*ylim.scale*0.9)  
     }
 
     if(isTRUE(labeling)){
