@@ -3128,14 +3128,7 @@ plot.kobemat2 <- function(yy,...){
 ## L1ノルム（最小絶対値）も推定できる (sigmaはSD)
 ## TMB = TRUEでmarginal likelihood (.cppファイルが必要)
 
-fit.SR <- function(SRdata,
-                   SR="HS",
-                   method="L2",
-                   AR=1,TMB=FALSE,
-                   hessian=FALSE,w=rep(1,length(SRdata$year)),
-                   length=20,
-                   max.ssb.pred=1.3 # 予測値を計算するSSBの最大値（観測された最大値への乗数）
-                   ){ 
+fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep(1,length(SRdata$year)),length=20){
   
   argname <- ls()
   arglist <- lapply(argname,function(xx) eval(parse(text=xx)))
@@ -3308,7 +3301,7 @@ fit.SR <- function(SRdata,
   Res$pars <- data.frame(t(Res$pars))
   #  Res$gamma <- gamma
   
-  ssb.tmp <- seq(from=0,to=max(ssb)*max.ssb.pred,length=100)
+  ssb.tmp <- seq(from=0,to=max(ssb)*1.3,length=100)
   R.tmp <- sapply(1:length(ssb.tmp), function(i) SRF(ssb.tmp[i],a,b))
   pred.data <- data.frame(SSB=ssb.tmp,R=R.tmp)
   Res$pred <- pred.data
@@ -3548,7 +3541,8 @@ plot.waa <- function(vres){
     return(lm.list)
 }
 
-### parametric bootstrap usnig fit.SR
+### parametric bootstrap usnig fit.SR (
+# Allee effect model (fit.SR2) には対応していない
 boot.SR <- function(Res,n=100,seed=1){
   N <- length(Res$input$SRdata$year)
   
@@ -3601,7 +3595,7 @@ prof.lik <- function(Res,a=Res$pars$a,b=Res$pars$b,sd=Res$pars$sd,rho=Res$pars$r
   resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b)))
   resid2 <- NULL
   for (i in 1:N) {
-    resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid2[i-1])
+    resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid[i-1])
   }
   
   obj <- NULL
