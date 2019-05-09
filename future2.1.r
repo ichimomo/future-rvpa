@@ -3149,7 +3149,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
     resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b)))
     resid2 <- NULL
     for (i in 1:N) {
-      resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid2[i-1])
+      resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid[i-1])
     }
     
     if (method == "L2") {
@@ -3203,7 +3203,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
   resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b)))
   resid2 <- NULL
   for (i in 1:N) {
-    resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
+    resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid[i-1])
   }
   
   sd <- ifelse(method=="L2",sqrt(sum(w*resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(w*resid2))/(NN-rho^2))
@@ -3291,7 +3291,7 @@ fit.SR <- function(SRdata,SR="HS",method="L2",AR=1,TMB=FALSE,hessian=FALSE,w=rep
       resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b)))
       resid2 <- NULL
       for (i in 1:N) {
-        resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
+        resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid[i-1])
       }
       Res$resid <- as.numeric(resid)
       Res$resid2 <- as.numeric(resid2)
@@ -3343,7 +3343,7 @@ fit.SR2 <- function(SRdata,
     resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b,c)))
     resid2 <- NULL
     for (i in 1:N) {
-      resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid2[i-1])
+      resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid[i-1])
     }
     
     if (method == "L2") {
@@ -3415,7 +3415,7 @@ fit.SR2 <- function(SRdata,
   resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b,c)))
   resid2 <- NULL
   for (i in 1:N) {
-    resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid2[i-1])
+    resid2[i] <- ifelse(i == 1,resid[i], resid[i]-rho*resid[i-1])
   }
   sd <- ifelse(method=="L2",sqrt(sum(w*resid2^2)/(NN-rho^2)),sqrt(2)*sum(abs(w*resid2))/(NN-rho^2))
   
