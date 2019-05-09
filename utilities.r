@@ -729,7 +729,7 @@ plot_futures <- function(vpares,
     
     g1 <- future.table.qt %>% dplyr::filter(!is.na(stat)) %>%
         ggplot() +
-        geom_ribbon(aes(x=year,ymin=low,ymax=high,fill=scenario),alpha=0.5)+        
+        geom_ribbon(aes(x=year,ymin=low,ymax=high,fill=scenario),alpha=0.4)+        
         geom_line(aes(x=year,y=mean,color=scenario),lwd=1)+
         geom_line(aes(x=year,y=mean,color=scenario),linetype=2,lwd=1)+
         geom_blank(data=dummy,mapping=aes(y=value,x=year))+
