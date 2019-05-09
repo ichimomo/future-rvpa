@@ -1,6 +1,6 @@
 会議用資料
 ================
-2019-05-08
+2019-05-09
 
 # SH会議用の出力
 
@@ -122,9 +122,9 @@ ggsave_SH("g3_kobe4_F.png",g3_kobe4_F)
                    biomass.unit=1000,  # バイオマスの単位(100, 1000, or 10000トン)
                    n_example=5,seed=2)+ # どのシミュレーションをピックアップするかはseedの値を変えて調整してください
     theme_SH()+
-    theme(legend.position="top")+
-    scale_color_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(β=0.8)"))+
-    scale_fill_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則(β=0.8)"))+
+    theme(legend.position="right")+
+    scale_color_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則\n(β=0.8)"))+
+    scale_fill_hue(labels=c(VPA="過去の推定値",s1="現状の漁獲圧",s2="漁獲管理規則\n(β=0.8)"))+
     scale_linetype_discrete(guide=FALSE)
 )
 ```
