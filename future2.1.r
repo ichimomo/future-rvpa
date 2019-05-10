@@ -3601,7 +3601,7 @@ prof.lik <- function(Res,a=Res$pars$a,b=Res$pars$b,sd=Res$pars$sd,rho=Res$pars$r
   resid <- sapply(1:N,function(i) log(rec[i]) - log(SRF(ssb[i],a,b)))
   resid2 <- NULL
   for (i in 1:N) {
-    resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid2[i-1])
+    resid2[i] <- ifelse(i==1,resid[i], resid[i]-rho*resid[i-1])
   }
   
   obj <- NULL
