@@ -264,12 +264,17 @@ plot_yield <- function(MSY_obj,refs_base,
 
 
     }
-
+    
+    catch.past = unlist(colSums(past$input$dat$caa*past$input$dat$waa)/biomass.unit)
+    if (past$input$last.catch.zero && !is.null(future)) {
+      catch.past[length(catch.past)] = apply(future[[1]]$vwcaa[,-1],1,mean)[1]/biomass.unit
+    }
+    
     if(!is.null(past)){
         tmpdata <- tibble(
             year      =as.numeric(colnames(past$ssb)),
             ssb.past  =unlist(colSums(past$ssb))/biomass.unit,
-            catch.past=unlist(colSums(past$input$dat$caa*past$input$dat$waa)/biomass.unit)
+            catch.past=catch.past
         )
 
         g1 <- g1 +
