@@ -3199,6 +3199,7 @@ fit.SR <- function(SRdata,
   
   opt <- optim(init,obj.f2)
   opt <- optim(opt$par,obj.f2,method="BFGS",hessian=hessian)
+    
   
   Res <- list()
   Res$input <- arglist
