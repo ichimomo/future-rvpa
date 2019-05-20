@@ -25,6 +25,7 @@
 # rvpa.1.8 - Retrospective analysisを行うための関数 (retro.est, retro.est2) と、リッジ回帰を行うための引数 (lambda) を追加(2017/05/29)
 # rvpa1.9 - maa.tune（tuning時だけ使用のmaa）, waa.catch（資源と漁獲でwaaが違う場合に対応）を使用可能に．index=NULLでtune=FALSEのときエラーが出ないように修正．
 # rvpa1.9.2 - 各indexに対する分散に制約をかけられるように修正。例えばindexが５本ある場合、sigma.constraint=c(1,2,2,3,3)とすると2,3本めと4,5本目のindexに対する分散は等しいとして推定する。180522中山
+# rvpa1.9.3 - Popeの近似式を一般化
 ##
 
 data.handler <- function(
