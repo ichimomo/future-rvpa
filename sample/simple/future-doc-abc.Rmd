@@ -53,6 +53,7 @@ names(dat)
 # VPAによる資源量推定
 res.pma <- vpa(dat,fc.year=2009:2011,rec=585,rec.year=2011,tf.year = 2008:2010,
                term.F="max",stat.tf="mean",Pope=TRUE,tune=FALSE,p.init=1.0)
+library(testthat)
 ```
 
 ```{r}
@@ -174,6 +175,7 @@ future.vpa関数を使います
      - HS.recAR: ホッケー・スティック＋加入は対数正規分布＋自己相関ありの場合も対応
      - RI.recAR・BH.recAR：HS.recARのリッカー・べバートンホルトバージョン
      - HS.rec, BH.rec, RI.rec : 残差リサンプリング用
+	 - RPS.simple.rec : RPSのリサンプリング。旧ルールに対応
 
 ```{r future.vpa, fig.cap="**図：is.plot=TRUEで表示される図．資源量(Biomass)，親魚資源量(SSB), 漁獲量(Catch)の時系列．決定論的将来予測（Deterministic），平均値（Mean），中央値(Median)，80％信頼区間を表示**"}
 fres.HS <- future.vpa(res.pma,
@@ -264,6 +266,21 @@ par(mfrow=c(2,2))
 plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),target="SSB")
 plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),target="Catch")
 plot.futures(list(fres.HS,fres.HS3),legend.text=c("F=Fcurrent","F=0.5Fcurrent"),target="Biomass") 
+```
+
+### 旧ルールで使っていたRPSのリサンプリングによる将来予測
+
+```{r, fig.cap="図：plot.futures関数の結果"}
+rps.year <- 2001:2011
+fout.rps <- future.vpa(res.pma,currentF=NULL, multi=1, 
+                    nyear=15,start.year=2012,N=10000,ABC.year=2013, 
+                    waa.year=byear,maa.year=byear,M.year=byear,
+                    rec.new=NULL,
+                    recfunc=RPS.simple.rec,
+                    rec.arg=list(rps.year=rps.year,
+                      upper.ssb=Inf,bias.corrected=TRUE,rpsmean=FALSE,
+                      upper.recruit=Inf))
+                    
 ```
 
 ## (5-1) Fの設定やFrec
@@ -478,9 +495,9 @@ refs.all %>% select(RP_name,RP.definition)
 
 # refs.allの中からRP.definitionで指定された行だけを抜き出す
 (refs.base <- refs.all %>%
-    filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
-    arrange(desc(SSB)) %>% # SSBを大きい順に並び替え
-    select(RP.definition,RP_name,SSB,Catch,U,Fref2Fcurrent)) #　列を並び替え
+     dplyr::filter(!is.na(RP.definition)) %>% # RP.definitionがNAでないものを抽出
+     arrange(desc(SSB)) %>% # SSBを大きい順に並び替え
+     select(RP.definition,RP_name,SSB,Catch,U,Fref2Fcurrent)) #　列を並び替え
 
 ```
 
@@ -539,10 +556,6 @@ abline(h=c(50,90),col=c(1,2))
 legend("bottomright",col=c(1,1,2,2),title="Probs",pch=c(1,2,1,2),legend=c(">Btarget_Eq",">Btarget_AR",">Blimit_Eq",">Blimit_AR"))
 ```
 
-```{r kobe}
-# Kobe chart
-plot.kobe(res.pma,Bmsy=refs$Bmsy,Umsy=refs$Umsy,Blim=refs$Blim)
-```
 
 # 8. ABC計算までのまとめ（時間がない人はここからスタート）
 
