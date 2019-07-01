@@ -2,6 +2,12 @@
 # New ABC Program for Type 2 and 3 Fishery
 #
 
+# source("abc_23.r")
+# catch <- c(10,5,10,3,2,1,3)
+# cpue <- c(11,10,2,3,2,5,2)
+# (res <- abc_t23(catch,cpue))
+#
+
 abc_t23 <- function(
   catch,   # catch timeseries data
   cpue=NULL,   # cpue timeseries data
