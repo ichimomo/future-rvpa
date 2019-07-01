@@ -252,7 +252,8 @@ abund.extractor <- function(
        res <- colSums((naa*waa*saa)[min.age:max.age,], na.rm=TRUE)
  }
  if (abund=="Bo"){
-       saa <- sweep(faa*omega,2,colSums((faa*omega)[min.age:max.age,]),FUN="/")
+        saa <- sel.func(faa*omega, def=sel.def)
+        saa <- sweep(saa,2,colSums(saa),FUN="/")
        res <- colSums((naa*waa*saa)[min.age:max.age,], na.rm=TRUE)
  } 
  if (abund=="Ns"){
