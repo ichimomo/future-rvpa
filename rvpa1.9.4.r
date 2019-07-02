@@ -503,7 +503,7 @@ vpa <- function(
   if (!is.null(dat$catch.prop)) catch.prop <- dat$catch.prop
   index <- dat$index   # abundance indices
   M <- dat$M    # natural mortality-at-age
-  waa.catch <- ifelse(is.null(dat$waa.catch),waa,dat$waa.catch)
+  if(is.null(dat$waa.catch)) waa.catch <- waa else waa.catch <- dat$waa.catch
 
   if (isTRUE(tune) & is.null(index)) {print("Check!: There is no abundance index."); stop()}
   
